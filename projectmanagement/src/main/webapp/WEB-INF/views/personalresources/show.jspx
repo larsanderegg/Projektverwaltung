@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_ch_lan_teko_model_PersonalResource" object="${personalresource}" path="/personalresources" z="42hFGFnM3phBo8Srkf39FUFkSAs=">
+        <field:display field="planed" id="s_ch_lan_teko_model_PersonalResource_planed" object="${personalresource}" z="pNCBN+uZ7ZZ0fVkU0cdQN5EIXbo="/>
+        <field:display field="effectiv" id="s_ch_lan_teko_model_PersonalResource_effectiv" object="${personalresource}" z="ki+L//Et64u2pQ9aXdyqxwTT+SY="/>
+        <field:display field="explanation" id="s_ch_lan_teko_model_PersonalResource_explanation" object="${personalresource}" z="CNDr1oOLv0xuWMA4qfs5K2vWE5Q="/>
+        <field:display field="job" id="s_ch_lan_teko_model_PersonalResource_job" object="${personalresource}" z="i0tfEZKolV3uMB/80MZ8B6YLhv8="/>
+        <field:display field="employee" id="s_ch_lan_teko_model_PersonalResource_employee" object="${personalresource}" z="fjLQXOsy2K3mUWB+oZmrj0py5/M="/>
+    </page:show>
+</div>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_ch_lan_teko_model_Employee" object="${employee}" path="/employees" z="Gfi5UUt14uV2lqrx1v86X/wm+fI=">
+        <field:display field="name" id="s_ch_lan_teko_model_Employee_name" object="${employee}" z="2LhnypXX/tNJBpomAAVahsv3Dhc="/>
+        <field:display field="surname" id="s_ch_lan_teko_model_Employee_surname" object="${employee}" z="vAnCPYxu5U/TreRsln2FZpManpg="/>
+        <field:display field="pensum" id="s_ch_lan_teko_model_Employee_pensum" object="${employee}" z="BYxJKtX4UPskKG/AQZy41CXIKZM="/>
+        <field:display field="id" id="s_ch_lan_teko_model_Employee_id" object="${employee}" z="el91oxrTSOisfiZXiywbSedDGDg="/>
+        <field:display field="job" id="s_ch_lan_teko_model_Employee_job" object="${employee}" z="QU1T0Vg8EnVCVu1CWE2oEYE+3yY="/>
+    </page:show>
+</div>

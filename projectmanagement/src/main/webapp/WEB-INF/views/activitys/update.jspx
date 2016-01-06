@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_ch_lan_teko_model_Activity" modelAttribute="activity" path="/activitys" versionField="Version" z="4Fl1sAiX/MCZSjkJ8M1LT5IjbLY=">
+        <field:select field="links" id="c_ch_lan_teko_model_Activity_links" itemValue="id" items="${documentreferences}" multiple="true" path="/documentreferences" required="true" z="WBlysiPeRzuOd59Nr74KTM0mwZc="/>
+        <field:input field="startDate" id="c_ch_lan_teko_model_Activity_startDate" required="true" z="ZdFd9zyi1IbPKqo2tPr0CwlzDb4="/>
+        <field:input field="endDate" id="c_ch_lan_teko_model_Activity_endDate" required="true" z="flKLXnUzKqh9Df/MlPO/3Vp6JRI="/>
+        <field:input field="planedStartDate" id="c_ch_lan_teko_model_Activity_planedStartDate" required="true" z="/v1gFEnmTywJde7kSuCilRCCWjU="/>
+        <field:input field="planedEndDate" id="c_ch_lan_teko_model_Activity_planedEndDate" required="true" z="oqdb8xfZ3LEvRLzOvtI4aPuk3JE="/>
+        <field:select field="resources" id="c_ch_lan_teko_model_Activity_resources" itemValue="id" items="${resources}" multiple="true" path="/resources" required="true" z="EQ+MClVy68U7Y6EczikvEDZh+jU="/>
+        <field:select field="responsible" id="c_ch_lan_teko_model_Activity_responsible" itemValue="id_" items="${employees}" path="/employees" required="true" z="wZ/gI0ZFm4jyB9gfrWSJZ3wqkL8="/>
+        <field:input field="progress" id="c_ch_lan_teko_model_Activity_progress" required="true" z="otVK2pjli2R29tV5U+xD/1UV5OA="/>
+    </form:update>
+</div>

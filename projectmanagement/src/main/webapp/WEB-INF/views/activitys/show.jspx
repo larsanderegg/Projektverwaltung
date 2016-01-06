@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_ch_lan_teko_model_Activity" object="${activity}" path="/activitys" z="414CPQjMkzxLvPx8AErZbqil+Cw=">
+        <field:display field="links" id="s_ch_lan_teko_model_Activity_links" object="${activity}" z="/CDN1XyirdvtHN1XMHC85sUlmow="/>
+        <field:display field="startDate" id="s_ch_lan_teko_model_Activity_startDate" object="${activity}" z="ZpEenc1OiTjEQxufh9joQLrYub8="/>
+        <field:display field="endDate" id="s_ch_lan_teko_model_Activity_endDate" object="${activity}" z="kw9H2kBZcFHM3Y5WFndeMkKY388="/>
+        <field:display field="planedStartDate" id="s_ch_lan_teko_model_Activity_planedStartDate" object="${activity}" z="sHzvMmnIf2zdQejTIVfZM2ZXRdQ="/>
+        <field:display field="planedEndDate" id="s_ch_lan_teko_model_Activity_planedEndDate" object="${activity}" z="h9LEL1urDe2UyT8fpO6qhmldeS8="/>
+        <field:display field="resources" id="s_ch_lan_teko_model_Activity_resources" object="${activity}" z="EN78dW2/gyxTChJh7kU0LkpzM/c="/>
+        <field:display field="responsible" id="s_ch_lan_teko_model_Activity_responsible" object="${activity}" z="fJnqLmMLNCv4SI1xA5EQ2ranGgI="/>
+        <field:display field="progress" id="s_ch_lan_teko_model_Activity_progress" object="${activity}" z="62GcTmc355uGbgSy7/2jqwcieus="/>
+    </page:show>
+</div>

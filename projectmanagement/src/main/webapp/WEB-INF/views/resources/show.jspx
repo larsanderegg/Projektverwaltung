@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_ch_lan_teko_model_Resource" object="${resource}" path="/resources" z="BFcpOcBd8pzY07nM+wbJtnStkos=">
+        <field:display field="planed" id="s_ch_lan_teko_model_Resource_planed" object="${resource}" z="/glxFhJ5h+dZkTEqV2L459eCajY="/>
+        <field:display field="effectiv" id="s_ch_lan_teko_model_Resource_effectiv" object="${resource}" z="/hYzdez5ieW/o5SsqeVE9wGDnH4="/>
+        <field:display field="explanation" id="s_ch_lan_teko_model_Resource_explanation" object="${resource}" z="Ayk1jZ5fdlm/bL8r4XK3qGdcIaA="/>
+    </page:show>
+</div>

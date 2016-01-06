@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_ch_lan_teko_model_Phase" items="${phases}" z="jY3s/bjw6tYfi8daCbUEQr+z1gs=">
+        <table:table data="${phases}" id="l_ch_lan_teko_model_Phase" path="/phases" z="BMCf3OFkIDJ4+Kr8Z5POGuy9o9Q=">
+            <table:column id="c_ch_lan_teko_model_Phase_links" property="links" z="eJdtkSExKAwUJPJLUnJ85G8iYq4="/>
+            <table:column id="c_ch_lan_teko_model_Phase_reviewDate" property="reviewDate" z="BWGS4fAXoLUtTQwPIHkRvdqAdMw="/>
+            <table:column id="c_ch_lan_teko_model_Phase_approvalDate" property="approvalDate" z="aZGtIgXIao53gQr/29blgCt1iYg="/>
+            <table:column id="c_ch_lan_teko_model_Phase_planedReviewDate" property="planedReviewDate" z="/I3DrqmLpxHIsgyBgowOr+5kJZw="/>
+            <table:column id="c_ch_lan_teko_model_Phase_progress" property="progress" z="wSTa+j1sh6dR6gmjrjZvHmfdWVY="/>
+            <table:column id="c_ch_lan_teko_model_Phase_phaseState" property="phaseState" z="N0uNBjNeXgEtdlNF8iV8ADpqo7k="/>
+        </table:table>
+    </page:list>
+</div>

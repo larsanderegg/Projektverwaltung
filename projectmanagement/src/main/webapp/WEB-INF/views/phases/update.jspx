@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_ch_lan_teko_model_Phase" modelAttribute="phase" path="/phases" versionField="Version" z="oxgXj9TpCNmKgAQTakqTU/CG7U0=">
+        <field:select field="links" id="c_ch_lan_teko_model_Phase_links" itemValue="id" items="${documentreferences}" multiple="true" path="/documentreferences" z="6uFFn00KAx1Ltdb++CLaNV3x9pI="/>
+        <field:input field="reviewDate" id="c_ch_lan_teko_model_Phase_reviewDate" z="xo9Co9FbTvBGRr9UdCFcHFPl97o="/>
+        <field:input field="approvalDate" id="c_ch_lan_teko_model_Phase_approvalDate" z="xWkbLyJ7ODJcTYJL0tBz43eaVbE="/>
+        <field:input field="planedReviewDate" id="c_ch_lan_teko_model_Phase_planedReviewDate" required="true" z="1/OIf4zsrzU4xPwSBhq1EEoSCUU="/>
+        <field:input field="progress" id="c_ch_lan_teko_model_Phase_progress" required="true" z="GblkwUdSd6cbJQj1K/3VdTVeq2M="/>
+        <field:input field="phaseState" id="c_ch_lan_teko_model_Phase_phaseState" required="true" z="+NEpnZGAlDHgTXEHxDr3+1J4mA4="/>
+        <field:select field="activities" id="c_ch_lan_teko_model_Phase_activities" itemValue="id" items="${activitys}" multiple="true" path="/activitys" required="true" z="bc9De0sCqhqlk//vtpLuHJt2ufc="/>
+    </form:update>
+</div>

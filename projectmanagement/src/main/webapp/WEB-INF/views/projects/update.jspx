@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_ch_lan_teko_model_Project" modelAttribute="project" path="/projects" versionField="Version" z="x3MSemduBEYqlUdRTDd7uaOwb1g=">
+        <field:input field="progress" id="c_ch_lan_teko_model_Project_progress" required="true" z="MgQg+UOztA8rhYMCQ/a2zN+R5tE="/>
+        <field:input field="approvalDate" id="c_ch_lan_teko_model_Project_approvalDate" z="jA6yOMhaL6M/zum0+Hj5jPHR/vc="/>
+        <field:input field="name" id="c_ch_lan_teko_model_Project_name" min="2" required="true" z="JCgxDoL6W23spawQAqkqp996k+I="/>
+        <field:input field="description" id="c_ch_lan_teko_model_Project_description" z="g5dy90ikZ8trNRDIcheHvhlaSQ8="/>
+        <field:input field="priority" id="c_ch_lan_teko_model_Project_priority" required="true" z="rMsz+Upg1opnuLqtbP4ygQOG3sY="/>
+        <field:input field="projectState" id="c_ch_lan_teko_model_Project_projectState" required="true" z="EMN1FAoTgfR6AnCPDx9LVuZLZMs="/>
+        <field:select field="projectmanager" id="c_ch_lan_teko_model_Project_projectmanager" itemValue="id_" items="${employees}" path="/employees" required="true" z="G3eTl1vLJFN303dBM6WlLWVxgXI="/>
+        <field:select field="processModel" id="c_ch_lan_teko_model_Project_processModel" itemValue="id" items="${processmodels}" path="/processmodels" required="true" z="Gw8vWZt3DWZOQ3OO97xhi9yNoVc="/>
+        <field:select field="phases" id="c_ch_lan_teko_model_Project_phases" itemValue="id" items="${phases}" multiple="true" path="/phases" required="true" z="qOuF53gF6hW8grwCWhZyXaA15kU="/>
+    </form:update>
+</div>

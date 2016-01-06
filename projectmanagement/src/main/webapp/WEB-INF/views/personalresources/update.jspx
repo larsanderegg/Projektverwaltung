@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_ch_lan_teko_model_PersonalResource" modelAttribute="personalResource" path="/personalresources" versionField="Version" z="qdhlxp7g0nHBL8fixylUMqZDzgM=">
+        <field:input field="planed" id="c_ch_lan_teko_model_PersonalResource_planed" required="true" validationMessageCode="field_invalid_integer" z="DkUd3vA2IJ92ComweGar0LGXcAU="/>
+        <field:input field="effectiv" id="c_ch_lan_teko_model_PersonalResource_effectiv" required="true" validationMessageCode="field_invalid_integer" z="J7+55RtI4qCv7uuWmPlWFLSGTm4="/>
+        <field:input field="explanation" id="c_ch_lan_teko_model_PersonalResource_explanation" z="5BUfzEzIgV0zhGVj6nwMez9Ig7Y="/>
+        <field:input field="job" id="c_ch_lan_teko_model_PersonalResource_job" min="2" required="true" z="9ghExgeMeSnjqQqp5DxxbJVYYbQ="/>
+        <field:select field="employee" id="c_ch_lan_teko_model_PersonalResource_employee" itemValue="id_" items="${employees}" path="/employees" required="true" z="0mQ6ugEm+GmNybi6otVxEX7/ABc="/>
+    </form:update>
+</div>
