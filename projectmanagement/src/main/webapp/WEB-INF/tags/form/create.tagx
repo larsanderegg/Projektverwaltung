@@ -50,11 +50,10 @@
           </script>
         </c:if>
         <jsp:doBody />
-        <div class="submit" id="${fn:escapeXml(id)}_submit">
-          <spring:message code="button_save" var="save_button" htmlEscape="false" />
-          <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
-          <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}"/>
-        </div>
+        <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+        <spring:message code="button_save" var="save_button" htmlEscape="false" />
+        <button id="proceed" type="submit" class="btn btn-default">${fn:escapeXml(save_button)}</button>
+        <br/><br/>
       </form:form>
     </util:panel>
   </c:if>

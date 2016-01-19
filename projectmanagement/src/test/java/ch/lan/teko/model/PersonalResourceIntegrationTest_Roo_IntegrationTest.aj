@@ -3,36 +3,25 @@
 
 package ch.lan.teko.model;
 
-import ch.lan.teko.model.PersonalResource;
-import ch.lan.teko.model.PersonalResourceDataOnDemand;
 import ch.lan.teko.model.PersonalResourceIntegrationTest;
+import ch.lan.teko.service.PersonalResourceService;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect PersonalResourceIntegrationTest_Roo_IntegrationTest {
     
-    declare @type: PersonalResourceIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
-    
-    declare @type: PersonalResourceIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
-    
-    declare @type: PersonalResourceIntegrationTest: @Transactional;
-    
     @Autowired
-    PersonalResourceDataOnDemand PersonalResourceIntegrationTest.dod;
+    PersonalResourceService PersonalResourceIntegrationTest.personalResourceService;
     
     @Test
-    public void PersonalResourceIntegrationTest.testCountPersonalResources() {
+    public void PersonalResourceIntegrationTest.testCountAllPersonalResources() {
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", dod.getRandomPersonalResource());
-        long count = PersonalResource.countPersonalResources();
+        long count = personalResourceService.countAllPersonalResources();
         Assert.assertTrue("Counter for 'PersonalResource' incorrectly reported there were no entries", count > 0);
     }
     
@@ -42,7 +31,7 @@ privileged aspect PersonalResourceIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to provide an identifier", id);
-        obj = PersonalResource.findPersonalResource(id);
+        obj = personalResourceService.findPersonalResource(id);
         Assert.assertNotNull("Find method for 'PersonalResource' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'PersonalResource' returned the incorrect identifier", id, obj.getId());
     }
@@ -50,9 +39,9 @@ privileged aspect PersonalResourceIntegrationTest_Roo_IntegrationTest {
     @Test
     public void PersonalResourceIntegrationTest.testFindAllPersonalResources() {
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", dod.getRandomPersonalResource());
-        long count = PersonalResource.countPersonalResources();
+        long count = personalResourceService.countAllPersonalResources();
         Assert.assertTrue("Too expensive to perform a find all test for 'PersonalResource', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<PersonalResource> result = PersonalResource.findAllPersonalResources();
+        List<PersonalResource> result = personalResourceService.findAllPersonalResources();
         Assert.assertNotNull("Find all method for 'PersonalResource' illegally returned null", result);
         Assert.assertTrue("Find all method for 'PersonalResource' failed to return any data", result.size() > 0);
     }
@@ -60,52 +49,38 @@ privileged aspect PersonalResourceIntegrationTest_Roo_IntegrationTest {
     @Test
     public void PersonalResourceIntegrationTest.testFindPersonalResourceEntries() {
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", dod.getRandomPersonalResource());
-        long count = PersonalResource.countPersonalResources();
+        long count = personalResourceService.countAllPersonalResources();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<PersonalResource> result = PersonalResource.findPersonalResourceEntries(firstResult, maxResults);
+        List<PersonalResource> result = personalResourceService.findPersonalResourceEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'PersonalResource' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'PersonalResource' returned an incorrect number of entries", count, result.size());
     }
     
     @Test
-    public void PersonalResourceIntegrationTest.testFlush() {
+    public void PersonalResourceIntegrationTest.testUpdatePersonalResourceUpdate() {
         PersonalResource obj = dod.getRandomPersonalResource();
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to provide an identifier", id);
-        obj = PersonalResource.findPersonalResource(id);
-        Assert.assertNotNull("Find method for 'PersonalResource' illegally returned null for id '" + id + "'", obj);
+        obj = personalResourceService.findPersonalResource(id);
         boolean modified =  dod.modifyPersonalResource(obj);
         Integer currentVersion = obj.getVersion();
-        obj.flush();
-        Assert.assertTrue("Version for 'PersonalResource' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
-    }
-    
-    @Test
-    public void PersonalResourceIntegrationTest.testMergeUpdate() {
-        PersonalResource obj = dod.getRandomPersonalResource();
-        Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'PersonalResource' failed to provide an identifier", id);
-        obj = PersonalResource.findPersonalResource(id);
-        boolean modified =  dod.modifyPersonalResource(obj);
-        Integer currentVersion = obj.getVersion();
-        PersonalResource merged = (PersonalResource)obj.merge();
-        obj.flush();
+        PersonalResource merged = (PersonalResource)personalResourceService.updatePersonalResource(obj);
+        personalResourceRepository.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'PersonalResource' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void PersonalResourceIntegrationTest.testPersist() {
+    public void PersonalResourceIntegrationTest.testSavePersonalResource() {
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", dod.getRandomPersonalResource());
         PersonalResource obj = dod.getNewTransientPersonalResource(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'PersonalResource' identifier to be null", obj.getId());
         try {
-            obj.persist();
+            personalResourceService.savePersonalResource(obj);
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -114,20 +89,20 @@ privileged aspect PersonalResourceIntegrationTest_Roo_IntegrationTest {
             }
             throw new IllegalStateException(msg.toString(), e);
         }
-        obj.flush();
+        personalResourceRepository.flush();
         Assert.assertNotNull("Expected 'PersonalResource' identifier to no longer be null", obj.getId());
     }
     
     @Test
-    public void PersonalResourceIntegrationTest.testRemove() {
+    public void PersonalResourceIntegrationTest.testDeletePersonalResource() {
         PersonalResource obj = dod.getRandomPersonalResource();
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'PersonalResource' failed to provide an identifier", id);
-        obj = PersonalResource.findPersonalResource(id);
-        obj.remove();
-        obj.flush();
-        Assert.assertNull("Failed to remove 'PersonalResource' with identifier '" + id + "'", PersonalResource.findPersonalResource(id));
+        obj = personalResourceService.findPersonalResource(id);
+        personalResourceService.deletePersonalResource(obj);
+        personalResourceRepository.flush();
+        Assert.assertNull("Failed to remove 'PersonalResource' with identifier '" + id + "'", personalResourceService.findPersonalResource(id));
     }
     
 }

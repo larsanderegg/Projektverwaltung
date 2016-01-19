@@ -31,14 +31,6 @@ privileged aspect Employee_Roo_JavaBean {
         this.pensum = pensum;
     }
     
-    public Integer Employee.getId() {
-        return this.id;
-    }
-    
-    public void Employee.setId(Integer id) {
-        this.id = id;
-    }
-    
     public String Employee.getJob() {
         return this.job;
     }

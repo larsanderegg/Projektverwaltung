@@ -2,12 +2,11 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:list id="pl_ch_lan_teko_model_Employee" items="${employees}" z="afkHVkdfMLmaDcwXFDWKodfuNdo=">
-        <table:table data="${employees}" id="l_ch_lan_teko_model_Employee" path="/employees" typeIdFieldName="id_" z="5hFm80WSbh41DlTxJHLc4c+Cjlg=">
+    <page:list id="pl_ch_lan_teko_model_Employee" items="${employees}" newUrl="/employees?form" z="afkHVkdfMLmaDcwXFDWKodfuNdo=">
+        <table:table data="${employees}" id="l_ch_lan_teko_model_Employee" path="/employees" z="0rxDcee7ajiy+fnzqk2Ietv713U=">
             <table:column id="c_ch_lan_teko_model_Employee_name" property="name" z="OP+ZS5eTRIdgatR0zgUUu/zg5wk="/>
             <table:column id="c_ch_lan_teko_model_Employee_surname" property="surname" z="UUDCMbNyWHqJ+RiOSNpUd43gwR4="/>
             <table:column id="c_ch_lan_teko_model_Employee_pensum" property="pensum" z="lDnZSw4oFo0097R2bo4d0FJOhg0="/>
-            <table:column id="c_ch_lan_teko_model_Employee_id" property="id" z="jluwowjXY2l3BObIRn1Mp6D7bkc="/>
             <table:column id="c_ch_lan_teko_model_Employee_job" property="job" z="L6RnIG3SQwNKTA2dmyJpM3jxDSQ="/>
         </table:table>
     </page:list>

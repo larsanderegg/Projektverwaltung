@@ -4,5 +4,6 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_ch_lan_teko_model_DocumentReference" modelAttribute="documentReference" path="/documentreferences" versionField="Version" z="Y7EPcDChbN4F78kU2MlgIAQycFM=">
         <field:input field="name" id="c_ch_lan_teko_model_DocumentReference_name" min="2" required="true" z="rf96r/PqAllkkNyBtoxnU2bxCts="/>
+        <field:input field="path" id="c_ch_lan_teko_model_DocumentReference_path" min="2" required="true" z="6UqSWI1XQvi9ogw4UnXpJwgDDKU="/>
     </form:update>
 </div>

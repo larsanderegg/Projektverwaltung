@@ -8,9 +8,9 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-public class Resource {
-
-    /**
+public abstract class Resource {
+	
+	/**
      */
 	@NotNull
     private Integer planed;

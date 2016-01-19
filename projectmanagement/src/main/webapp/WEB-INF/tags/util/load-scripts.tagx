@@ -2,15 +2,46 @@
 
   <jsp:output omit-xml-declaration="yes" />
 
-  <spring:theme code="styleSheet" var="roo_css" />
+  <!-- <spring:theme code="styleSheet" var="roo_css" />
   <spring:url value="/${roo_css}" var="roo_css_url" />
+  <spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_url" /> -->
   <spring:url value="/resources/dojo/dojo.js" var="dojo_url" />
-  <spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_url" />
   <spring:url value="/resources/spring/Spring.js" var="spring_url" />
   <spring:url value="/resources/spring/Spring-Dojo.js" var="spring_dojo_url" />
   <spring:url value="/resources/images/favicon.ico" var="favicon" />
-  <link rel="stylesheet" type="text/css" href="${tundra_url}" />
-  <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}" />
+ <!-- <link rel="stylesheet" type="text/css" href="${tundra_url}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}" /> -->
+  
+  <spring:url value="/resources/styles/standard.css" var="standart_css_url" />
+  
+  <spring:url value="/resources/styles/bootstrap/bootstrap.min.css" var="bootstrap_url" />
+  <spring:url value="/resources/styles/bootstrap/metisMenu.min.css" var="metisMenu_url" />
+  <spring:url value="/resources/styles/bootstrap/timeline.css" var="timeline_url" />
+  <spring:url value="/resources/styles/bootstrap/startmin.css" var="startmin_url" />
+  <spring:url value="/resources/styles/bootstrap/morris.css" var="morris_url" />
+  <spring:url value="/resources/styles/bootstrap/font-awesome.min.css" var="font-awesome_url" />
+  
+  <!-- Standart Core CSS -->
+  <link href="${standart_css_url}" rel="stylesheet" />
+  
+  <!-- Bootstrap Core CSS -->
+  <link href="${bootstrap_url}" rel="stylesheet" />
+
+  <!-- MetisMenu CSS -->
+  <link href="${metisMenu_url}" rel="stylesheet" />
+
+  <!-- Timeline CSS -->
+  <link href="${timeline_url}" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link href="${startmin_url}" rel="stylesheet" />
+
+  <!-- Morris Charts CSS -->
+  <link href="${morris_url}" rel="stylesheet" />
+
+  <!-- Custom Fonts -->
+  <link href="${font-awesome_url}" rel="stylesheet" type="text/css" />
+  
   <link rel="SHORTCUT ICON" href="${favicon}" />
 
   <!-- Get the user local from the page context (it was set by Spring MVC's locale resolver) -->

@@ -3,36 +3,25 @@
 
 package ch.lan.teko.model;
 
-import ch.lan.teko.model.Activity;
-import ch.lan.teko.model.ActivityDataOnDemand;
 import ch.lan.teko.model.ActivityIntegrationTest;
+import ch.lan.teko.service.ActivityService;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect ActivityIntegrationTest_Roo_IntegrationTest {
     
-    declare @type: ActivityIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
-    
-    declare @type: ActivityIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
-    
-    declare @type: ActivityIntegrationTest: @Transactional;
-    
     @Autowired
-    ActivityDataOnDemand ActivityIntegrationTest.dod;
+    ActivityService ActivityIntegrationTest.activityService;
     
     @Test
-    public void ActivityIntegrationTest.testCountActivitys() {
+    public void ActivityIntegrationTest.testCountAllActivitys() {
         Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", dod.getRandomActivity());
-        long count = Activity.countActivitys();
+        long count = activityService.countAllActivitys();
         Assert.assertTrue("Counter for 'Activity' incorrectly reported there were no entries", count > 0);
     }
     
@@ -42,7 +31,7 @@ privileged aspect ActivityIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Activity' failed to provide an identifier", id);
-        obj = Activity.findActivity(id);
+        obj = activityService.findActivity(id);
         Assert.assertNotNull("Find method for 'Activity' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'Activity' returned the incorrect identifier", id, obj.getId());
     }
@@ -50,9 +39,9 @@ privileged aspect ActivityIntegrationTest_Roo_IntegrationTest {
     @Test
     public void ActivityIntegrationTest.testFindAllActivitys() {
         Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", dod.getRandomActivity());
-        long count = Activity.countActivitys();
+        long count = activityService.countAllActivitys();
         Assert.assertTrue("Too expensive to perform a find all test for 'Activity', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<Activity> result = Activity.findAllActivitys();
+        List<Activity> result = activityService.findAllActivitys();
         Assert.assertNotNull("Find all method for 'Activity' illegally returned null", result);
         Assert.assertTrue("Find all method for 'Activity' failed to return any data", result.size() > 0);
     }
@@ -60,52 +49,38 @@ privileged aspect ActivityIntegrationTest_Roo_IntegrationTest {
     @Test
     public void ActivityIntegrationTest.testFindActivityEntries() {
         Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", dod.getRandomActivity());
-        long count = Activity.countActivitys();
+        long count = activityService.countAllActivitys();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<Activity> result = Activity.findActivityEntries(firstResult, maxResults);
+        List<Activity> result = activityService.findActivityEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'Activity' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'Activity' returned an incorrect number of entries", count, result.size());
     }
     
     @Test
-    public void ActivityIntegrationTest.testFlush() {
+    public void ActivityIntegrationTest.testUpdateActivityUpdate() {
         Activity obj = dod.getRandomActivity();
         Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Activity' failed to provide an identifier", id);
-        obj = Activity.findActivity(id);
-        Assert.assertNotNull("Find method for 'Activity' illegally returned null for id '" + id + "'", obj);
+        obj = activityService.findActivity(id);
         boolean modified =  dod.modifyActivity(obj);
         Integer currentVersion = obj.getVersion();
-        obj.flush();
-        Assert.assertTrue("Version for 'Activity' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
-    }
-    
-    @Test
-    public void ActivityIntegrationTest.testMergeUpdate() {
-        Activity obj = dod.getRandomActivity();
-        Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'Activity' failed to provide an identifier", id);
-        obj = Activity.findActivity(id);
-        boolean modified =  dod.modifyActivity(obj);
-        Integer currentVersion = obj.getVersion();
-        Activity merged = obj.merge();
-        obj.flush();
+        Activity merged = activityService.updateActivity(obj);
+        activityRepository.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'Activity' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void ActivityIntegrationTest.testPersist() {
+    public void ActivityIntegrationTest.testSaveActivity() {
         Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", dod.getRandomActivity());
         Activity obj = dod.getNewTransientActivity(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'Activity' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'Activity' identifier to be null", obj.getId());
         try {
-            obj.persist();
+            activityService.saveActivity(obj);
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -114,20 +89,20 @@ privileged aspect ActivityIntegrationTest_Roo_IntegrationTest {
             }
             throw new IllegalStateException(msg.toString(), e);
         }
-        obj.flush();
+        activityRepository.flush();
         Assert.assertNotNull("Expected 'Activity' identifier to no longer be null", obj.getId());
     }
     
     @Test
-    public void ActivityIntegrationTest.testRemove() {
+    public void ActivityIntegrationTest.testDeleteActivity() {
         Activity obj = dod.getRandomActivity();
         Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Activity' failed to provide an identifier", id);
-        obj = Activity.findActivity(id);
-        obj.remove();
-        obj.flush();
-        Assert.assertNull("Failed to remove 'Activity' with identifier '" + id + "'", Activity.findActivity(id));
+        obj = activityService.findActivity(id);
+        activityService.deleteActivity(obj);
+        activityRepository.flush();
+        Assert.assertNull("Failed to remove 'Activity' with identifier '" + id + "'", activityService.findActivity(id));
     }
     
 }

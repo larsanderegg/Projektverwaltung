@@ -13,8 +13,8 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooToString
 @RooJpaActiveRecord
 public class Milestone {
-
-    /**
+	
+	/**
      */
     @NotNull
     @Size(min = 2)

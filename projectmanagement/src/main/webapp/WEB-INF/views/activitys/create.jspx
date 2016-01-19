@@ -9,7 +9,7 @@
         <field:input field="planedStartDate" id="c_ch_lan_teko_model_Activity_planedStartDate" required="true" z="/v1gFEnmTywJde7kSuCilRCCWjU="/>
         <field:input field="planedEndDate" id="c_ch_lan_teko_model_Activity_planedEndDate" required="true" z="oqdb8xfZ3LEvRLzOvtI4aPuk3JE="/>
         <field:select field="resources" id="c_ch_lan_teko_model_Activity_resources" itemValue="id" items="${resources}" multiple="true" path="/resources" required="true" z="EQ+MClVy68U7Y6EczikvEDZh+jU="/>
-        <field:select field="responsible" id="c_ch_lan_teko_model_Activity_responsible" itemValue="id_" items="${employees}" path="/employees" required="true" z="wZ/gI0ZFm4jyB9gfrWSJZ3wqkL8="/>
+        <field:select field="responsible" id="c_ch_lan_teko_model_Activity_responsible" itemValue="id" items="${employees}" path="/employees" required="true" z="RC9JCJSGcBXcjvVN9clhe5mMloo="/>
         <field:input field="progress" id="c_ch_lan_teko_model_Activity_progress" required="true" z="otVK2pjli2R29tV5U+xD/1UV5OA="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_ch_lan_teko_model_Activity" render="${not empty dependencies}" z="iZnFgqhx1FOqKC8nX/YOC6CklVw="/>

@@ -2,42 +2,43 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" id="menu" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    
     <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
-        <menu:category id="c_project" z="u0PzRIwMDmEv/J6b8vbKakXGIdQ=">
-            <menu:item id="i_project_new" messageCode="global_menu_new" url="/projects?form" z="1BazRC1rLnod0a+MpP1flWTvehA="/>
-            <menu:item id="i_project_list" messageCode="global_menu_list" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}" z="GHL05c3Rvr+eKDgRCk3Ttak0W+g="/>
-        </menu:category>
-        <menu:category id="c_milestone" z="lypyxAFZjBXwOpl4RUiR5lJteS8=">
-            <menu:item id="i_milestone_new" messageCode="global_menu_new" url="/milestones?form" z="PsGtnRSSzjwdGDIrko4BjyvwBJA="/>
-            <menu:item id="i_milestone_list" messageCode="global_menu_list" url="/milestones?page=1&amp;size=${empty param.size ? 10 : param.size}" z="eesk613QuplM8BLw5ZGjSiUdMEU="/>
-        </menu:category>
-        <menu:category id="c_activity" z="NF6PmQkAyo1JgYYtjuLuGgtZu1o=">
-            <menu:item id="i_activity_new" messageCode="global_menu_new" url="/activitys?form" z="humNnazx/vh/qV9QiaaPFxfrRKQ="/>
-            <menu:item id="i_activity_list" messageCode="global_menu_list" url="/activitys?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Xp5og2rY8Oyevfsbh0NHJCrRUu4="/>
-        </menu:category>
         <menu:category id="c_phase" z="9fjQE6nTFVP5IYRnDQfKv2Xy97o=">
             <menu:item id="i_phase_new" messageCode="global_menu_new" url="/phases?form" z="pl21lez+zvOx+9QNzUtk6Gs6pvQ="/>
             <menu:item id="i_phase_list" messageCode="global_menu_list" url="/phases?page=1&amp;size=${empty param.size ? 10 : param.size}" z="KUfQD8stsm//WTpE/EkmdEoeFB8="/>
-        </menu:category>
-        <menu:category id="c_processmodel" z="wlaoKo78tzizp9KDrTel0UtlnCo=">
-            <menu:item id="i_processmodel_new" messageCode="global_menu_new" url="/processmodels?form" z="ONqmDfCA8D5VEfURC0xlx5FZIZ4="/>
-            <menu:item id="i_processmodel_list" messageCode="global_menu_list" url="/processmodels?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Pmqp3QjT5TAx11NnNI/2fab2SVc="/>
-        </menu:category>
-        <menu:category id="c_documentreference" z="HK/OrTVSQB+CWPWt3Ed8yVVwvcQ=">
-            <menu:item id="i_documentreference_new" messageCode="global_menu_new" url="/documentreferences?form" z="jLLYEUkYGx7xaLTsIupBtfWmB+w="/>
-            <menu:item id="i_documentreference_list" messageCode="global_menu_list" url="/documentreferences?page=1&amp;size=${empty param.size ? 10 : param.size}" z="4xe0h+HuMjCuyjWvE+jF11+hyhg="/>
-        </menu:category>
-        <menu:category id="c_personalresource" z="Vv9CrC5gdYe60x9c203rYOGQtvo=">
-            <menu:item id="i_personalresource_new" messageCode="global_menu_new" url="/personalresources?form" z="ugCgWD5+39aQ9gOb6cWHev+Qf4A="/>
-            <menu:item id="i_personalresource_list" messageCode="global_menu_list" url="/personalresources?page=1&amp;size=${empty param.size ? 10 : param.size}" z="eCkA10GpvPpkN9FnaH0YflYmqUc="/>
         </menu:category>
         <menu:category id="c_employee" z="sxLyQbJ/qSw9Reoi1NHvJhkZ/rU=">
             <menu:item id="i_employee_new" messageCode="global_menu_new" url="/employees?form" z="+S/pgOAdANt9JPGnS20kM8qTu00="/>
             <menu:item id="i_employee_list" messageCode="global_menu_list" url="/employees?page=1&amp;size=${empty param.size ? 10 : param.size}" z="IfTXfF5mBLDCW+DUkfuN3Wgvias="/>
         </menu:category>
-        <menu:category id="c_resource" z="QccBeAQCWbFlycIXkFVzmR8srU0=">
-            <menu:item id="i_resource_new" messageCode="global_menu_new" url="/resources?form" z="F3oI3tJDA/wuL+veUMAjUDRDeog="/>
-            <menu:item id="i_resource_list" messageCode="global_menu_list" url="/resources?page=1&amp;size=${empty param.size ? 10 : param.size}" z="ZL5DxNGlBKsVWtUkvdhfo6CYoIQ="/>
+        <menu:category id="c_project" z="u0PzRIwMDmEv/J6b8vbKakXGIdQ=">
+            <menu:item id="i_project_new" messageCode="global_menu_new" url="/projects?form" z="1BazRC1rLnod0a+MpP1flWTvehA="/>
+            <menu:item id="i_project_list" messageCode="global_menu_list" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}" z="GHL05c3Rvr+eKDgRCk3Ttak0W+g="/>
+        </menu:category>
+        <menu:category id="c_documentreference" z="HK/OrTVSQB+CWPWt3Ed8yVVwvcQ=">
+            <menu:item id="i_documentreference_new" messageCode="global_menu_new" url="/documentreferences?form" z="jLLYEUkYGx7xaLTsIupBtfWmB+w="/>
+            <menu:item id="i_documentreference_list" messageCode="global_menu_list" url="/documentreferences?page=1&amp;size=${empty param.size ? 10 : param.size}" z="4xe0h+HuMjCuyjWvE+jF11+hyhg="/>
+        </menu:category>
+        <menu:category id="c_financeresource" z="dUEwI3Jvq0tp7MYX/03W1vxQYBI=">
+            <menu:item id="i_financeresource_new" messageCode="global_menu_new" url="/financeresources?form" z="UYLiRLj3SZl072RwBl/o+w5+4zs="/>
+            <menu:item id="i_financeresource_list" messageCode="global_menu_list" url="/financeresources?page=1&amp;size=${empty param.size ? 10 : param.size}" z="jInBmkQiMRT5uikAuE+a2xpUMi4="/>
+        </menu:category>
+        <menu:category id="c_activity" z="NF6PmQkAyo1JgYYtjuLuGgtZu1o=">
+            <menu:item id="i_activity_new" messageCode="global_menu_new" url="/activitys?form" z="humNnazx/vh/qV9QiaaPFxfrRKQ="/>
+            <menu:item id="i_activity_list" messageCode="global_menu_list" url="/activitys?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Xp5og2rY8Oyevfsbh0NHJCrRUu4="/>
+        </menu:category>
+        <menu:category id="c_personalresource" z="Vv9CrC5gdYe60x9c203rYOGQtvo=">
+            <menu:item id="i_personalresource_new" messageCode="global_menu_new" url="/personalresources?form" z="ugCgWD5+39aQ9gOb6cWHev+Qf4A="/>
+            <menu:item id="i_personalresource_list" messageCode="global_menu_list" url="/personalresources?page=1&amp;size=${empty param.size ? 10 : param.size}" z="eCkA10GpvPpkN9FnaH0YflYmqUc="/>
+        </menu:category>
+        <menu:category id="c_processmodel" z="wlaoKo78tzizp9KDrTel0UtlnCo=">
+            <menu:item id="i_processmodel_new" messageCode="global_menu_new" url="/processmodels?form" z="ONqmDfCA8D5VEfURC0xlx5FZIZ4="/>
+            <menu:item id="i_processmodel_list" messageCode="global_menu_list" url="/processmodels?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Pmqp3QjT5TAx11NnNI/2fab2SVc="/>
+        </menu:category>
+        <menu:category id="c_milestone" z="lypyxAFZjBXwOpl4RUiR5lJteS8=">
+            <menu:item id="i_milestone_new" messageCode="global_menu_new" url="/milestones?form" z="PsGtnRSSzjwdGDIrko4BjyvwBJA="/>
+            <menu:item id="i_milestone_list" messageCode="global_menu_list" url="/milestones?page=1&amp;size=${empty param.size ? 10 : param.size}" z="eesk613QuplM8BLw5ZGjSiUdMEU="/>
         </menu:category>
     </menu:menu>
 </div>

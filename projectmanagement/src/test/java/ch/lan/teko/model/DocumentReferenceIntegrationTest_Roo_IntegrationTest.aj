@@ -3,36 +3,25 @@
 
 package ch.lan.teko.model;
 
-import ch.lan.teko.model.DocumentReference;
-import ch.lan.teko.model.DocumentReferenceDataOnDemand;
 import ch.lan.teko.model.DocumentReferenceIntegrationTest;
+import ch.lan.teko.service.DocumentReferenceService;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect DocumentReferenceIntegrationTest_Roo_IntegrationTest {
     
-    declare @type: DocumentReferenceIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
-    
-    declare @type: DocumentReferenceIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
-    
-    declare @type: DocumentReferenceIntegrationTest: @Transactional;
-    
     @Autowired
-    DocumentReferenceDataOnDemand DocumentReferenceIntegrationTest.dod;
+    DocumentReferenceService DocumentReferenceIntegrationTest.documentReferenceService;
     
     @Test
-    public void DocumentReferenceIntegrationTest.testCountDocumentReferences() {
+    public void DocumentReferenceIntegrationTest.testCountAllDocumentReferences() {
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", dod.getRandomDocumentReference());
-        long count = DocumentReference.countDocumentReferences();
+        long count = documentReferenceService.countAllDocumentReferences();
         Assert.assertTrue("Counter for 'DocumentReference' incorrectly reported there were no entries", count > 0);
     }
     
@@ -42,7 +31,7 @@ privileged aspect DocumentReferenceIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to provide an identifier", id);
-        obj = DocumentReference.findDocumentReference(id);
+        obj = documentReferenceService.findDocumentReference(id);
         Assert.assertNotNull("Find method for 'DocumentReference' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'DocumentReference' returned the incorrect identifier", id, obj.getId());
     }
@@ -50,9 +39,9 @@ privileged aspect DocumentReferenceIntegrationTest_Roo_IntegrationTest {
     @Test
     public void DocumentReferenceIntegrationTest.testFindAllDocumentReferences() {
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", dod.getRandomDocumentReference());
-        long count = DocumentReference.countDocumentReferences();
+        long count = documentReferenceService.countAllDocumentReferences();
         Assert.assertTrue("Too expensive to perform a find all test for 'DocumentReference', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<DocumentReference> result = DocumentReference.findAllDocumentReferences();
+        List<DocumentReference> result = documentReferenceService.findAllDocumentReferences();
         Assert.assertNotNull("Find all method for 'DocumentReference' illegally returned null", result);
         Assert.assertTrue("Find all method for 'DocumentReference' failed to return any data", result.size() > 0);
     }
@@ -60,52 +49,38 @@ privileged aspect DocumentReferenceIntegrationTest_Roo_IntegrationTest {
     @Test
     public void DocumentReferenceIntegrationTest.testFindDocumentReferenceEntries() {
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", dod.getRandomDocumentReference());
-        long count = DocumentReference.countDocumentReferences();
+        long count = documentReferenceService.countAllDocumentReferences();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<DocumentReference> result = DocumentReference.findDocumentReferenceEntries(firstResult, maxResults);
+        List<DocumentReference> result = documentReferenceService.findDocumentReferenceEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'DocumentReference' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'DocumentReference' returned an incorrect number of entries", count, result.size());
     }
     
     @Test
-    public void DocumentReferenceIntegrationTest.testFlush() {
+    public void DocumentReferenceIntegrationTest.testUpdateDocumentReferenceUpdate() {
         DocumentReference obj = dod.getRandomDocumentReference();
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to provide an identifier", id);
-        obj = DocumentReference.findDocumentReference(id);
-        Assert.assertNotNull("Find method for 'DocumentReference' illegally returned null for id '" + id + "'", obj);
+        obj = documentReferenceService.findDocumentReference(id);
         boolean modified =  dod.modifyDocumentReference(obj);
         Integer currentVersion = obj.getVersion();
-        obj.flush();
-        Assert.assertTrue("Version for 'DocumentReference' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
-    }
-    
-    @Test
-    public void DocumentReferenceIntegrationTest.testMergeUpdate() {
-        DocumentReference obj = dod.getRandomDocumentReference();
-        Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'DocumentReference' failed to provide an identifier", id);
-        obj = DocumentReference.findDocumentReference(id);
-        boolean modified =  dod.modifyDocumentReference(obj);
-        Integer currentVersion = obj.getVersion();
-        DocumentReference merged = obj.merge();
-        obj.flush();
+        DocumentReference merged = documentReferenceService.updateDocumentReference(obj);
+        documentReferenceRepository.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'DocumentReference' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void DocumentReferenceIntegrationTest.testPersist() {
+    public void DocumentReferenceIntegrationTest.testSaveDocumentReference() {
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", dod.getRandomDocumentReference());
         DocumentReference obj = dod.getNewTransientDocumentReference(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'DocumentReference' identifier to be null", obj.getId());
         try {
-            obj.persist();
+            documentReferenceService.saveDocumentReference(obj);
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -114,20 +89,20 @@ privileged aspect DocumentReferenceIntegrationTest_Roo_IntegrationTest {
             }
             throw new IllegalStateException(msg.toString(), e);
         }
-        obj.flush();
+        documentReferenceRepository.flush();
         Assert.assertNotNull("Expected 'DocumentReference' identifier to no longer be null", obj.getId());
     }
     
     @Test
-    public void DocumentReferenceIntegrationTest.testRemove() {
+    public void DocumentReferenceIntegrationTest.testDeleteDocumentReference() {
         DocumentReference obj = dod.getRandomDocumentReference();
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'DocumentReference' failed to provide an identifier", id);
-        obj = DocumentReference.findDocumentReference(id);
-        obj.remove();
-        obj.flush();
-        Assert.assertNull("Failed to remove 'DocumentReference' with identifier '" + id + "'", DocumentReference.findDocumentReference(id));
+        obj = documentReferenceService.findDocumentReference(id);
+        documentReferenceService.deleteDocumentReference(obj);
+        documentReferenceRepository.flush();
+        Assert.assertNull("Failed to remove 'DocumentReference' with identifier '" + id + "'", documentReferenceService.findDocumentReference(id));
     }
     
 }

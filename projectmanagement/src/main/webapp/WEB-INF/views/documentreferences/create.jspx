@@ -4,6 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_ch_lan_teko_model_DocumentReference" modelAttribute="documentReference" path="/documentreferences" render="${empty dependencies}" z="D7/iCtBdyYBxP2h9wyWqAdW1mxk=">
         <field:input field="name" id="c_ch_lan_teko_model_DocumentReference_name" min="2" required="true" z="rf96r/PqAllkkNyBtoxnU2bxCts="/>
+        <field:input field="path" id="c_ch_lan_teko_model_DocumentReference_path" min="2" required="true" z="6UqSWI1XQvi9ogw4UnXpJwgDDKU="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_ch_lan_teko_model_DocumentReference" render="${not empty dependencies}" z="XsV3vkFswIBDMJesLyqN6jrRhfA="/>
 </div>

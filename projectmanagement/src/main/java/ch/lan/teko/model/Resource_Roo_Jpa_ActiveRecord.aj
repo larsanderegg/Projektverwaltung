@@ -17,7 +17,8 @@ privileged aspect Resource_Roo_Jpa_ActiveRecord {
     public static final List<String> Resource.fieldNames4OrderClauseFilter = java.util.Arrays.asList("planed", "effectiv", "explanation");
     
     public static final EntityManager Resource.entityManager() {
-        EntityManager em = new Resource().entityManager;
+        EntityManager em = new Resource() {
+        }.entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }

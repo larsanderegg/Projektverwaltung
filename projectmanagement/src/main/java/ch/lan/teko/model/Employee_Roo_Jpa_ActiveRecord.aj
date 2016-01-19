@@ -14,7 +14,7 @@ privileged aspect Employee_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager Employee.entityManager;
     
-    public static final List<String> Employee.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "surname", "pensum", "id", "job");
+    public static final List<String> Employee.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "surname", "pensum", "job");
     
     public static final EntityManager Employee.entityManager() {
         EntityManager em = new Employee().entityManager;
@@ -41,9 +41,9 @@ privileged aspect Employee_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery(jpaQuery, Employee.class).getResultList();
     }
     
-    public static Employee Employee.findEmployee(Long id_) {
-        if (id_ == null) return null;
-        return entityManager().find(Employee.class, id_);
+    public static Employee Employee.findEmployee(Long id) {
+        if (id == null) return null;
+        return entityManager().find(Employee.class, id);
     }
     
     public static List<Employee> Employee.findEmployeeEntries(int firstResult, int maxResults) {
@@ -73,7 +73,7 @@ privileged aspect Employee_Roo_Jpa_ActiveRecord {
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            Employee attached = Employee.findEmployee(this.id_);
+            Employee attached = Employee.findEmployee(this.id);
             this.entityManager.remove(attached);
         }
     }

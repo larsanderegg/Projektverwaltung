@@ -1,23 +1,25 @@
 package ch.lan.teko.model;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import org.springframework.format.annotation.DateTimeFormat;
-import javax.validation.constraints.Size;
-import javax.persistence.ManyToOne;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.ManyToMany;
 
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
 public class Project {
-
-    /**
+	
+	/**
      */
     @NotNull
     private Byte progress;

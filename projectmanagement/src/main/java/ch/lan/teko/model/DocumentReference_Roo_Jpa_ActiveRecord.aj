@@ -14,7 +14,7 @@ privileged aspect DocumentReference_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager DocumentReference.entityManager;
     
-    public static final List<String> DocumentReference.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name");
+    public static final List<String> DocumentReference.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "path");
     
     public static final EntityManager DocumentReference.entityManager() {
         EntityManager em = new DocumentReference().entityManager;

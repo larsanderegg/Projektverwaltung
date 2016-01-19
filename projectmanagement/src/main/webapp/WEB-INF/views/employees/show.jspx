@@ -6,7 +6,6 @@
         <field:display field="name" id="s_ch_lan_teko_model_Employee_name" object="${employee}" z="2LhnypXX/tNJBpomAAVahsv3Dhc="/>
         <field:display field="surname" id="s_ch_lan_teko_model_Employee_surname" object="${employee}" z="vAnCPYxu5U/TreRsln2FZpManpg="/>
         <field:display field="pensum" id="s_ch_lan_teko_model_Employee_pensum" object="${employee}" z="BYxJKtX4UPskKG/AQZy41CXIKZM="/>
-        <field:display field="id" id="s_ch_lan_teko_model_Employee_id" object="${employee}" z="el91oxrTSOisfiZXiywbSedDGDg="/>
         <field:display field="job" id="s_ch_lan_teko_model_Employee_job" object="${employee}" z="QU1T0Vg8EnVCVu1CWE2oEYE+3yY="/>
     </page:show>
 </div>

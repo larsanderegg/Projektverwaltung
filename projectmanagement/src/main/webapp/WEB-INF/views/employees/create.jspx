@@ -6,7 +6,6 @@
         <field:input field="name" id="c_ch_lan_teko_model_Employee_name" min="2" required="true" z="XaTf503svDnvm+h6QfgTRf5NOP0="/>
         <field:input field="surname" id="c_ch_lan_teko_model_Employee_surname" min="2" required="true" z="JkjZ3xf9wOgIW5C+Js7vTpbFEYU="/>
         <field:input field="pensum" id="c_ch_lan_teko_model_Employee_pensum" required="true" z="Svjvr22deDz+dByL1hm5Ff+WP6k="/>
-        <field:input field="id" id="c_ch_lan_teko_model_Employee_id" required="true" validationMessageCode="field_invalid_integer" z="d+mVoKEtQa7kw+PbYguxqfq6G8A="/>
         <field:input field="job" id="c_ch_lan_teko_model_Employee_job" min="2" required="true" z="80yTjQEbyN/+1Gof77nDjVX7tl4="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_ch_lan_teko_model_Employee" render="${not empty dependencies}" z="dHi5Rt/Ifb0lZjcys9F9yc1uCB4="/>

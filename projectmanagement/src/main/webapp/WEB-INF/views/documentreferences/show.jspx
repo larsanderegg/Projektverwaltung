@@ -4,5 +4,6 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:show id="ps_ch_lan_teko_model_DocumentReference" object="${documentreference}" path="/documentreferences" z="xuwzij9zg7NM6PTzBqp7in6+h9U=">
         <field:display field="name" id="s_ch_lan_teko_model_DocumentReference_name" object="${documentreference}" z="D71yb02Dp9m1ghN9qz3J8NK+Vgk="/>
+        <field:display field="path" id="s_ch_lan_teko_model_DocumentReference_path" object="${documentreference}" z="+9dBBHbQZyQM5EeO7dTTHwQLOu8="/>
     </page:show>
 </div>

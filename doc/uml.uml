@@ -54,7 +54,7 @@
 			CodeGeneration
 		</plugin>
 </profile>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Jan 06 15:29:25 CET 2016'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Mon Jan 11 21:03:58 CET 2016'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -1898,22 +1898,6 @@
         textsize="12"
         justification="Left"
       >planedDate : LocalDate</text>
-      <text name="Fig2.4.3"
-        x="433"
-        y="99"
-        width="135"
-        height="23"
-        fill="0"
-        fillcolor="white"
-        stroke="0"
-        strokecolor="black"
-        textcolor="black"
-        font="Dialog"
-        italic="false"
-        bold="false"
-        textsize="12"
-        justification="Left"
-      >newAttr : Integer</text>
     </group>
     <rectangle name="Fig2.5"
       x="432"
@@ -3347,22 +3331,6 @@
         textsize="12"
         justification="Left"
       >path : String</text>
-      <text name="Fig12.4.3"
-        x="441"
-        y="627"
-        width="122"
-        height="23"
-        fill="0"
-        fillcolor="white"
-        stroke="0"
-        strokecolor="black"
-        textcolor="black"
-        font="Dialog"
-        italic="false"
-        bold="false"
-        textsize="12"
-        justification="Left"
-      >newAttr : Integer</text>
     </group>
     <rectangle name="Fig12.5"
       x="440"

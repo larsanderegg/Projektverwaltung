@@ -15,4 +15,12 @@ privileged aspect DocumentReference_Roo_JavaBean {
         this.name = name;
     }
     
+    public String DocumentReference.getPath() {
+        return this.path;
+    }
+    
+    public void DocumentReference.setPath(String path) {
+        this.path = path;
+    }
+    
 }

@@ -5,37 +5,8 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.EmployeeDataOnDemand;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import org.springframework.stereotype.Component;
 
 privileged aspect EmployeeDataOnDemand_Roo_DataOnDemand {
-    
-    declare @type: EmployeeDataOnDemand: @Component;
-    
-    private Random EmployeeDataOnDemand.rnd = new SecureRandom();
-    
-    private List<Employee> EmployeeDataOnDemand.data;
-    
-    public Employee EmployeeDataOnDemand.getNewTransientEmployee(int index) {
-        Employee obj = new Employee();
-        setId(obj, index);
-        setJob(obj, index);
-        setName(obj, index);
-        setPensum(obj, index);
-        setSurname(obj, index);
-        return obj;
-    }
-    
-    public void EmployeeDataOnDemand.setId(Employee obj, int index) {
-        Integer id = new Integer(index);
-        obj.setId(id);
-    }
     
     public void EmployeeDataOnDemand.setJob(Employee obj, int index) {
         String job = "job_" + index;
@@ -55,59 +26,6 @@ privileged aspect EmployeeDataOnDemand_Roo_DataOnDemand {
     public void EmployeeDataOnDemand.setSurname(Employee obj, int index) {
         String surname = "surname_" + index;
         obj.setSurname(surname);
-    }
-    
-    public Employee EmployeeDataOnDemand.getSpecificEmployee(int index) {
-        init();
-        if (index < 0) {
-            index = 0;
-        }
-        if (index > (data.size() - 1)) {
-            index = data.size() - 1;
-        }
-        Employee obj = data.get(index);
-        Long id = obj.getId_();
-        return Employee.findEmployee(id);
-    }
-    
-    public Employee EmployeeDataOnDemand.getRandomEmployee() {
-        init();
-        Employee obj = data.get(rnd.nextInt(data.size()));
-        Long id = obj.getId_();
-        return Employee.findEmployee(id);
-    }
-    
-    public boolean EmployeeDataOnDemand.modifyEmployee(Employee obj) {
-        return false;
-    }
-    
-    public void EmployeeDataOnDemand.init() {
-        int from = 0;
-        int to = 10;
-        data = Employee.findEmployeeEntries(from, to);
-        if (data == null) {
-            throw new IllegalStateException("Find entries implementation for 'Employee' illegally returned null");
-        }
-        if (!data.isEmpty()) {
-            return;
-        }
-        
-        data = new ArrayList<Employee>();
-        for (int i = 0; i < 10; i++) {
-            Employee obj = getNewTransientEmployee(i);
-            try {
-                obj.persist();
-            } catch (final ConstraintViolationException e) {
-                final StringBuilder msg = new StringBuilder();
-                for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
-                    final ConstraintViolation<?> cv = iter.next();
-                    msg.append("[").append(cv.getRootBean().getClass().getName()).append(".").append(cv.getPropertyPath()).append(": ").append(cv.getMessage()).append(" (invalid value = ").append(cv.getInvalidValue()).append(")").append("]");
-                }
-                throw new IllegalStateException(msg.toString(), e);
-            }
-            obj.flush();
-            data.add(obj);
-        }
     }
     
 }

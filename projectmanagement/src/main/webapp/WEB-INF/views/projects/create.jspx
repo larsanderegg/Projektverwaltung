@@ -9,7 +9,7 @@
         <field:input field="description" id="c_ch_lan_teko_model_Project_description" z="g5dy90ikZ8trNRDIcheHvhlaSQ8="/>
         <field:input field="priority" id="c_ch_lan_teko_model_Project_priority" required="true" z="rMsz+Upg1opnuLqtbP4ygQOG3sY="/>
         <field:input field="projectState" id="c_ch_lan_teko_model_Project_projectState" required="true" z="EMN1FAoTgfR6AnCPDx9LVuZLZMs="/>
-        <field:select field="projectmanager" id="c_ch_lan_teko_model_Project_projectmanager" itemValue="id_" items="${employees}" path="/employees" required="true" z="G3eTl1vLJFN303dBM6WlLWVxgXI="/>
+        <field:select field="projectmanager" id="c_ch_lan_teko_model_Project_projectmanager" itemValue="id" items="${employees}" path="/employees" required="true" z="E3fxt41hv77AFHjpEOXqe626DfY="/>
         <field:select field="processModel" id="c_ch_lan_teko_model_Project_processModel" itemValue="id" items="${processmodels}" path="/processmodels" required="true" z="Gw8vWZt3DWZOQ3OO97xhi9yNoVc="/>
         <field:select field="phases" id="c_ch_lan_teko_model_Project_phases" itemValue="id" items="${phases}" multiple="true" path="/phases" required="true" z="qOuF53gF6hW8grwCWhZyXaA15kU="/>
     </form:create>

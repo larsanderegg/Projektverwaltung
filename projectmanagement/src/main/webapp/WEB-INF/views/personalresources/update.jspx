@@ -7,6 +7,6 @@
         <field:input field="effectiv" id="c_ch_lan_teko_model_PersonalResource_effectiv" required="true" validationMessageCode="field_invalid_integer" z="J7+55RtI4qCv7uuWmPlWFLSGTm4="/>
         <field:input field="explanation" id="c_ch_lan_teko_model_PersonalResource_explanation" z="5BUfzEzIgV0zhGVj6nwMez9Ig7Y="/>
         <field:input field="job" id="c_ch_lan_teko_model_PersonalResource_job" min="2" required="true" z="9ghExgeMeSnjqQqp5DxxbJVYYbQ="/>
-        <field:select field="employee" id="c_ch_lan_teko_model_PersonalResource_employee" itemValue="id_" items="${employees}" path="/employees" required="true" z="0mQ6ugEm+GmNybi6otVxEX7/ABc="/>
+        <field:select field="employee" id="c_ch_lan_teko_model_PersonalResource_employee" itemValue="id" items="${employees}" path="/employees" required="true" z="YYlXxLgnRBHyck5bkoXBBLg4xKg="/>
     </form:update>
 </div>

@@ -2,7 +2,8 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <page:list id="pl_ch_lan_teko_model_Project" items="${projects}" z="e0EkVAfcuIvnHSaai/Id+e9kbYg=">
+    
+    <page:list id="pl_ch_lan_teko_model_Project" items="${projects}" newUrl="/projects?form" z="e0EkVAfcuIvnHSaai/Id+e9kbYg=">
         <table:table data="${projects}" id="l_ch_lan_teko_model_Project" path="/projects" z="H1wl27uF5e910+ztju8CKY2jT9A=">
             <table:column id="c_ch_lan_teko_model_Project_progress" property="progress" z="MgsMWvmAwrJ252Rq6G2IvLK4vp0="/>
             <table:column id="c_ch_lan_teko_model_Project_approvalDate" property="approvalDate" z="93YIzuFV48UEaK3mwt7lSWcGnEQ="/>
