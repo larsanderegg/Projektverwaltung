@@ -1,6 +1,7 @@
 package ch.lan.teko.service;
 
 import ch.lan.teko.model.Activity;
+import ch.lan.teko.model.DocumentReference;
 import ch.lan.teko.repository.ActivityRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +42,15 @@ public class ActivityServiceImpl implements ActivityService {
 	public Activity updateActivity(Activity activity) {
         return activityRepository.save(activity);
     }
+
+	@Override
+	public void addDocumentReference(Long activityId, DocumentReference documentReference) {
+		Activity activity = findActivity(activityId);
+		if (activity != null) {
+			if (!activity.getLinks().contains(documentReference)) {
+				activity.getLinks().add(documentReference);
+				updateActivity(activity);
+			}
+		}
+	}
 }

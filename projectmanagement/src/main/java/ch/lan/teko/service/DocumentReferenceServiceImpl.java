@@ -13,6 +13,15 @@ public class DocumentReferenceServiceImpl implements DocumentReferenceService {
 
 	@Autowired
     DocumentReferenceRepository documentReferenceRepository;
+	
+	@Autowired
+	ActivityService activityService;
+	
+	@Autowired
+	ProjectService projectService;
+	
+	@Autowired
+	PhaseService phaseService;
 
 	public long countAllDocumentReferences() {
         return documentReferenceRepository.count();
@@ -36,6 +45,18 @@ public class DocumentReferenceServiceImpl implements DocumentReferenceService {
 
 	public void saveDocumentReference(DocumentReference documentReference) {
         documentReferenceRepository.save(documentReference);
+        
+        if(documentReference.getActivityId() != null) {
+        	activityService.addDocumentReference(documentReference.getActivityId(), documentReference);
+        }
+        
+        if(documentReference.getProjectId() != null) {
+        	projectService.addDocumentReference(documentReference.getProjectId(), documentReference);
+        }
+        
+        if(documentReference.getPhaseId() != null) {
+        	phaseService.addDocumentReference(documentReference.getPhaseId(), documentReference);
+        }
     }
 
 	public DocumentReference updateDocumentReference(DocumentReference documentReference) {

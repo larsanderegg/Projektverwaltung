@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" id="menu" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <div class="navbar-default sidebar" role="navigation">
+	    <div class="sidebar-nav navbar-collapse">
+	        <ul class="nav" id="side-menu">
+	      		<h3>Activity</h3>
+	      		<field:display field="name" id="s_ch_lan_teko_model_Activity_name" object="${activity}" z="j3zY58u1pynO8QrKYT0QeeS3M5E="/>
+		        <field:display field="startDate" id="s_ch_lan_teko_model_Activity_startDate" object="${activity}" z="ZpEenc1OiTjEQxufh9joQLrYub8="/>
+		        <field:display field="endDate" id="s_ch_lan_teko_model_Activity_endDate" object="${activity}" z="kw9H2kBZcFHM3Y5WFndeMkKY388="/>
+		        <field:display field="planedStartDate" id="s_ch_lan_teko_model_Activity_planedStartDate" object="${activity}" z="sHzvMmnIf2zdQejTIVfZM2ZXRdQ="/>
+		        <field:display field="planedEndDate" id="s_ch_lan_teko_model_Activity_planedEndDate" object="${activity}" z="h9LEL1urDe2UyT8fpO6qhmldeS8="/>
+		        <field:display field="progress" id="s_ch_lan_teko_model_Activity_progress" object="${activity}" z="62GcTmc355uGbgSy7/2jqwcieus="/>
+		        responsible: ${activity.responsible.name}
+		        <!-- 
+		        	<field:display field="responsible" id="s_ch_lan_teko_model_Activity_responsible" object="${activity}" z="fJnqLmMLNCv4SI1xA5EQ2ranGgI="/>
+		         -->
+	        </ul>
+	    </div>
+    </div>
+</div>

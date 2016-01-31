@@ -4,13 +4,17 @@
     <definition extends="default" name="projects/list">
         <put-attribute name="body" value="/WEB-INF/views/projects/list.jspx"/>
     </definition>
-<definition extends="default" name="projects/show">
+    
+	<definition extends="default" name="projects/show">
         <put-attribute name="body" value="/WEB-INF/views/projects/show.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/projects/menu.jspx"/>
     </definition>
-<definition extends="default" name="projects/create">
+    
+	<definition extends="default" name="projects/create">
         <put-attribute name="body" value="/WEB-INF/views/projects/create.jspx"/>
     </definition>
-<definition extends="default" name="projects/update">
+    
+	<definition extends="default" name="projects/update">
         <put-attribute name="body" value="/WEB-INF/views/projects/update.jspx"/>
     </definition>
 </tiles-definitions>

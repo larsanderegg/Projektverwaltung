@@ -3,7 +3,9 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.ActivityDataOnDemand;
 import ch.lan.teko.model.ActivityIntegrationTest;
+import ch.lan.teko.repository.ActivityRepository;
 import ch.lan.teko.service.ActivityService;
 import java.util.Iterator;
 import java.util.List;
@@ -11,12 +13,28 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect ActivityIntegrationTest_Roo_IntegrationTest {
     
+    declare @type: ActivityIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
+    
+    declare @type: ActivityIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
+    
+    declare @type: ActivityIntegrationTest: @Transactional;
+    
+    @Autowired
+    ActivityDataOnDemand ActivityIntegrationTest.dod;
+    
     @Autowired
     ActivityService ActivityIntegrationTest.activityService;
+    
+    @Autowired
+    ActivityRepository ActivityIntegrationTest.activityRepository;
     
     @Test
     public void ActivityIntegrationTest.testCountAllActivitys() {
@@ -56,6 +74,20 @@ privileged aspect ActivityIntegrationTest_Roo_IntegrationTest {
         List<Activity> result = activityService.findActivityEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'Activity' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'Activity' returned an incorrect number of entries", count, result.size());
+    }
+    
+    @Test
+    public void ActivityIntegrationTest.testFlush() {
+        Activity obj = dod.getRandomActivity();
+        Assert.assertNotNull("Data on demand for 'Activity' failed to initialize correctly", obj);
+        Long id = obj.getId();
+        Assert.assertNotNull("Data on demand for 'Activity' failed to provide an identifier", id);
+        obj = activityService.findActivity(id);
+        Assert.assertNotNull("Find method for 'Activity' illegally returned null for id '" + id + "'", obj);
+        boolean modified =  dod.modifyActivity(obj);
+        Integer currentVersion = obj.getVersion();
+        activityRepository.flush();
+        Assert.assertTrue("Version for 'Activity' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test

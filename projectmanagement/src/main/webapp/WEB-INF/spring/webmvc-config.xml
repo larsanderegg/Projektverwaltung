@@ -20,7 +20,7 @@
 
     <!-- Register "global" interceptor beans to apply to all registered HandlerMappings -->
     <mvc:interceptors>
-      <!--  <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/> -->
+        <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/>
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
     </mvc:interceptors>
 
@@ -39,10 +39,10 @@
     <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver" p:cookieName="locale"/>
 
     <!-- Resolves localized <theme_name>.properties files in the classpath to allow for theme support -->
-   <!-- <bean class="org.springframework.ui.context.support.ResourceBundleThemeSource" id="themeSource"/> -->
+    <bean class="org.springframework.ui.context.support.ResourceBundleThemeSource" id="themeSource"/>
 
     <!-- Store preferred theme configuration in a cookie -->
-    <!-- <bean class="org.springframework.web.servlet.theme.CookieThemeResolver" id="themeResolver" p:cookieName="theme" p:defaultThemeName="pm"/> -->
+    <bean class="org.springframework.web.servlet.theme.CookieThemeResolver" id="themeResolver" p:cookieName="theme" p:defaultThemeName="standard"/>
 
     <!-- This bean resolves specific types of exceptions to corresponding logical - view names for error views. 
     The default behaviour of DispatcherServlet - is to propagate all exceptions to the servlet 
@@ -60,17 +60,20 @@
 
     <!-- Enable this for integration of file upload functionality -->
     <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
-<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
-    <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
-  </bean>
+    
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
+    	<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+  	</bean>
+  
     <bean class="org.springframework.web.servlet.view.tiles2.TilesConfigurer" id="tilesConfigurer">
-    <property name="definitions">
-      <list>
-        <value>/WEB-INF/layouts/layouts.xml</value>
-        <!-- Scan views directory for Tiles configurations -->
-        <value>/WEB-INF/views/**/views.xml</value>
-      </list>
-    </property>
-  </bean>
-<bean class="ch.lan.teko.controller.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
+	    <property name="definitions">
+	      <list>
+	        <value>/WEB-INF/layouts/layouts.xml</value>
+	        <!-- Scan views directory for Tiles configurations -->
+	        <value>/WEB-INF/views/**/views.xml</value>
+	      </list>
+	    </property>
+  	</bean>
+  
+	<bean class="ch.lan.teko.controller.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
 </beans>

@@ -1,4 +1,5 @@
 package ch.lan.teko.service;
+import ch.lan.teko.model.DocumentReference;
 import ch.lan.teko.model.Project;
 import java.util.List;
 import org.springframework.roo.addon.layers.service.RooService;
@@ -25,5 +26,8 @@ public interface ProjectService {
 
 
 	public abstract Project updateProject(Project project);
+
+
+	public abstract void addDocumentReference(Long projectId, DocumentReference documentReference);
 
 }

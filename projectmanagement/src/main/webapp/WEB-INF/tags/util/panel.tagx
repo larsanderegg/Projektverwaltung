@@ -8,7 +8,7 @@
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
   
   <c:if test="${empty render or render}">
- <!--    <c:if test="${empty openPane}">
+    <c:if test="${empty openPane}">
       <c:set value="true" var="openPane" />
     </c:if>
   
@@ -25,15 +25,9 @@
     </c:set>
     
     <script type="text/javascript">dojo.require('dijit.TitlePane');</script>
--->    
-    <div class="row">
-	  <div class="col-lg-12">
-	    <h1 class="page-header">${title}</h1>
-	   </div>
-	</div>
-<!--    <div id="_title_${sec_id}_id"> -->
-<!--       <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : '_title_${sec_id}_id', widgetType : 'dijit.TitlePane', widgetAttrs : {title: '${sec_title}', open: ${sec_openPane}}})); </script> -->
+    <div id="_title_${sec_id}_id">
+      <script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : '_title_${sec_id}_id', widgetType : 'dijit.TitlePane', widgetAttrs : {title: '${sec_title}', open: ${sec_openPane}}})); </script>
       <jsp:doBody />
- <!--   </div> -->
+    </div>
   </c:if>
 </jsp:root>

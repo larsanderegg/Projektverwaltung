@@ -7,17 +7,62 @@ import ch.lan.teko.model.Activity;
 import ch.lan.teko.model.ActivityDataOnDemand;
 import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.EmployeeDataOnDemand;
+import ch.lan.teko.repository.ActivityRepository;
+import ch.lan.teko.service.ActivityService;
+import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 privileged aspect ActivityDataOnDemand_Roo_DataOnDemand {
+    
+    declare @type: ActivityDataOnDemand: @Component;
+    
+    private Random ActivityDataOnDemand.rnd = new SecureRandom();
+    
+    private List<Activity> ActivityDataOnDemand.data;
     
     @Autowired
     EmployeeDataOnDemand ActivityDataOnDemand.employeeDataOnDemand;
     
+    @Autowired
+    ActivityService ActivityDataOnDemand.activityService;
+    
+    @Autowired
+    ActivityRepository ActivityDataOnDemand.activityRepository;
+    
+    public Activity ActivityDataOnDemand.getNewTransientActivity(int index) {
+        Activity obj = new Activity();
+        setEndDate(obj, index);
+        setName(obj, index);
+        setPhaseId(obj, index);
+        setPlanedEndDate(obj, index);
+        setPlanedStartDate(obj, index);
+        setProgress(obj, index);
+        setResponsible(obj, index);
+        setStartDate(obj, index);
+        return obj;
+    }
+    
     public void ActivityDataOnDemand.setEndDate(Activity obj, int index) {
         LocalDate endDate = null;
         obj.setEndDate(endDate);
+    }
+    
+    public void ActivityDataOnDemand.setName(Activity obj, int index) {
+        String name = "name_" + index;
+        obj.setName(name);
+    }
+    
+    public void ActivityDataOnDemand.setPhaseId(Activity obj, int index) {
+        Long phaseId = new Integer(index).longValue();
+        obj.setPhaseId(phaseId);
     }
     
     public void ActivityDataOnDemand.setPlanedEndDate(Activity obj, int index) {
@@ -43,6 +88,59 @@ privileged aspect ActivityDataOnDemand_Roo_DataOnDemand {
     public void ActivityDataOnDemand.setStartDate(Activity obj, int index) {
         LocalDate startDate = null;
         obj.setStartDate(startDate);
+    }
+    
+    public Activity ActivityDataOnDemand.getSpecificActivity(int index) {
+        init();
+        if (index < 0) {
+            index = 0;
+        }
+        if (index > (data.size() - 1)) {
+            index = data.size() - 1;
+        }
+        Activity obj = data.get(index);
+        Long id = obj.getId();
+        return activityService.findActivity(id);
+    }
+    
+    public Activity ActivityDataOnDemand.getRandomActivity() {
+        init();
+        Activity obj = data.get(rnd.nextInt(data.size()));
+        Long id = obj.getId();
+        return activityService.findActivity(id);
+    }
+    
+    public boolean ActivityDataOnDemand.modifyActivity(Activity obj) {
+        return false;
+    }
+    
+    public void ActivityDataOnDemand.init() {
+        int from = 0;
+        int to = 10;
+        data = activityService.findActivityEntries(from, to);
+        if (data == null) {
+            throw new IllegalStateException("Find entries implementation for 'Activity' illegally returned null");
+        }
+        if (!data.isEmpty()) {
+            return;
+        }
+        
+        data = new ArrayList<Activity>();
+        for (int i = 0; i < 10; i++) {
+            Activity obj = getNewTransientActivity(i);
+            try {
+                activityService.saveActivity(obj);
+            } catch (final ConstraintViolationException e) {
+                final StringBuilder msg = new StringBuilder();
+                for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
+                    final ConstraintViolation<?> cv = iter.next();
+                    msg.append("[").append(cv.getRootBean().getClass().getName()).append(".").append(cv.getPropertyPath()).append(": ").append(cv.getMessage()).append(" (invalid value = ").append(cv.getInvalidValue()).append(")").append("]");
+                }
+                throw new IllegalStateException(msg.toString(), e);
+            }
+            activityRepository.flush();
+            data.add(obj);
+        }
     }
     
 }

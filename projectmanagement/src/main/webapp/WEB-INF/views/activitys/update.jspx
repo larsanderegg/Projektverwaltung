@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:page="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:sf="http://www.springframework.org/tags/form" xmlns:form="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_ch_lan_teko_model_Activity" modelAttribute="activity" path="/activitys" versionField="Version" z="4Fl1sAiX/MCZSjkJ8M1LT5IjbLY=">
-        <field:select field="links" id="c_ch_lan_teko_model_Activity_links" itemValue="id" items="${documentreferences}" multiple="true" path="/documentreferences" required="true" z="WBlysiPeRzuOd59Nr74KTM0mwZc="/>
+        <field:input field="name" id="c_ch_lan_teko_model_Activity_name" required="true" z="5WJcjv8rHGcTooxbcyP0jxFLZ2s="/>
         <field:input field="startDate" id="c_ch_lan_teko_model_Activity_startDate" required="true" z="ZdFd9zyi1IbPKqo2tPr0CwlzDb4="/>
         <field:input field="endDate" id="c_ch_lan_teko_model_Activity_endDate" required="true" z="flKLXnUzKqh9Df/MlPO/3Vp6JRI="/>
         <field:input field="planedStartDate" id="c_ch_lan_teko_model_Activity_planedStartDate" required="true" z="/v1gFEnmTywJde7kSuCilRCCWjU="/>
         <field:input field="planedEndDate" id="c_ch_lan_teko_model_Activity_planedEndDate" required="true" z="oqdb8xfZ3LEvRLzOvtI4aPuk3JE="/>
-        <field:select field="resources" id="c_ch_lan_teko_model_Activity_resources" itemValue="id" items="${resources}" multiple="true" path="/resources" required="true" z="EQ+MClVy68U7Y6EczikvEDZh+jU="/>
         <field:select field="responsible" id="c_ch_lan_teko_model_Activity_responsible" itemValue="id" items="${employees}" path="/employees" required="true" z="RC9JCJSGcBXcjvVN9clhe5mMloo="/>
         <field:input field="progress" id="c_ch_lan_teko_model_Activity_progress" required="true" z="otVK2pjli2R29tV5U+xD/1UV5OA="/>
+        <sf:hidden id="phaseId_id" path="phaseId"/>
     </form:update>
+    
+    <page:list id="pl_ch_lan_teko_model_DocumentReference" items="${activity.links}" newUrl="/documentreferences" z="2H0UNF7MQ3F3FGQNZNYuPTPFfvI="
+    			urlParamName="activityId" urlParamValue="${activity.id}">
+        <table:table data="${activity.links}" id="l_ch_lan_teko_model_DocumentReference" path="/documentreferences" z="evU874q0gwWfQN6GufrUDXgpSYg="
+        			urlParamName="activityId" urlParamValue="${activity.id}">
+            <table:column id="c_ch_lan_teko_model_DocumentReference_name" property="name" z="f+kWdUWjLj0E5AxkChik1o/5kgE="/>
+            <table:column id="c_ch_lan_teko_model_DocumentReference_path" property="path" z="xZ5DWdjz/WjUDU4/r1uYpk2I5TA="/>
+        </table:table>
+    </page:list>
 </div>

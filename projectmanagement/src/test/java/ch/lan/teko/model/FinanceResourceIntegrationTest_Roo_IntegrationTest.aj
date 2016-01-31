@@ -3,7 +3,9 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.FinanceResourceDataOnDemand;
 import ch.lan.teko.model.FinanceResourceIntegrationTest;
+import ch.lan.teko.repository.FinanceResourceRepository;
 import ch.lan.teko.service.FinanceResourceService;
 import java.util.Iterator;
 import java.util.List;
@@ -11,12 +13,28 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect FinanceResourceIntegrationTest_Roo_IntegrationTest {
     
+    declare @type: FinanceResourceIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
+    
+    declare @type: FinanceResourceIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
+    
+    declare @type: FinanceResourceIntegrationTest: @Transactional;
+    
+    @Autowired
+    FinanceResourceDataOnDemand FinanceResourceIntegrationTest.dod;
+    
     @Autowired
     FinanceResourceService FinanceResourceIntegrationTest.financeResourceService;
+    
+    @Autowired
+    FinanceResourceRepository FinanceResourceIntegrationTest.financeResourceRepository;
     
     @Test
     public void FinanceResourceIntegrationTest.testCountAllFinanceResources() {
@@ -56,6 +74,20 @@ privileged aspect FinanceResourceIntegrationTest_Roo_IntegrationTest {
         List<FinanceResource> result = financeResourceService.findFinanceResourceEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'FinanceResource' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'FinanceResource' returned an incorrect number of entries", count, result.size());
+    }
+    
+    @Test
+    public void FinanceResourceIntegrationTest.testFlush() {
+        FinanceResource obj = dod.getRandomFinanceResource();
+        Assert.assertNotNull("Data on demand for 'FinanceResource' failed to initialize correctly", obj);
+        Long id = obj.getId();
+        Assert.assertNotNull("Data on demand for 'FinanceResource' failed to provide an identifier", id);
+        obj = financeResourceService.findFinanceResource(id);
+        Assert.assertNotNull("Find method for 'FinanceResource' illegally returned null for id '" + id + "'", obj);
+        boolean modified =  dod.modifyFinanceResource(obj);
+        Integer currentVersion = obj.getVersion();
+        financeResourceRepository.flush();
+        Assert.assertTrue("Version for 'FinanceResource' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test

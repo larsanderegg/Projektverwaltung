@@ -1,5 +1,7 @@
 package ch.lan.teko.service;
 import ch.lan.teko.model.Activity;
+import ch.lan.teko.model.DocumentReference;
+
 import java.util.List;
 import org.springframework.roo.addon.layers.service.RooService;
 
@@ -25,5 +27,8 @@ public interface ActivityService {
 
 
 	public abstract Activity updateActivity(Activity activity);
+
+
+	public abstract void addDocumentReference(Long activityId, DocumentReference documentReference);
 
 }

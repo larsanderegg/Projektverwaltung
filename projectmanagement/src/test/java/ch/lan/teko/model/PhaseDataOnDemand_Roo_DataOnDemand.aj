@@ -5,13 +5,48 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.Phase;
 import ch.lan.teko.model.PhaseDataOnDemand;
+import ch.lan.teko.repository.PhaseRepository;
+import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
+    
+    declare @type: PhaseDataOnDemand: @Component;
+    
+    private Random PhaseDataOnDemand.rnd = new SecureRandom();
+    
+    private List<Phase> PhaseDataOnDemand.data;
+    
+    @Autowired
+    PhaseRepository PhaseDataOnDemand.phaseRepository;
+    
+    public Phase PhaseDataOnDemand.getNewTransientPhase(int index) {
+        Phase obj = new Phase();
+        setApprovalDate(obj, index);
+        setName(obj, index);
+        setPhaseState(obj, index);
+        setPlanedReviewDate(obj, index);
+        setProgress(obj, index);
+        setReviewDate(obj, index);
+        return obj;
+    }
     
     public void PhaseDataOnDemand.setApprovalDate(Phase obj, int index) {
         LocalDate approvalDate = null;
         obj.setApprovalDate(approvalDate);
+    }
+    
+    public void PhaseDataOnDemand.setName(Phase obj, int index) {
+        String name = "name_" + index;
+        obj.setName(name);
     }
     
     public void PhaseDataOnDemand.setPhaseState(Phase obj, int index) {
@@ -32,6 +67,59 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
     public void PhaseDataOnDemand.setReviewDate(Phase obj, int index) {
         LocalDate reviewDate = null;
         obj.setReviewDate(reviewDate);
+    }
+    
+    public Phase PhaseDataOnDemand.getSpecificPhase(int index) {
+        init();
+        if (index < 0) {
+            index = 0;
+        }
+        if (index > (data.size() - 1)) {
+            index = data.size() - 1;
+        }
+        Phase obj = data.get(index);
+        Long id = obj.getId();
+        return phaseRepository.findOne(id);
+    }
+    
+    public Phase PhaseDataOnDemand.getRandomPhase() {
+        init();
+        Phase obj = data.get(rnd.nextInt(data.size()));
+        Long id = obj.getId();
+        return phaseRepository.findOne(id);
+    }
+    
+    public boolean PhaseDataOnDemand.modifyPhase(Phase obj) {
+        return false;
+    }
+    
+    public void PhaseDataOnDemand.init() {
+        int from = 0;
+        int to = 10;
+        data = phaseRepository.findAll(new org.springframework.data.domain.PageRequest(from / to, to)).getContent();
+        if (data == null) {
+            throw new IllegalStateException("Find entries implementation for 'Phase' illegally returned null");
+        }
+        if (!data.isEmpty()) {
+            return;
+        }
+        
+        data = new ArrayList<Phase>();
+        for (int i = 0; i < 10; i++) {
+            Phase obj = getNewTransientPhase(i);
+            try {
+                phaseRepository.save(obj);
+            } catch (final ConstraintViolationException e) {
+                final StringBuilder msg = new StringBuilder();
+                for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
+                    final ConstraintViolation<?> cv = iter.next();
+                    msg.append("[").append(cv.getRootBean().getClass().getName()).append(".").append(cv.getPropertyPath()).append(": ").append(cv.getMessage()).append(" (invalid value = ").append(cv.getInvalidValue()).append(")").append("]");
+                }
+                throw new IllegalStateException(msg.toString(), e);
+            }
+            phaseRepository.flush();
+            data.add(obj);
+        }
     }
     
 }

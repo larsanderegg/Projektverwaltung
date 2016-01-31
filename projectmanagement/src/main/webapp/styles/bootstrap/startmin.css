@@ -15,6 +15,7 @@ body {
 #page-wrapper {
     padding: 30px 15px 0 15px;
     min-height: 568px;
+    margin-top: 30px;
     background-color: #fff;
 }
 
@@ -153,7 +154,7 @@ body {
         z-index: 1;
         position: absolute;
         width: 250px;
-        margin-top: 51px;
+        margin-top: 61px;
     }
 
     .navbar-top-links .dropdown-messages,

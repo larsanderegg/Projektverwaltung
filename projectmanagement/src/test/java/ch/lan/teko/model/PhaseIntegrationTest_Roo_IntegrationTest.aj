@@ -3,84 +3,112 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.PhaseDataOnDemand;
 import ch.lan.teko.model.PhaseIntegrationTest;
-import ch.lan.teko.service.PhaseService;
+import ch.lan.teko.repository.PhaseRepository;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect PhaseIntegrationTest_Roo_IntegrationTest {
     
+    declare @type: PhaseIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
+    
+    declare @type: PhaseIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
+    
+    declare @type: PhaseIntegrationTest: @Transactional;
+    
     @Autowired
-    PhaseService PhaseIntegrationTest.phaseService;
+    PhaseDataOnDemand PhaseIntegrationTest.dod;
+    
+    @Autowired
+    PhaseRepository PhaseIntegrationTest.phaseRepository;
     
     @Test
-    public void PhaseIntegrationTest.testCountAllPhases() {
+    public void PhaseIntegrationTest.testCount() {
         Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", dod.getRandomPhase());
-        long count = phaseService.countAllPhases();
+        long count = phaseRepository.count();
         Assert.assertTrue("Counter for 'Phase' incorrectly reported there were no entries", count > 0);
     }
     
     @Test
-    public void PhaseIntegrationTest.testFindPhase() {
+    public void PhaseIntegrationTest.testFind() {
         Phase obj = dod.getRandomPhase();
         Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Phase' failed to provide an identifier", id);
-        obj = phaseService.findPhase(id);
+        obj = phaseRepository.findOne(id);
         Assert.assertNotNull("Find method for 'Phase' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'Phase' returned the incorrect identifier", id, obj.getId());
     }
     
     @Test
-    public void PhaseIntegrationTest.testFindAllPhases() {
+    public void PhaseIntegrationTest.testFindAll() {
         Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", dod.getRandomPhase());
-        long count = phaseService.countAllPhases();
+        long count = phaseRepository.count();
         Assert.assertTrue("Too expensive to perform a find all test for 'Phase', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<Phase> result = phaseService.findAllPhases();
+        List<Phase> result = phaseRepository.findAll();
         Assert.assertNotNull("Find all method for 'Phase' illegally returned null", result);
         Assert.assertTrue("Find all method for 'Phase' failed to return any data", result.size() > 0);
     }
     
     @Test
-    public void PhaseIntegrationTest.testFindPhaseEntries() {
+    public void PhaseIntegrationTest.testFindEntries() {
         Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", dod.getRandomPhase());
-        long count = phaseService.countAllPhases();
+        long count = phaseRepository.count();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<Phase> result = phaseService.findPhaseEntries(firstResult, maxResults);
+        List<Phase> result = phaseRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
         Assert.assertNotNull("Find entries method for 'Phase' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'Phase' returned an incorrect number of entries", count, result.size());
     }
     
     @Test
-    public void PhaseIntegrationTest.testUpdatePhaseUpdate() {
+    public void PhaseIntegrationTest.testFlush() {
         Phase obj = dod.getRandomPhase();
         Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Phase' failed to provide an identifier", id);
-        obj = phaseService.findPhase(id);
+        obj = phaseRepository.findOne(id);
+        Assert.assertNotNull("Find method for 'Phase' illegally returned null for id '" + id + "'", obj);
         boolean modified =  dod.modifyPhase(obj);
         Integer currentVersion = obj.getVersion();
-        Phase merged = phaseService.updatePhase(obj);
+        phaseRepository.flush();
+        Assert.assertTrue("Version for 'Phase' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
+    }
+    
+    @Test
+    public void PhaseIntegrationTest.testSaveUpdate() {
+        Phase obj = dod.getRandomPhase();
+        Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", obj);
+        Long id = obj.getId();
+        Assert.assertNotNull("Data on demand for 'Phase' failed to provide an identifier", id);
+        obj = phaseRepository.findOne(id);
+        boolean modified =  dod.modifyPhase(obj);
+        Integer currentVersion = obj.getVersion();
+        Phase merged = phaseRepository.save(obj);
         phaseRepository.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'Phase' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void PhaseIntegrationTest.testSavePhase() {
+    public void PhaseIntegrationTest.testSave() {
         Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", dod.getRandomPhase());
         Phase obj = dod.getNewTransientPhase(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'Phase' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'Phase' identifier to be null", obj.getId());
         try {
-            phaseService.savePhase(obj);
+            phaseRepository.save(obj);
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -94,15 +122,15 @@ privileged aspect PhaseIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void PhaseIntegrationTest.testDeletePhase() {
+    public void PhaseIntegrationTest.testDelete() {
         Phase obj = dod.getRandomPhase();
         Assert.assertNotNull("Data on demand for 'Phase' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Phase' failed to provide an identifier", id);
-        obj = phaseService.findPhase(id);
-        phaseService.deletePhase(obj);
+        obj = phaseRepository.findOne(id);
+        phaseRepository.delete(obj);
         phaseRepository.flush();
-        Assert.assertNull("Failed to remove 'Phase' with identifier '" + id + "'", phaseService.findPhase(id));
+        Assert.assertNull("Failed to remove 'Phase' with identifier '" + id + "'", phaseRepository.findOne(id));
     }
     
 }

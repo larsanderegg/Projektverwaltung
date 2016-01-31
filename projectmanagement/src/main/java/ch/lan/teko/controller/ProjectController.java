@@ -1,14 +1,11 @@
 package ch.lan.teko.controller;
-import ch.lan.teko.model.Project;
-import ch.lan.teko.service.EmployeeService;
-import ch.lan.teko.service.PhaseService;
-import ch.lan.teko.service.ProcessModelService;
-import ch.lan.teko.service.ProjectService;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -20,6 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
+import ch.lan.teko.model.Project;
+import ch.lan.teko.service.EmployeeService;
+import ch.lan.teko.service.PhaseService;
+import ch.lan.teko.service.ProcessModelService;
+import ch.lan.teko.service.ProjectService;
 
 @RequestMapping("/projects")
 @Controller
@@ -44,6 +47,7 @@ public class ProjectController {
             populateEditForm(uiModel, project);
             return "projects/create";
         }
+        
         uiModel.asMap().clear();
         projectService.saveProject(project);
         return "redirect:/projects/" + encodeUrlPathSegment(project.getId().toString(), httpServletRequest);

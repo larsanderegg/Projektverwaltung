@@ -3,7 +3,9 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.ProcessModelDataOnDemand;
 import ch.lan.teko.model.ProcessModelIntegrationTest;
+import ch.lan.teko.repository.ProcessModelRepository;
 import ch.lan.teko.service.ProcessModelService;
 import java.util.Iterator;
 import java.util.List;
@@ -11,12 +13,28 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect ProcessModelIntegrationTest_Roo_IntegrationTest {
     
+    declare @type: ProcessModelIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
+    
+    declare @type: ProcessModelIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
+    
+    declare @type: ProcessModelIntegrationTest: @Transactional;
+    
+    @Autowired
+    ProcessModelDataOnDemand ProcessModelIntegrationTest.dod;
+    
     @Autowired
     ProcessModelService ProcessModelIntegrationTest.processModelService;
+    
+    @Autowired
+    ProcessModelRepository ProcessModelIntegrationTest.processModelRepository;
     
     @Test
     public void ProcessModelIntegrationTest.testCountAllProcessModels() {
@@ -56,6 +74,20 @@ privileged aspect ProcessModelIntegrationTest_Roo_IntegrationTest {
         List<ProcessModel> result = processModelService.findProcessModelEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'ProcessModel' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'ProcessModel' returned an incorrect number of entries", count, result.size());
+    }
+    
+    @Test
+    public void ProcessModelIntegrationTest.testFlush() {
+        ProcessModel obj = dod.getRandomProcessModel();
+        Assert.assertNotNull("Data on demand for 'ProcessModel' failed to initialize correctly", obj);
+        Long id = obj.getId();
+        Assert.assertNotNull("Data on demand for 'ProcessModel' failed to provide an identifier", id);
+        obj = processModelService.findProcessModel(id);
+        Assert.assertNotNull("Find method for 'ProcessModel' illegally returned null for id '" + id + "'", obj);
+        boolean modified =  dod.modifyProcessModel(obj);
+        Integer currentVersion = obj.getVersion();
+        processModelRepository.flush();
+        Assert.assertTrue("Version for 'ProcessModel' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test

@@ -1,11 +1,15 @@
 package ch.lan.teko.service;
 
-import ch.lan.teko.model.Project;
-import ch.lan.teko.repository.ProjectRepository;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import ch.lan.teko.model.DocumentReference;
+import ch.lan.teko.model.Phase;
+import ch.lan.teko.model.Project;
+import ch.lan.teko.repository.ProjectRepository;
 
 @Service
 @Transactional
@@ -13,6 +17,9 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Autowired
     ProjectRepository projectRepository;
+	
+	@Autowired
+    PhaseService phaseService;
 
 	public long countAllProjects() {
         return projectRepository.count();
@@ -35,10 +42,24 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 	public void saveProject(Project project) {
+		
+		List<Phase> phases = phaseService.generatePhases(project.getProcessModel());
+        project.setPhases(phases);
+		
         projectRepository.save(project);
     }
 
 	public Project updateProject(Project project) {
         return projectRepository.save(project);
     }
+
+	@Override
+	public void addDocumentReference(Long projectId, DocumentReference documentReference) {
+//		Project project = findProject(projectId);
+//		if(project != null){
+//			project.getLinks().add(documentReference);
+//			updateProject(project);
+//		}
+		System.out.println("not implemented");
+	}
 }

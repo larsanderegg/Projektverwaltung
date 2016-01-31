@@ -5,8 +5,38 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.DocumentReference;
 import ch.lan.teko.model.DocumentReferenceDataOnDemand;
+import ch.lan.teko.repository.DocumentReferenceRepository;
+import ch.lan.teko.service.DocumentReferenceService;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
+    
+    declare @type: DocumentReferenceDataOnDemand: @Component;
+    
+    private Random DocumentReferenceDataOnDemand.rnd = new SecureRandom();
+    
+    private List<DocumentReference> DocumentReferenceDataOnDemand.data;
+    
+    @Autowired
+    DocumentReferenceService DocumentReferenceDataOnDemand.documentReferenceService;
+    
+    @Autowired
+    DocumentReferenceRepository DocumentReferenceDataOnDemand.documentReferenceRepository;
+    
+    public DocumentReference DocumentReferenceDataOnDemand.getNewTransientDocumentReference(int index) {
+        DocumentReference obj = new DocumentReference();
+        setName(obj, index);
+        setPath(obj, index);
+        return obj;
+    }
     
     public void DocumentReferenceDataOnDemand.setName(DocumentReference obj, int index) {
         String name = "name_" + index;
@@ -16,6 +46,59 @@ privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
     public void DocumentReferenceDataOnDemand.setPath(DocumentReference obj, int index) {
         String path = "path_" + index;
         obj.setPath(path);
+    }
+    
+    public DocumentReference DocumentReferenceDataOnDemand.getSpecificDocumentReference(int index) {
+        init();
+        if (index < 0) {
+            index = 0;
+        }
+        if (index > (data.size() - 1)) {
+            index = data.size() - 1;
+        }
+        DocumentReference obj = data.get(index);
+        Long id = obj.getId();
+        return documentReferenceService.findDocumentReference(id);
+    }
+    
+    public DocumentReference DocumentReferenceDataOnDemand.getRandomDocumentReference() {
+        init();
+        DocumentReference obj = data.get(rnd.nextInt(data.size()));
+        Long id = obj.getId();
+        return documentReferenceService.findDocumentReference(id);
+    }
+    
+    public boolean DocumentReferenceDataOnDemand.modifyDocumentReference(DocumentReference obj) {
+        return false;
+    }
+    
+    public void DocumentReferenceDataOnDemand.init() {
+        int from = 0;
+        int to = 10;
+        data = documentReferenceService.findDocumentReferenceEntries(from, to);
+        if (data == null) {
+            throw new IllegalStateException("Find entries implementation for 'DocumentReference' illegally returned null");
+        }
+        if (!data.isEmpty()) {
+            return;
+        }
+        
+        data = new ArrayList<DocumentReference>();
+        for (int i = 0; i < 10; i++) {
+            DocumentReference obj = getNewTransientDocumentReference(i);
+            try {
+                documentReferenceService.saveDocumentReference(obj);
+            } catch (final ConstraintViolationException e) {
+                final StringBuilder msg = new StringBuilder();
+                for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
+                    final ConstraintViolation<?> cv = iter.next();
+                    msg.append("[").append(cv.getRootBean().getClass().getName()).append(".").append(cv.getPropertyPath()).append(": ").append(cv.getMessage()).append(" (invalid value = ").append(cv.getInvalidValue()).append(")").append("]");
+                }
+                throw new IllegalStateException(msg.toString(), e);
+            }
+            documentReferenceRepository.flush();
+            data.add(obj);
+        }
     }
     
 }

@@ -1,9 +1,9 @@
 package ch.lan.teko.controller;
-import ch.lan.teko.model.FinanceResource;
-import ch.lan.teko.service.FinanceResourceService;
 import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import ch.lan.teko.model.Activity;
+import ch.lan.teko.model.FinanceResource;
+import ch.lan.teko.service.ActivityService;
+import ch.lan.teko.service.FinanceResourceService;
+
 @RequestMapping("/financeresources")
 @Controller
 @RooWebScaffold(path = "financeresources", formBackingObject = FinanceResource.class)
@@ -23,6 +28,9 @@ public class FinanceResourceController {
 
 	@Autowired
     FinanceResourceService financeResourceService;
+	
+	@Autowired
+    ActivityService activityService;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid FinanceResource financeResource, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -32,34 +40,38 @@ public class FinanceResourceController {
         }
         uiModel.asMap().clear();
         financeResourceService.saveFinanceResource(financeResource);
-        return "redirect:/financeresources/" + encodeUrlPathSegment(financeResource.getId().toString(), httpServletRequest);
+        
+        Activity activity = activityService.findActivity(financeResource.getActivityId());
+        if(activity != null){
+        	activity.getResources().add(financeResource);
+        	activityService.saveActivity(activity);
+        } else {
+        	return "error";
+        }
+        
+        return "redirect:/financeresources/" + encodeUrlPathSegment(financeResource.getId().toString(), httpServletRequest) +"?activityId="+encodeUrlPathSegment(activity.getId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(params = "form", produces = "text/html")
-    public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new FinanceResource());
+	@RequestMapping(params = {"form", "activityId"}, produces = "text/html")
+    public String createForm(@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
+        FinanceResource financeResource = new FinanceResource();
+        financeResource.setActivityId(activityId);
+		populateEditForm(uiModel, financeResource);
+		
+		Activity activity = activityService.findActivity(activityId);
+        if(activity != null){
+        	uiModel.addAttribute("activity", activity);
+        }
+		
         return "financeresources/create";
     }
 
-	@RequestMapping(value = "/{id}", produces = "text/html")
-    public String show(@PathVariable("id") Long id, Model uiModel) {
+	@RequestMapping(value = "/{id}", params = {"activityId"}, produces = "text/html")
+    public String show(@PathVariable("id") Long id, @RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
         uiModel.addAttribute("financeresource", financeResourceService.findFinanceResource(id));
         uiModel.addAttribute("itemId", id);
+        uiModel.addAttribute("activity", activityService.findActivity(activityId));
         return "financeresources/show";
-    }
-
-	@RequestMapping(produces = "text/html")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("financeresources", FinanceResource.findFinanceResourceEntries(firstResult, sizeNo, sortFieldName, sortOrder));
-            float nrOfPages = (float) financeResourceService.countAllFinanceResources() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("financeresources", FinanceResource.findAllFinanceResources(sortFieldName, sortOrder));
-        }
-        return "financeresources/list";
     }
 
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
@@ -70,12 +82,21 @@ public class FinanceResourceController {
         }
         uiModel.asMap().clear();
         financeResourceService.updateFinanceResource(financeResource);
-        return "redirect:/financeresources/" + encodeUrlPathSegment(financeResource.getId().toString(), httpServletRequest);
+        return "redirect:/financeresources/" + encodeUrlPathSegment(financeResource.getId().toString(), httpServletRequest) +"?activityId="+encodeUrlPathSegment(financeResource.getActivityId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
-    public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, financeResourceService.findFinanceResource(id));
+	@RequestMapping(value = "/{id}", params = {"form", "activityId"}, produces = "text/html")
+    public String updateForm(@PathVariable("id") Long id, @RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
+		
+        FinanceResource financeResource = financeResourceService.findFinanceResource(id);
+        financeResource.setActivityId(activityId);
+		populateEditForm(uiModel, financeResource);
+		
+		Activity activity = activityService.findActivity(activityId);
+        if(activity != null){
+        	uiModel.addAttribute("activity", activity);
+        }
+		
         return "financeresources/update";
     }
 

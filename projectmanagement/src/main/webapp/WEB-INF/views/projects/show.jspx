@@ -1,16 +1,116 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    
     <page:show id="ps_ch_lan_teko_model_Project" object="${project}" path="/projects" z="ufI/xRs1MHkLmRLV0GQWy5WSS0c=">
-        <field:display field="progress" id="s_ch_lan_teko_model_Project_progress" object="${project}" z="Hles7T0V09k/qrlFhINyaJ4L2vw="/>
-        <field:display field="approvalDate" id="s_ch_lan_teko_model_Project_approvalDate" object="${project}" z="MW9f5ZSHSodJ/x5UIgGmW2n1sRY="/>
-        <field:display field="name" id="s_ch_lan_teko_model_Project_name" object="${project}" z="4gnnlhr0qYPqzn8zM3CuxF8Uk68="/>
-        <field:display field="description" id="s_ch_lan_teko_model_Project_description" object="${project}" z="TvstiDdacsypBXnOjqWiAVSSYtc="/>
-        <field:display field="priority" id="s_ch_lan_teko_model_Project_priority" object="${project}" z="Bjmb/8AtuvFnhV0dQSg/guNGjVs="/>
-        <field:display field="projectState" id="s_ch_lan_teko_model_Project_projectState" object="${project}" z="DGR/grDDFdX1YUBMlRQeeMKBrm8="/>
-        <field:display field="projectmanager" id="s_ch_lan_teko_model_Project_projectmanager" object="${project}" z="81SCMADOjUgHPu0JXg5uUiLydfA="/>
-        <field:display field="processModel" id="s_ch_lan_teko_model_Project_processModel" object="${project}" z="Na50CCroBFFonKpLGSYvrEw7oqA="/>
-        <field:display field="phases" id="s_ch_lan_teko_model_Project_phases" object="${project}" z="8dox44FsanNfwdDw+IQZ0qeP/+o="/>
+    	<c:forEach items="${project.phases}" var="phase">
+    	<div class="panel panel-default">
+    		<div class="panel-heading">
+    			
+    			
+    			<c:out value="${phase.name}" />
+    			
+    			<div class="pull-right">
+    				<spring:url value="/phases/${phase.id}" var="edit_item_url">
+    					<spring:param name="form" />
+    					<spring:param name="projectId" value="${project.id}" />
+    				</spring:url>
+    				<spring:url value="/activitys" var="new_a_item_url">
+    					<spring:param name="form" />
+    					<spring:param name="phaseId" value="${phase.id}" />
+    				</spring:url>
+    				<spring:url value="/documentreferences" var="new_link_url">
+    					<spring:param name="form" />
+    					<spring:param name="phaseId" value="${phase.id}" />
+    				</spring:url>
+                   <div class="btn-group">
+                       <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                           Actions <span class="caret"></span>
+                       </button>
+                       <ul class="dropdown-menu pull-right" role="menu">
+                           <li>
+                           	<a href="${edit_item_url}">Edit</a>
+                           </li>
+                           <li class="divider"></li>
+                           <li><a href="${new_a_item_url}">Add Activity</a>
+                           </li>
+                           <li><a href="${new_link_url}">Add Document</a>
+                           </li>
+                       </ul>
+                   </div>
+               </div>
+              </div>
+               <c:if test="${not empty phase.activities}">
+	               <div class="panel-body">
+	                   <div class="list-group">
+	                   		<c:forEach items="${phase.activities}" var="activity">
+								
+							    <div class="panel panel-default">
+    								<div class="panel-heading">
+    									
+    									<spring:url value="/activitys/${activity.id}" var="show_activity_url">
+					    					<spring:param name="form" />
+					    					<spring:param name="phaseId" value="${phase.id}" />
+					    	  	       	</spring:url>
+					                   	<a href="${show_activity_url}" class="list-group-item">
+					                       	<i class="fa fa-comment fa-fw"></i> <c:out value="${activity.name}" />
+					                    </a>   	
+					                       	<div class="pull-right">
+	    										<span class="text-muted small">
+						                           	<em><c:out value="${activity.startDate}" />-<c:out value="${activity.endDate}" /></em>
+						                        </span>
+	    										
+						                        <spring:url value="/documentreferences" var="new_link_activity_url">
+							    					<spring:param name="form" />
+							    					<spring:param name="activityId" value="${activity.id}" />
+							    				</spring:url>
+							    				<spring:url value="/personalresources" var="new_personal_url">
+							    					<spring:param name="form" />
+							    					<spring:param name="activityId" value="${activity.id}" />
+							    				</spring:url>
+							    				<spring:url value="/financeresources" var="new_finance_url">
+							    					<spring:param name="form" />
+							    					<spring:param name="activityId" value="${activity.id}" />
+							    				</spring:url>
+				                           		<div class="btn-group">
+							                       <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+							                           Actions <span class="caret"></span>
+							                       </button>
+							                       <ul class="dropdown-menu pull-right" role="menu">
+							                           <li>
+							                           	<a href="${new_personal_url}">Add PersonalResource</a>
+							                           </li>
+							                           <li><a href="${new_finance_url}">Add FinanceResource</a>
+							                           </li>
+							                           <li class="divider"></li>
+							                           <li><a href="${new_link_activity_url}">Add Document</a>
+							                           </li>
+							                       </ul>
+							                    </div>
+    										</div>
+    								</div>
+    								<c:if test="${not empty activity.resources}">
+	    								<div class="panel-body">
+	    									<div class="list-group">
+	    										<c:forEach items="${activity.resources}" var="resource">
+	    											<spring:url value="/resource/${resource.id}" var="show_resource_url">
+								    					<spring:param name="form" />
+								    					<spring:param name="activityId" value="${activity.id}" />
+								    	  	       	</spring:url>
+								                   	<a href="${show_resource_url}" class="list-group-item">
+								                       	<i class="fa fa-comment fa-fw"></i> <c:out value="${resource.planed}" />
+								                    </a> 
+	    										</c:forEach>
+	    									</div>
+	    								</div>
+    								</c:if>
+    							</div>              		
+		                   </c:forEach>
+		               </div>
+	               </div>
+               </c:if>
+    	</div>
+    	</c:forEach>
     </page:show>
 </div>

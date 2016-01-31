@@ -3,7 +3,9 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.DocumentReferenceDataOnDemand;
 import ch.lan.teko.model.DocumentReferenceIntegrationTest;
+import ch.lan.teko.repository.DocumentReferenceRepository;
 import ch.lan.teko.service.DocumentReferenceService;
 import java.util.Iterator;
 import java.util.List;
@@ -11,12 +13,28 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect DocumentReferenceIntegrationTest_Roo_IntegrationTest {
     
+    declare @type: DocumentReferenceIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
+    
+    declare @type: DocumentReferenceIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
+    
+    declare @type: DocumentReferenceIntegrationTest: @Transactional;
+    
+    @Autowired
+    DocumentReferenceDataOnDemand DocumentReferenceIntegrationTest.dod;
+    
     @Autowired
     DocumentReferenceService DocumentReferenceIntegrationTest.documentReferenceService;
+    
+    @Autowired
+    DocumentReferenceRepository DocumentReferenceIntegrationTest.documentReferenceRepository;
     
     @Test
     public void DocumentReferenceIntegrationTest.testCountAllDocumentReferences() {
@@ -56,6 +74,20 @@ privileged aspect DocumentReferenceIntegrationTest_Roo_IntegrationTest {
         List<DocumentReference> result = documentReferenceService.findDocumentReferenceEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'DocumentReference' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'DocumentReference' returned an incorrect number of entries", count, result.size());
+    }
+    
+    @Test
+    public void DocumentReferenceIntegrationTest.testFlush() {
+        DocumentReference obj = dod.getRandomDocumentReference();
+        Assert.assertNotNull("Data on demand for 'DocumentReference' failed to initialize correctly", obj);
+        Long id = obj.getId();
+        Assert.assertNotNull("Data on demand for 'DocumentReference' failed to provide an identifier", id);
+        obj = documentReferenceService.findDocumentReference(id);
+        Assert.assertNotNull("Find method for 'DocumentReference' illegally returned null for id '" + id + "'", obj);
+        boolean modified =  dod.modifyDocumentReference(obj);
+        Integer currentVersion = obj.getVersion();
+        documentReferenceRepository.flush();
+        Assert.assertTrue("Version for 'DocumentReference' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test

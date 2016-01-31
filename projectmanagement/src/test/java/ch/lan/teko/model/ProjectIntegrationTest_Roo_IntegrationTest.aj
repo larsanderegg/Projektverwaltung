@@ -3,7 +3,9 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.ProjectDataOnDemand;
 import ch.lan.teko.model.ProjectIntegrationTest;
+import ch.lan.teko.repository.ProjectRepository;
 import ch.lan.teko.service.ProjectService;
 import java.util.Iterator;
 import java.util.List;
@@ -11,12 +13,28 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
     
+    declare @type: ProjectIntegrationTest: @RunWith(SpringJUnit4ClassRunner.class);
+    
+    declare @type: ProjectIntegrationTest: @ContextConfiguration(locations = "classpath*:/META-INF/spring/applicationContext*.xml");
+    
+    declare @type: ProjectIntegrationTest: @Transactional;
+    
+    @Autowired
+    ProjectDataOnDemand ProjectIntegrationTest.dod;
+    
     @Autowired
     ProjectService ProjectIntegrationTest.projectService;
+    
+    @Autowired
+    ProjectRepository ProjectIntegrationTest.projectRepository;
     
     @Test
     public void ProjectIntegrationTest.testCountAllProjects() {
@@ -56,6 +74,20 @@ privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
         List<Project> result = projectService.findProjectEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'Project' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'Project' returned an incorrect number of entries", count, result.size());
+    }
+    
+    @Test
+    public void ProjectIntegrationTest.testFlush() {
+        Project obj = dod.getRandomProject();
+        Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", obj);
+        Long id = obj.getId();
+        Assert.assertNotNull("Data on demand for 'Project' failed to provide an identifier", id);
+        obj = projectService.findProject(id);
+        Assert.assertNotNull("Find method for 'Project' illegally returned null for id '" + id + "'", obj);
+        boolean modified =  dod.modifyProject(obj);
+        Integer currentVersion = obj.getVersion();
+        projectRepository.flush();
+        Assert.assertTrue("Version for 'Project' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test

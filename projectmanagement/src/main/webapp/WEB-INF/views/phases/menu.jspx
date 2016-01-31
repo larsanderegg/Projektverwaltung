@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" id="menu" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <div class="navbar-default sidebar" role="navigation">
+	    <div class="sidebar-nav navbar-collapse">
+	        <ul class="nav" id="side-menu">
+	        	<h3>Project</h3>
+		        <field:display field="name" id="s_ch_lan_teko_model_Project_name" object="${project}" z="4gnnlhr0qYPqzn8zM3CuxF8Uk68="/>
+		        <field:display field="progress" id="s_ch_lan_teko_model_Project_progress" object="${project}" z="Hles7T0V09k/qrlFhINyaJ4L2vw="/>
+		        <field:display field="approvalDate" id="s_ch_lan_teko_model_Project_approvalDate" object="${project}" z="MW9f5ZSHSodJ/x5UIgGmW2n1sRY="/>
+		        <field:display field="description" id="s_ch_lan_teko_model_Project_description" object="${project}" z="TvstiDdacsypBXnOjqWiAVSSYtc="/>
+		        <field:display field="priority" id="s_ch_lan_teko_model_Project_priority" object="${project}" z="Bjmb/8AtuvFnhV0dQSg/guNGjVs="/>
+		        <field:display field="projectState" id="s_ch_lan_teko_model_Project_projectState" object="${project}" z="DGR/grDDFdX1YUBMlRQeeMKBrm8="/>
+		        projectmanager: ${project.projectmanager.name}
+		        <br/>
+		        processModel: ${project.processModel.name}
+		        <!-- 
+ 		        <f:display field="projectmanager" id="s_ch_lan_teko_model_Project_projectmanager" object="${project}" z="81SCMADOjUgHPu0JXg5uUiLydfA="/> 
+		        <f:display field="processModel" id="s_ch_lan_teko_model_Project_processModel" object="${project}" z="Na50CCroBFFonKpLGSYvrEw7oqA="/>
+		      -->
+	        </ul>
+	    </div>
+    </div>
+</div>

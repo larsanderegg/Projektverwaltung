@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
-    <definition extends="default" name="financeresources/list">
-        <put-attribute name="body" value="/WEB-INF/views/financeresources/list.jspx"/>
-    </definition>
-<definition extends="default" name="financeresources/show">
+	<definition extends="default" name="financeresources/show">
         <put-attribute name="body" value="/WEB-INF/views/financeresources/show.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/financeresources/menu.jspx"/>
     </definition>
-<definition extends="default" name="financeresources/create">
+	<definition extends="default" name="financeresources/create">
         <put-attribute name="body" value="/WEB-INF/views/financeresources/create.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/financeresources/menu.jspx"/>
     </definition>
-<definition extends="default" name="financeresources/update">
+	<definition extends="default" name="financeresources/update">
         <put-attribute name="body" value="/WEB-INF/views/financeresources/update.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/financeresources/menu.jspx"/>
     </definition>
 </tiles-definitions>

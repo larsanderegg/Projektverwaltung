@@ -1,5 +1,8 @@
 package ch.lan.teko.service;
+import ch.lan.teko.model.DocumentReference;
 import ch.lan.teko.model.Phase;
+import ch.lan.teko.model.ProcessModel;
+
 import java.util.List;
 import org.springframework.roo.addon.layers.service.RooService;
 
@@ -25,5 +28,11 @@ public interface PhaseService {
 
 
 	public abstract Phase updatePhase(Phase phase);
+
+
+	public abstract List<Phase> generatePhases(ProcessModel processModel);
+
+
+	public abstract void addDocumentReference(Long phaseId, DocumentReference documentReference);
 
 }

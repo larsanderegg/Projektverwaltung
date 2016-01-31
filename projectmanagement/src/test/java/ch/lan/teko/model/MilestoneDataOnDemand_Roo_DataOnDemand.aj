@@ -5,9 +5,39 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.Milestone;
 import ch.lan.teko.model.MilestoneDataOnDemand;
+import ch.lan.teko.repository.MilestoneRepository;
+import ch.lan.teko.service.MilestoneService;
+import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
+    
+    declare @type: MilestoneDataOnDemand: @Component;
+    
+    private Random MilestoneDataOnDemand.rnd = new SecureRandom();
+    
+    private List<Milestone> MilestoneDataOnDemand.data;
+    
+    @Autowired
+    MilestoneService MilestoneDataOnDemand.milestoneService;
+    
+    @Autowired
+    MilestoneRepository MilestoneDataOnDemand.milestoneRepository;
+    
+    public Milestone MilestoneDataOnDemand.getNewTransientMilestone(int index) {
+        Milestone obj = new Milestone();
+        setName(obj, index);
+        setPlanedDate(obj, index);
+        return obj;
+    }
     
     public void MilestoneDataOnDemand.setName(Milestone obj, int index) {
         String name = "name_" + index;
@@ -17,6 +47,59 @@ privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
     public void MilestoneDataOnDemand.setPlanedDate(Milestone obj, int index) {
         LocalDate planedDate = null;
         obj.setPlanedDate(planedDate);
+    }
+    
+    public Milestone MilestoneDataOnDemand.getSpecificMilestone(int index) {
+        init();
+        if (index < 0) {
+            index = 0;
+        }
+        if (index > (data.size() - 1)) {
+            index = data.size() - 1;
+        }
+        Milestone obj = data.get(index);
+        Long id = obj.getId();
+        return milestoneService.findMilestone(id);
+    }
+    
+    public Milestone MilestoneDataOnDemand.getRandomMilestone() {
+        init();
+        Milestone obj = data.get(rnd.nextInt(data.size()));
+        Long id = obj.getId();
+        return milestoneService.findMilestone(id);
+    }
+    
+    public boolean MilestoneDataOnDemand.modifyMilestone(Milestone obj) {
+        return false;
+    }
+    
+    public void MilestoneDataOnDemand.init() {
+        int from = 0;
+        int to = 10;
+        data = milestoneService.findMilestoneEntries(from, to);
+        if (data == null) {
+            throw new IllegalStateException("Find entries implementation for 'Milestone' illegally returned null");
+        }
+        if (!data.isEmpty()) {
+            return;
+        }
+        
+        data = new ArrayList<Milestone>();
+        for (int i = 0; i < 10; i++) {
+            Milestone obj = getNewTransientMilestone(i);
+            try {
+                milestoneService.saveMilestone(obj);
+            } catch (final ConstraintViolationException e) {
+                final StringBuilder msg = new StringBuilder();
+                for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
+                    final ConstraintViolation<?> cv = iter.next();
+                    msg.append("[").append(cv.getRootBean().getClass().getName()).append(".").append(cv.getPropertyPath()).append(": ").append(cv.getMessage()).append(" (invalid value = ").append(cv.getInvalidValue()).append(")").append("]");
+                }
+                throw new IllegalStateException(msg.toString(), e);
+            }
+            milestoneRepository.flush();
+            data.add(obj);
+        }
     }
     
 }
