@@ -48,7 +48,7 @@ public abstract class Resource {
     private Integer version;
 	
 	private transient Long activityId;
-
+	
 	public Long getId() {
         return this.id;
     }

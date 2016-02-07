@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-public class Activity {
+public class Activity extends PhaseChild{
 	
 	@PersistenceContext
     transient EntityManager entityManager;
@@ -197,6 +197,22 @@ public class Activity {
 
 	public void setPhaseId(Long phaseId) {
 		this.phaseId = phaseId;
+	}
+	
+	@Override
+	protected LocalDate getDateToCompare() {
+		return getPlanedStartDate();
+	}
+	
+	@Override
+	public int compareTo(PhaseChild o) {
+		int result = super.compareTo(o);
+		if(result == 0){
+			if(!(o instanceof Activity)){
+				result = -1;
+			}
+		}
+		return result;
 	}
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "startDate", "endDate", "planedStartDate", "planedEndDate", "resources", "responsible", "progress");

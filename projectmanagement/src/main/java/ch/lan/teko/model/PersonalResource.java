@@ -30,6 +30,10 @@ public class PersonalResource extends Resource {
     @NotNull
     @ManyToOne
     private Employee employee;
+    
+    public String getDisplayString(){
+		return "PersonalResource";
+	}
 
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

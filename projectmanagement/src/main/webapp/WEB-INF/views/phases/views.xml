@@ -9,4 +9,10 @@
         <put-attribute name="body" value="/WEB-INF/views/phases/show.jspx"/>
         <put-attribute name="menu" value="/WEB-INF/views/phases/menu.jspx"/>
     </definition>
+<definition extends="default" name="phases/list">
+        <put-attribute name="body" value="/WEB-INF/views/phases/list.jspx"/>
+    </definition>
+<definition extends="default" name="phases/create">
+        <put-attribute name="body" value="/WEB-INF/views/phases/create.jspx"/>
+    </definition>
 </tiles-definitions>

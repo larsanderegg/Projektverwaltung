@@ -1,9 +1,12 @@
 package ch.lan.teko.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -68,12 +71,20 @@ public class Phase {
     private String phaseState;
     
     private transient Long projectId;
+    
+    private transient SortedSet<PhaseChild> childs;
 
     /**
      */
     @NotNull
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Activity> activities = new ArrayList<Activity>();
+    
+    /**
+     */
+    @NotNull
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Milestone> milestones = new ArrayList<>();
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -149,11 +160,27 @@ public class Phase {
     }
 
 	public List<Activity> getActivities() {
-        return this.activities;
+        return Collections.unmodifiableList(activities);
     }
+	
+	public void addActivity(Activity add){
+		activities.add(add);
+		if(childs == null) {
+			buildChilds();
+		}
+		activities.add(add);
+	}
+	
+	public void removeActivity(Activity remove){
+		activities.remove(remove);
+		if(childs != null) {
+			childs.remove(remove);
+		}
+	}
 
 	public void setActivities(List<Activity> activities) {
         this.activities = activities;
+        buildChilds();
     }
 	
 	public String getName() {
@@ -164,6 +191,30 @@ public class Phase {
 		this.name = name;
 	}
 	
+	public List<Milestone> getMilestones() {
+		return Collections.unmodifiableList(milestones);
+	}
+	
+	public void addMilestone(Milestone add){
+		milestones.add(add);
+		if(childs == null) {
+			buildChilds();
+		}
+		childs.add(add);
+	}
+	
+	public void removeMilestone(Milestone remove){
+		milestones.remove(remove);
+		if(childs != null) {
+			childs.remove(remove);
+		}
+	}
+
+	public void setMilestones(List<Milestone> milestones) {
+		this.milestones = milestones;
+		buildChilds();
+	}
+
 	public Long getProjectId() {
 		return projectId;
 	}
@@ -175,6 +226,19 @@ public class Phase {
 	public String toString() {
         return name;
     }
+	
+	public SortedSet<PhaseChild> getChilds(){
+		if(childs == null){
+			buildChilds();
+		}
+		return childs;
+	}
+	
+	private void buildChilds(){
+		childs = new TreeSet<>();
+		childs.addAll(activities);
+		childs.addAll(milestones);	
+	}
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "reviewDate", "approvalDate", "planedReviewDate", "progress", "phaseState", "activities");
 

@@ -25,7 +25,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-public class Milestone {
+public class Milestone extends PhaseChild{
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
+	@Version
+    @Column(name = "version")
+    private Integer version;
 	
 	/**
      */
@@ -38,6 +47,70 @@ public class Milestone {
     @NotNull
     @DateTimeFormat(style = "M-")
     private LocalDate planedDate;
+    
+    /**
+     */
+    private transient Long phaseId;
+    
+    public String getName() {
+        return this.name;
+    }
+
+	public void setName(String name) {
+        this.name = name;
+    }
+
+	public LocalDate getPlanedDate() {
+        return this.planedDate;
+    }
+
+	public void setPlanedDate(LocalDate planedDate) {
+        this.planedDate = planedDate;
+    }
+
+	public Long getId() {
+        return this.id;
+    }
+
+	public void setId(Long id) {
+        this.id = id;
+    }
+
+	public Integer getVersion() {
+        return this.version;
+    }
+
+	public void setVersion(Integer version) {
+        this.version = version;
+    }
+	
+	public Long getPhaseId() {
+		return phaseId;
+	}
+
+	public void setPhaseId(Long phaseId) {
+		this.phaseId = phaseId;
+	}
+
+	public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+    
+	@Override
+	public LocalDate getDateToCompare() {
+		return getPlanedDate();
+	}
+	
+	@Override
+	public int compareTo(PhaseChild o) {
+		int result = super.compareTo(o);
+		if(result == 0){
+			if(!(o instanceof Milestone)){
+				result = 1;
+			}
+		}
+		return result;
+	}
 
 	@PersistenceContext
     transient EntityManager entityManager;
@@ -124,50 +197,5 @@ public class Milestone {
         Milestone merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
-    }
-
-	public String getName() {
-        return this.name;
-    }
-
-	public void setName(String name) {
-        this.name = name;
-    }
-
-	public LocalDate getPlanedDate() {
-        return this.planedDate;
-    }
-
-	public void setPlanedDate(LocalDate planedDate) {
-        this.planedDate = planedDate;
-    }
-
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-	@Version
-    @Column(name = "version")
-    private Integer version;
-
-	public Long getId() {
-        return this.id;
-    }
-
-	public void setId(Long id) {
-        this.id = id;
-    }
-
-	public Integer getVersion() {
-        return this.version;
-    }
-
-	public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-	public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

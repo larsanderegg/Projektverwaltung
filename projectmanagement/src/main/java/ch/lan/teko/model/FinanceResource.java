@@ -31,6 +31,10 @@ public class FinanceResource extends Resource {
 	public void setType(String type) {
         this.type = type;
     }
+	
+	public String getDisplayString(){
+		return "FinanceResource";
+	}
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("type");
 

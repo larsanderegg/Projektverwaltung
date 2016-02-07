@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
-    <definition extends="default" name="personalresources/list">
-        <put-attribute name="body" value="/WEB-INF/views/personalresources/list.jspx"/>
-    </definition>
-<definition extends="default" name="personalresources/show">
+	<definition extends="default" name="personalresources/show">
         <put-attribute name="body" value="/WEB-INF/views/personalresources/show.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/personalresources/menu.jspx"/>
     </definition>
-<definition extends="default" name="personalresources/create">
+	<definition extends="default" name="personalresources/create">
         <put-attribute name="body" value="/WEB-INF/views/personalresources/create.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/personalresources/menu.jspx"/>
     </definition>
-<definition extends="default" name="personalresources/update">
+	<definition extends="default" name="personalresources/update">
         <put-attribute name="body" value="/WEB-INF/views/personalresources/update.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/personalresources/menu.jspx"/>
     </definition>
 </tiles-definitions>
