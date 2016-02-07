@@ -64,6 +64,7 @@ public class PersonalResourceController {
 	public String createForm(@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
 		PersonalResource personalResource = new PersonalResource();
 		personalResource.setActivityId(activityId);
+		
 		populateEditForm(uiModel, personalResource);
 
 		Activity activity = activityService.findActivity(activityId);

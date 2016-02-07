@@ -13,9 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -230,6 +232,20 @@ public class Project {
         }
         return entityManager().createQuery(jpaQuery, Project.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
+	
+	public static Project findProjectByPhaseId(Long phaseId){
+		if (phaseId == null) return null;
+		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p WHERE p.id = :phaseId", Project.class);
+		query.setParameter("phaseId", phaseId);
+		return query.getSingleResult();
+	}
+	
+	public static Project findProjectByActivityId(Long activityId){
+		if (activityId == null) return null;
+		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p INNER JOIN p.activities a WHERE a.id = :activityId", Project.class);
+		query.setParameter("activityId", activityId);
+		return query.getSingleResult();
+	}
 
 	@Transactional
     public void persist() {

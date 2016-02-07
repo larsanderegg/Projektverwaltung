@@ -27,7 +27,7 @@
 		      
 		      	<li>
 		      		<a href="${edit_item_url}">Edit</a>
-		      	<li>
+		      	</li>
 	        </ul>
 	    </div>
     </div>

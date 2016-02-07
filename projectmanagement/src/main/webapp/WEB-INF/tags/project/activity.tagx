@@ -1,0 +1,78 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:form="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+  <jsp:output omit-xml-declaration="yes" />
+
+  <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />
+  <jsp:directive.attribute name="activity" type="ch.lan.teko.model.Activity" required="true" rtexprvalue="true" description="The activity to show" />
+  <jsp:directive.attribute name="phaseId" type="java.lang.Long" required="true" rtexprvalue="true" description="The phaseId" />
+  <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+  <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
+
+  <c:if test="${empty render or render}">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			
+			<a data-toggle="collapse" data-parent="#accordion" href="#collapse_${id}">
+				<span class="caret"/>
+			</a>
+			
+			<spring:url value="/activitys/${activity.id}" var="show_activity_url">
+				<spring:param name="form" />
+				<spring:param name="phaseId" value="${phaseId}" />
+		    </spring:url>
+		    <a href="${show_activity_url}" style="margin-left: 10px;">
+		    	<c:out value="${activity.name}" />
+		    </a>   	
+		    <div class="pull-right">
+				<span class="text-muted small">
+		             <em><c:out value="${activity.startDate}" />-<c:out value="${activity.endDate}" /></em>
+		        </span>
+					
+		        <spring:url value="/documentreferences" var="new_link_activity_url">
+					<spring:param name="form" />
+					<spring:param name="activityId" value="${activity.id}" />
+				</spring:url>
+				<spring:url value="/personalresources" var="new_personal_url">
+					<spring:param name="form" />
+					<spring:param name="activityId" value="${activity.id}" />
+				</spring:url>
+				<spring:url value="/financeresources" var="new_finance_url">
+					<spring:param name="form" />
+					<spring:param name="activityId" value="${activity.id}" />
+				</spring:url>
+		        <div class="btn-group">
+	                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+	                     Actions<span class="caret"/>
+	                 </button>
+	                 <ul class="dropdown-menu pull-right" role="menu">
+	                     <li>
+	                     	<a href="${new_personal_url}">Add PersonalResource</a>
+	                     </li>
+	                     <li><a href="${new_finance_url}">Add FinanceResource</a>
+	                     </li>
+	                     <li class="divider"></li>
+	                     <li><a href="${new_link_activity_url}">Add Document</a>
+	                      </li>
+	                  </ul>
+		         </div>
+			</div>
+		</div>
+		<c:if test="${not empty activity.resources}">
+			<div id="collapse_${id}" class="panel-collapse collapse">
+				<div class="panel-body">
+					<div class="list-group">
+						<c:forEach items="${activity.resources}" var="resource">
+							<spring:url value="/${resource.getClass().simpleName}s/${resource.id}" var="show_resource_url">
+								<spring:param name="form" />
+								<spring:param name="activityId" value="${activity.id}" />
+				  	       	</spring:url>
+				              	<a href="${show_resource_url}" class="list-group-item">
+				                  	<i class="fa fa-comment fa-fw"></i> <c:out value="${resource}" />
+				               </a> 
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+		</c:if>
+	</div>              		
+  </c:if>
+</jsp:root>

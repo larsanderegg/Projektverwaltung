@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_ch_lan_teko_model_Phase" object="${phase}" path="/phases" z="qtBM/UqWrzHPQpeUyboHG97UKmk=">
+        <field:display field="name" id="s_ch_lan_teko_model_Phase_name" object="${phase}" z="mHMVOh/1Q6jxkKfQnIDFsgBxn4Q="/>
+        <field:display field="reviewDate" id="s_ch_lan_teko_model_Phase_reviewDate" object="${phase}" z="gaB8Rf5QTiVfP1NZZqxqpPWzjic="/>
+        <field:display field="approvalDate" id="s_ch_lan_teko_model_Phase_approvalDate" object="${phase}" z="yyiOJTfekBgWLRXZqUxg2a9IG5I="/>
+        <field:display field="planedReviewDate" id="s_ch_lan_teko_model_Phase_planedReviewDate" object="${phase}" z="x36GOO10VXKurvaWdP319WOSR78="/>
+        <field:display field="progress" id="s_ch_lan_teko_model_Phase_progress" object="${phase}" z="uhrN45u5mihH1o+2RsR/poCe/XE="/>
+        <field:display field="phaseState" id="s_ch_lan_teko_model_Phase_phaseState" object="${phase}" z="QEicgXe9ZRKzJ66NfRvrlZ2dTok="/>
+        <field:display field="links" id="s_ch_lan_teko_model_Phase_links" object="${phase}" z="xHyUzmG/vq1ktTt12hIBZnrcSL8="/>
+        <field:display field="activities" id="s_ch_lan_teko_model_Phase_activities" object="${phase}" z="E+sbrTASDH3/c+cPSsj6qZTN6CM="/>
+        <field:display field="milestones" id="s_ch_lan_teko_model_Phase_milestones" object="${phase}" z="B9gtpYFSNvaZcG2ZysIjEx1ruMo="/>
+        <field:display field="projectId" id="s_ch_lan_teko_model_Phase_projectId" object="${phase}" z="kYgMtDcS7kk7Z0w+lyZWvofS11w="/>
+    </page:show>
+</div>
