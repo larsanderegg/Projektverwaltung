@@ -27,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJpaActiveRecord
 public class Milestone extends PhaseChild{
 	
+	@PersistenceContext
+    transient EntityManager entityManager;
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -51,8 +54,33 @@ public class Milestone extends PhaseChild{
     /**
      */
     private transient Long phaseId;
-    
-    public String getName() {
+	
+	public Long getPhaseId() {
+		return phaseId;
+	}
+
+	public void setPhaseId(Long phaseId) {
+		this.phaseId = phaseId;
+	}
+	
+	@Override
+	public TimeBoxedData getTimeBoxedData() {
+		return new TimeBoxedData(null, null, planedDate, planedDate);
+	}
+	
+	@Override
+	public LocalDate getDateToCompare() {
+		return planedDate;
+	}
+
+	/**
+	 * @param planedDate the planedDate to set
+	 */
+	public void setPlanedDate(LocalDate planedDate) {
+		this.planedDate = planedDate;
+	}
+	
+	public String getName() {
         return this.name;
     }
 
@@ -62,10 +90,6 @@ public class Milestone extends PhaseChild{
 
 	public LocalDate getPlanedDate() {
         return this.planedDate;
-    }
-
-	public void setPlanedDate(LocalDate planedDate) {
-        this.planedDate = planedDate;
     }
 
 	public Long getId() {
@@ -84,37 +108,10 @@ public class Milestone extends PhaseChild{
         this.version = version;
     }
 	
-	public Long getPhaseId() {
-		return phaseId;
-	}
-
-	public void setPhaseId(Long phaseId) {
-		this.phaseId = phaseId;
-	}
-
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-    
-	@Override
-	public LocalDate getDateToCompare() {
-		return getPlanedDate();
-	}
 	
-	@Override
-	public int compareTo(PhaseChild o) {
-		int result = super.compareTo(o);
-		if(result == 0){
-			if(!(o instanceof Milestone)){
-				result = 1;
-			}
-		}
-		return result;
-	}
-
-	@PersistenceContext
-    transient EntityManager entityManager;
-
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "planedDate");
 
 	public static final EntityManager entityManager() {

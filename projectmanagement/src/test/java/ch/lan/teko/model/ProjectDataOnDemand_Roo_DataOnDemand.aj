@@ -9,8 +9,6 @@ import ch.lan.teko.model.ProcessModel;
 import ch.lan.teko.model.ProcessModelDataOnDemand;
 import ch.lan.teko.model.Project;
 import ch.lan.teko.model.ProjectDataOnDemand;
-import ch.lan.teko.repository.ProjectRepository;
-import ch.lan.teko.service.ProjectService;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,12 +33,6 @@ privileged aspect ProjectDataOnDemand_Roo_DataOnDemand {
     
     @Autowired
     EmployeeDataOnDemand ProjectDataOnDemand.employeeDataOnDemand;
-    
-    @Autowired
-    ProjectService ProjectDataOnDemand.projectService;
-    
-    @Autowired
-    ProjectRepository ProjectDataOnDemand.projectRepository;
     
     public Project ProjectDataOnDemand.getNewTransientProject(int index) {
         Project obj = new Project();
@@ -105,14 +97,14 @@ privileged aspect ProjectDataOnDemand_Roo_DataOnDemand {
         }
         Project obj = data.get(index);
         Long id = obj.getId();
-        return projectService.findProject(id);
+        return Project.findProject(id);
     }
     
     public Project ProjectDataOnDemand.getRandomProject() {
         init();
         Project obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return projectService.findProject(id);
+        return Project.findProject(id);
     }
     
     public boolean ProjectDataOnDemand.modifyProject(Project obj) {
@@ -122,7 +114,7 @@ privileged aspect ProjectDataOnDemand_Roo_DataOnDemand {
     public void ProjectDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = projectService.findProjectEntries(from, to);
+        data = Project.findProjectEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'Project' illegally returned null");
         }
@@ -134,7 +126,7 @@ privileged aspect ProjectDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             Project obj = getNewTransientProject(i);
             try {
-                projectService.saveProject(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -143,7 +135,7 @@ privileged aspect ProjectDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            projectRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }

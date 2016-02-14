@@ -34,11 +34,17 @@ public class PersonalResource extends Resource {
     public String getDisplayString(){
 		return "PersonalResource";
 	}
-
+	
+	@Override
+	public void fill(ResourceCollector collector) {
+		collector.incrementPlanedPersonalResources(getPlaned());
+		collector.incrementEffectivPersonalResources(getEffectiv());
+	}
+	
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
+	
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("job", "employee");
 
 	public static long countPersonalResources() {

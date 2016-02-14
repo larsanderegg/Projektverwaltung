@@ -21,6 +21,11 @@
  		        <f:display field="projectmanager" id="s_ch_lan_teko_model_Project_projectmanager" object="${project}" z="81SCMADOjUgHPu0JXg5uUiLydfA="/> 
 		        <f:display field="processModel" id="s_ch_lan_teko_model_Project_processModel" object="${project}" z="Na50CCroBFFonKpLGSYvrEw7oqA="/>
 		      -->
+		      	
+		      	<pm:timeBoxed id="project_${project.id}_timeBoxed" timeBoxed="${project.timeBoxedData}" />
+		      	
+		      	<pm:summedResources id="project_${project.id}_summed" resources="${project.summedResources}" />
+		      
 	        </ul>
 	    </div>
     </div>

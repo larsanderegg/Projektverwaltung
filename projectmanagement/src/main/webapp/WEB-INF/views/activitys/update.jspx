@@ -6,8 +6,8 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_ch_lan_teko_model_Activity" modelAttribute="activity" path="/activitys" versionField="Version" z="4Fl1sAiX/MCZSjkJ8M1LT5IjbLY=">
         <field:input field="name" id="c_ch_lan_teko_model_Activity_name" required="true" z="5WJcjv8rHGcTooxbcyP0jxFLZ2s="/>
-        <field:input field="startDate" id="c_ch_lan_teko_model_Activity_startDate" required="true" z="ZdFd9zyi1IbPKqo2tPr0CwlzDb4="/>
-        <field:input field="endDate" id="c_ch_lan_teko_model_Activity_endDate" required="true" z="flKLXnUzKqh9Df/MlPO/3Vp6JRI="/>
+        <field:input field="startDate" id="c_ch_lan_teko_model_Activity_startDate" required="false" z="ZdFd9zyi1IbPKqo2tPr0CwlzDb4="/>
+        <field:input field="endDate" id="c_ch_lan_teko_model_Activity_endDate" required="false" z="flKLXnUzKqh9Df/MlPO/3Vp6JRI="/>
         <field:input field="planedStartDate" id="c_ch_lan_teko_model_Activity_planedStartDate" required="true" z="/v1gFEnmTywJde7kSuCilRCCWjU="/>
         <field:input field="planedEndDate" id="c_ch_lan_teko_model_Activity_planedEndDate" required="true" z="oqdb8xfZ3LEvRLzOvtI4aPuk3JE="/>
         <field:select field="responsible" id="c_ch_lan_teko_model_Activity_responsible" itemValue="id" items="${employees}" path="/employees" required="true" z="RC9JCJSGcBXcjvVN9clhe5mMloo="/>

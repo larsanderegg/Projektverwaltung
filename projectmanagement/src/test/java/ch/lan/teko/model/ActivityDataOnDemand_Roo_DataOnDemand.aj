@@ -7,8 +7,6 @@ import ch.lan.teko.model.Activity;
 import ch.lan.teko.model.ActivityDataOnDemand;
 import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.EmployeeDataOnDemand;
-import ch.lan.teko.repository.ActivityRepository;
-import ch.lan.teko.service.ActivityService;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,12 +28,6 @@ privileged aspect ActivityDataOnDemand_Roo_DataOnDemand {
     
     @Autowired
     EmployeeDataOnDemand ActivityDataOnDemand.employeeDataOnDemand;
-    
-    @Autowired
-    ActivityService ActivityDataOnDemand.activityService;
-    
-    @Autowired
-    ActivityRepository ActivityDataOnDemand.activityRepository;
     
     public Activity ActivityDataOnDemand.getNewTransientActivity(int index) {
         Activity obj = new Activity();
@@ -100,14 +92,14 @@ privileged aspect ActivityDataOnDemand_Roo_DataOnDemand {
         }
         Activity obj = data.get(index);
         Long id = obj.getId();
-        return activityService.findActivity(id);
+        return Activity.findActivity(id);
     }
     
     public Activity ActivityDataOnDemand.getRandomActivity() {
         init();
         Activity obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return activityService.findActivity(id);
+        return Activity.findActivity(id);
     }
     
     public boolean ActivityDataOnDemand.modifyActivity(Activity obj) {
@@ -117,7 +109,7 @@ privileged aspect ActivityDataOnDemand_Roo_DataOnDemand {
     public void ActivityDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = activityService.findActivityEntries(from, to);
+        data = Activity.findActivityEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'Activity' illegally returned null");
         }
@@ -129,7 +121,7 @@ privileged aspect ActivityDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             Activity obj = getNewTransientActivity(i);
             try {
-                activityService.saveActivity(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -138,7 +130,7 @@ privileged aspect ActivityDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            activityRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }

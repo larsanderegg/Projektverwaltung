@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" 
-		xmlns:spring="http://www.springframework.org/tags" id="menu" version="2.0">
+		xmlns:spring="http://www.springframework.org/tags" xmlns:pm="urn:jsptagdir:/WEB-INF/tags/project" id="menu" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
@@ -19,6 +19,9 @@
 		        <field:display field="planedReviewDate" id="s_ch_lan_teko_model_Phase_planedReviewDate" object="${phase}" z="x36GOO10VXKurvaWdP319WOSR78="/>
 		        <field:display field="progress" id="s_ch_lan_teko_model_Phase_progress" object="${phase}" z="uhrN45u5mihH1o+2RsR/poCe/XE="/>
 		        <field:display field="phaseState" id="s_ch_lan_teko_model_Phase_phaseState" object="${phase}" z="QEicgXe9ZRKzJ66NfRvrlZ2dTok="/>
+		        
+		        <pm:timeBoxed id="phase_${phase.id}_timeBoxed" timeBoxed="${phase.timeBoxedData}" />
+		        <pm:summedResources id="phase_${phase.id}_summed" resources="${phase.summedResources}" />
 	        </ul>
 	    </div>
     </div>

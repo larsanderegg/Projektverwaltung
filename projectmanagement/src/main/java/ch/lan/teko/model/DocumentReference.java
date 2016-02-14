@@ -25,6 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJpaActiveRecord
 public class DocumentReference {
 	
+	@PersistenceContext
+    transient EntityManager entityManager;
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -49,7 +52,31 @@ public class DocumentReference {
     private transient Long activityId;
     private transient Long phaseId;
     private transient Long projectId;
-    
+	
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
+	}
+
+	public Long getPhaseId() {
+		return phaseId;
+	}
+
+	public void setPhaseId(Long phaseId) {
+		this.phaseId = phaseId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+	
 	public String getName() {
         return this.name;
     }
@@ -82,37 +109,10 @@ public class DocumentReference {
         this.version = version;
     }
 	
-	public Long getActivityId() {
-		return activityId;
-	}
-
-	public void setActivityId(Long activityId) {
-		this.activityId = activityId;
-	}
-
-	public Long getPhaseId() {
-		return phaseId;
-	}
-
-	public void setPhaseId(Long phaseId) {
-		this.phaseId = phaseId;
-	}
-
-	public Long getProjectId() {
-		return projectId;
-	}
-
-	public void setProjectId(Long projectId) {
-		this.projectId = projectId;
-	}
-
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
-	@PersistenceContext
-    transient EntityManager entityManager;
-
+	
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "path");
 
 	public static final EntityManager entityManager() {
@@ -164,6 +164,18 @@ public class DocumentReference {
     public void persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
+        
+        if(this.getActivityId() != null) {
+        	Activity.addDocumentReference(this.getActivityId(), this);
+        }
+        
+        if(this.getProjectId() != null) {
+        	Project.addDocumentReference(this.getProjectId(), this);
+        }
+        
+        if(this.getPhaseId() != null) {
+        	Phase.addDocumentReference(this.getPhaseId(), this);
+        }
     }
 
 	@Transactional

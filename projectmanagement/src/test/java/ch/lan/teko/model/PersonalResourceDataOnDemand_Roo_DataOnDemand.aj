@@ -7,7 +7,6 @@ import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.EmployeeDataOnDemand;
 import ch.lan.teko.model.PersonalResource;
 import ch.lan.teko.model.PersonalResourceDataOnDemand;
-import ch.lan.teko.repository.PersonalResourceRepository;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,17 +28,20 @@ privileged aspect PersonalResourceDataOnDemand_Roo_DataOnDemand {
     @Autowired
     EmployeeDataOnDemand PersonalResourceDataOnDemand.employeeDataOnDemand;
     
-    @Autowired
-    PersonalResourceRepository PersonalResourceDataOnDemand.personalResourceRepository;
-    
     public PersonalResource PersonalResourceDataOnDemand.getNewTransientPersonalResource(int index) {
         PersonalResource obj = new PersonalResource();
+        setActivityId(obj, index);
         setEffectiv(obj, index);
         setEmployee(obj, index);
         setExplanation(obj, index);
         setJob(obj, index);
         setPlaned(obj, index);
         return obj;
+    }
+    
+    public void PersonalResourceDataOnDemand.setActivityId(PersonalResource obj, int index) {
+        Long activityId = new Integer(index).longValue();
+        obj.setActivityId(activityId);
     }
     
     public void PersonalResourceDataOnDemand.setEffectiv(PersonalResource obj, int index) {
@@ -77,14 +79,14 @@ privileged aspect PersonalResourceDataOnDemand_Roo_DataOnDemand {
         }
         PersonalResource obj = data.get(index);
         Long id = obj.getId();
-        return personalResourceRepository.findOne(id);
+        return PersonalResource.findPersonalResource(id);
     }
     
     public PersonalResource PersonalResourceDataOnDemand.getRandomPersonalResource() {
         init();
         PersonalResource obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return personalResourceRepository.findOne(id);
+        return PersonalResource.findPersonalResource(id);
     }
     
     public boolean PersonalResourceDataOnDemand.modifyPersonalResource(PersonalResource obj) {
@@ -94,7 +96,7 @@ privileged aspect PersonalResourceDataOnDemand_Roo_DataOnDemand {
     public void PersonalResourceDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = personalResourceRepository.findAll(new org.springframework.data.domain.PageRequest(from / to, to)).getContent();
+        data = PersonalResource.findPersonalResourceEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'PersonalResource' illegally returned null");
         }
@@ -106,7 +108,7 @@ privileged aspect PersonalResourceDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             PersonalResource obj = getNewTransientPersonalResource(i);
             try {
-                personalResourceRepository.save(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -115,7 +117,7 @@ privileged aspect PersonalResourceDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            personalResourceRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }

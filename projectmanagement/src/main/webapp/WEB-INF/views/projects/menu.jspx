@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" 
-	xmlns:spring="http://www.springframework.org/tags" id="menu" version="2.0">
+	xmlns:spring="http://www.springframework.org/tags" xmlns:pm="urn:jsptagdir:/WEB-INF/tags/project" id="menu" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <div class="navbar-default sidebar" role="navigation">
@@ -24,6 +24,10 @@
  		        <f:display field="projectmanager" id="s_ch_lan_teko_model_Project_projectmanager" object="${project}" z="81SCMADOjUgHPu0JXg5uUiLydfA="/> 
 		        <f:display field="processModel" id="s_ch_lan_teko_model_Project_processModel" object="${project}" z="Na50CCroBFFonKpLGSYvrEw7oqA="/>
 		      -->
+		      
+		      	<pm:timeBoxed id="project_${project.id}_timeBoxed" timeBoxed="${project.timeBoxedData}" />
+		      
+		      	<pm:summedResources id="project_${project.id}_summed" resources="${project.summedResources}" />
 		      
 		      	<li>
 		      		<a href="${edit_item_url}">Edit</a>

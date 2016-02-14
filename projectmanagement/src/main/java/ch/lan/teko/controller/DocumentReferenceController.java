@@ -1,10 +1,8 @@
 package ch.lan.teko.controller;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.gvnix.addon.web.mvc.annotations.jquery.GvNIXWebJQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,30 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ch.lan.teko.model.Activity;
 import ch.lan.teko.model.DocumentReference;
-import ch.lan.teko.service.ActivityService;
-import ch.lan.teko.service.DocumentReferenceService;
-import ch.lan.teko.service.PhaseService;
-import ch.lan.teko.service.ProjectService;
+import ch.lan.teko.model.Phase;
+import ch.lan.teko.model.Project;
 import ch.lan.teko.util.URLHelper;
 
 @RequestMapping("/documentreferences")
 @Controller
-@RooWebScaffold(path = "documentreferences", formBackingObject = DocumentReference.class)
+@GvNIXWebJQuery
 public class DocumentReferenceController {
-
-	@Autowired
-	DocumentReferenceService documentReferenceService;
-
-	@Autowired
-	ActivityService activityService;
-
-	@Autowired
-	ProjectService projectService;
-
-	@Autowired
-	PhaseService phaseService;
-
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid DocumentReference documentReference, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -45,7 +30,7 @@ public class DocumentReferenceController {
 			return "documentreferences/create";
 		}
 		uiModel.asMap().clear();
-		documentReferenceService.saveDocumentReference(documentReference);
+		documentReference.persist();
 
 		return createRedirectLink(documentReference, httpServletRequest);
 	}
@@ -59,13 +44,13 @@ public class DocumentReferenceController {
 		populateEditForm(uiModel, documentReference);
 
 		if (activityId != null) {
-			uiModel.addAttribute("activity", activityService.findActivity(activityId));
+			uiModel.addAttribute("activity", Activity.findActivity(activityId));
 			documentReference.setActivityId(activityId);
 		} else if (projectId != null) {
-			uiModel.addAttribute("project", projectService.findProject(projectId));
+			uiModel.addAttribute("project", Project.findProject(projectId));
 			documentReference.setProjectId(projectId);
 		} else if (phaseId != null) {
-			uiModel.addAttribute("phase", phaseService.findPhase(phaseId));
+			uiModel.addAttribute("phase", Phase.findPhase(phaseId));
 			documentReference.setPhaseId(phaseId);
 		}
 
@@ -77,15 +62,15 @@ public class DocumentReferenceController {
 			@RequestParam(value = "activityId", required = false) Long activityId,
 			@RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value = "phaseId", required = false) Long phaseId, Model uiModel) {
-		uiModel.addAttribute("documentreference", documentReferenceService.findDocumentReference(id));
+		uiModel.addAttribute("documentreference", DocumentReference.findDocumentReference(id));
 		uiModel.addAttribute("itemId", id);
 
 		if (activityId != null) {
-			uiModel.addAttribute("activity", activityService.findActivity(activityId));
+			uiModel.addAttribute("activity", Activity.findActivity(activityId));
 		} else if (projectId != null) {
-			uiModel.addAttribute("project", projectService.findProject(projectId));
+			uiModel.addAttribute("project", Project.findProject(projectId));
 		} else if (phaseId != null) {
-			uiModel.addAttribute("phase", phaseService.findPhase(phaseId));
+			uiModel.addAttribute("phase", Phase.findPhase(phaseId));
 		}
 
 		return "documentreferences/show";
@@ -99,7 +84,7 @@ public class DocumentReferenceController {
 			return "documentreferences/update";
 		}
 		uiModel.asMap().clear();
-		documentReferenceService.updateDocumentReference(documentReference);
+		documentReference.merge();
 
 		return createRedirectLink(documentReference, httpServletRequest);
 	}
@@ -109,17 +94,17 @@ public class DocumentReferenceController {
 			@RequestParam(value = "activityId", required = false) Long activityId,
 			@RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value = "phaseId", required = false) Long phaseId, Model uiModel) {
-		DocumentReference documentReference = documentReferenceService.findDocumentReference(id);
+		DocumentReference documentReference = DocumentReference.findDocumentReference(id);
 		populateEditForm(uiModel, documentReference);
 
 		if (activityId != null) {
-			uiModel.addAttribute("activity", activityService.findActivity(activityId));
+			uiModel.addAttribute("activity", Activity.findActivity(activityId));
 			documentReference.setActivityId(activityId);
 		} else if (projectId != null) {
-			uiModel.addAttribute("project", projectService.findProject(projectId));
+			uiModel.addAttribute("project", Project.findProject(projectId));
 			documentReference.setProjectId(projectId);
 		} else if (phaseId != null) {
-			uiModel.addAttribute("phase", phaseService.findPhase(phaseId));
+			uiModel.addAttribute("phase", Phase.findPhase(phaseId));
 			documentReference.setPhaseId(phaseId);
 		}
 
@@ -129,8 +114,8 @@ public class DocumentReferenceController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
 	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-		DocumentReference documentReference = documentReferenceService.findDocumentReference(id);
-		documentReferenceService.deleteDocumentReference(documentReference);
+		DocumentReference documentReference = DocumentReference.findDocumentReference(id);
+		documentReference.remove();
 		uiModel.asMap().clear();
 		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
 		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

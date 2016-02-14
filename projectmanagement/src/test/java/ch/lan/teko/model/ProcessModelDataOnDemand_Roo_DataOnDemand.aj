@@ -5,8 +5,6 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.ProcessModel;
 import ch.lan.teko.model.ProcessModelDataOnDemand;
-import ch.lan.teko.repository.ProcessModelRepository;
-import ch.lan.teko.service.ProcessModelService;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 privileged aspect ProcessModelDataOnDemand_Roo_DataOnDemand {
@@ -24,12 +21,6 @@ privileged aspect ProcessModelDataOnDemand_Roo_DataOnDemand {
     private Random ProcessModelDataOnDemand.rnd = new SecureRandom();
     
     private List<ProcessModel> ProcessModelDataOnDemand.data;
-    
-    @Autowired
-    ProcessModelService ProcessModelDataOnDemand.processModelService;
-    
-    @Autowired
-    ProcessModelRepository ProcessModelDataOnDemand.processModelRepository;
     
     public ProcessModel ProcessModelDataOnDemand.getNewTransientProcessModel(int index) {
         ProcessModel obj = new ProcessModel();
@@ -58,14 +49,14 @@ privileged aspect ProcessModelDataOnDemand_Roo_DataOnDemand {
         }
         ProcessModel obj = data.get(index);
         Long id = obj.getId();
-        return processModelService.findProcessModel(id);
+        return ProcessModel.findProcessModel(id);
     }
     
     public ProcessModel ProcessModelDataOnDemand.getRandomProcessModel() {
         init();
         ProcessModel obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return processModelService.findProcessModel(id);
+        return ProcessModel.findProcessModel(id);
     }
     
     public boolean ProcessModelDataOnDemand.modifyProcessModel(ProcessModel obj) {
@@ -75,7 +66,7 @@ privileged aspect ProcessModelDataOnDemand_Roo_DataOnDemand {
     public void ProcessModelDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = processModelService.findProcessModelEntries(from, to);
+        data = ProcessModel.findProcessModelEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'ProcessModel' illegally returned null");
         }
@@ -87,7 +78,7 @@ privileged aspect ProcessModelDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             ProcessModel obj = getNewTransientProcessModel(i);
             try {
-                processModelService.saveProcessModel(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -96,7 +87,7 @@ privileged aspect ProcessModelDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            processModelRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }

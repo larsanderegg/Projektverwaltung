@@ -1,10 +1,8 @@
 package ch.lan.teko.controller;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.gvnix.addon.web.mvc.annotations.jquery.GvNIXWebJQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,17 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.lan.teko.model.Employee;
-import ch.lan.teko.service.EmployeeService;
 import ch.lan.teko.util.URLHelper;
 
 @RequestMapping("/employees")
 @Controller
-@RooWebScaffold(path = "employees", formBackingObject = Employee.class)
+@GvNIXWebJQuery
 public class EmployeeController {
-
-	@Autowired
-	EmployeeService employeeService;
-
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid Employee employee, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -33,7 +27,7 @@ public class EmployeeController {
 			return "employees/create";
 		}
 		uiModel.asMap().clear();
-		employeeService.saveEmployee(employee);
+		employee.persist();
 		return "redirect:/employees/" + URLHelper.encodeUrlPathSegment(employee.getId().toString(), httpServletRequest);
 	}
 
@@ -45,7 +39,7 @@ public class EmployeeController {
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
 	public String show(@PathVariable("id") Long id, Model uiModel) {
-		uiModel.addAttribute("employee", employeeService.findEmployee(id));
+		uiModel.addAttribute("employee", Employee.findEmployee(id));
 		uiModel.addAttribute("itemId", id);
 		return "employees/show";
 	}
@@ -60,7 +54,7 @@ public class EmployeeController {
 			final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
 			uiModel.addAttribute("employees",
 					Employee.findEmployeeEntries(firstResult, sizeNo, sortFieldName, sortOrder));
-			float nrOfPages = (float) employeeService.countAllEmployees() / sizeNo;
+			float nrOfPages = (float) Employee.countEmployees() / sizeNo;
 			uiModel.addAttribute("maxPages",
 					(int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
 		} else {
@@ -77,21 +71,21 @@ public class EmployeeController {
 			return "employees/update";
 		}
 		uiModel.asMap().clear();
-		employeeService.updateEmployee(employee);
+		employee.merge();
 		return "redirect:/employees/" + URLHelper.encodeUrlPathSegment(employee.getId().toString(), httpServletRequest);
 	}
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-		populateEditForm(uiModel, employeeService.findEmployee(id));
+		populateEditForm(uiModel, Employee.findEmployee(id));
 		return "employees/update";
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
 	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-		Employee employee = employeeService.findEmployee(id);
-		employeeService.deleteEmployee(employee);
+		Employee employee = Employee.findEmployee(id);
+		employee.remove();
 		uiModel.asMap().clear();
 		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
 		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

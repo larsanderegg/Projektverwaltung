@@ -28,6 +28,15 @@ public class Employee {
 	@PersistenceContext
     transient EntityManager entityManager;
 	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
+	@Version
+    @Column(name = "version")
+    private Integer version;
+	
 	/**
      */
     @NotNull
@@ -50,16 +59,7 @@ public class Employee {
     @NotNull
     @Size(min = 2)
     private String job;
-
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-	@Version
-    @Column(name = "version")
-    private Integer version;
-
+	
 	public Long getId() {
         return this.id;
     }

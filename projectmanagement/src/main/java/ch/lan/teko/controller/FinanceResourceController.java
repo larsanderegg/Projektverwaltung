@@ -1,10 +1,8 @@
 package ch.lan.teko.controller;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.gvnix.addon.web.mvc.annotations.jquery.GvNIXWebJQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,21 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.lan.teko.model.Activity;
 import ch.lan.teko.model.FinanceResource;
-import ch.lan.teko.service.ActivityService;
-import ch.lan.teko.service.FinanceResourceService;
 import ch.lan.teko.util.URLHelper;
 
 @RequestMapping("/financeresources")
 @Controller
-@RooWebScaffold(path = "financeresources", formBackingObject = FinanceResource.class)
+@GvNIXWebJQuery
 public class FinanceResourceController {
-
-	@Autowired
-	FinanceResourceService financeResourceService;
-
-	@Autowired
-	ActivityService activityService;
-
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid FinanceResource financeResource, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -38,12 +28,12 @@ public class FinanceResourceController {
 			return "financeresources/create";
 		}
 		uiModel.asMap().clear();
-		financeResourceService.saveFinanceResource(financeResource);
+		financeResource.persist();
 
-		Activity activity = activityService.findActivity(financeResource.getActivityId());
+		Activity activity = Activity.findActivity(financeResource.getActivityId());
 		if (activity != null) {
 			activity.getResources().add(financeResource);
-			activityService.saveActivity(activity);
+			activity.merge();
 		} else {
 			return "error";
 		}
@@ -59,7 +49,7 @@ public class FinanceResourceController {
 		financeResource.setActivityId(activityId);
 		populateEditForm(uiModel, financeResource);
 
-		Activity activity = activityService.findActivity(activityId);
+		Activity activity = Activity.findActivity(activityId);
 		if (activity != null) {
 			uiModel.addAttribute("activity", activity);
 		}
@@ -70,9 +60,9 @@ public class FinanceResourceController {
 	@RequestMapping(value = "/{id}", params = { "activityId" }, produces = "text/html")
 	public String show(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
-		uiModel.addAttribute("financeresource", financeResourceService.findFinanceResource(id));
+		uiModel.addAttribute("financeresource", FinanceResource.findFinanceResource(id));
 		uiModel.addAttribute("itemId", id);
-		uiModel.addAttribute("activity", activityService.findActivity(activityId));
+		uiModel.addAttribute("activity", Activity.findActivity(activityId));
 		return "financeresources/show";
 	}
 
@@ -84,7 +74,7 @@ public class FinanceResourceController {
 			return "financeresources/update";
 		}
 		uiModel.asMap().clear();
-		financeResourceService.updateFinanceResource(financeResource);
+		financeResource.merge();
 		return "redirect:/financeresources/"
 				+ URLHelper.encodeUrlPathSegment(financeResource.getId().toString(), httpServletRequest) + "?activityId="
 				+ URLHelper.encodeUrlPathSegment(financeResource.getActivityId().toString(), httpServletRequest);
@@ -94,11 +84,11 @@ public class FinanceResourceController {
 	public String updateForm(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
 
-		FinanceResource financeResource = financeResourceService.findFinanceResource(id);
+		FinanceResource financeResource = FinanceResource.findFinanceResource(id);
 		financeResource.setActivityId(activityId);
 		populateEditForm(uiModel, financeResource);
 
-		Activity activity = activityService.findActivity(activityId);
+		Activity activity = Activity.findActivity(activityId);
 		if (activity != null) {
 			uiModel.addAttribute("activity", activity);
 		}
@@ -109,8 +99,8 @@ public class FinanceResourceController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
 	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-		FinanceResource financeResource = financeResourceService.findFinanceResource(id);
-		financeResourceService.deleteFinanceResource(financeResource);
+		FinanceResource financeResource = FinanceResource.findFinanceResource(id);
+		financeResource.remove();
 		uiModel.asMap().clear();
 		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
 		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

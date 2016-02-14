@@ -5,8 +5,6 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.Milestone;
 import ch.lan.teko.model.MilestoneDataOnDemand;
-import ch.lan.teko.repository.MilestoneRepository;
-import ch.lan.teko.service.MilestoneService;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +13,6 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
@@ -26,15 +23,10 @@ privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
     
     private List<Milestone> MilestoneDataOnDemand.data;
     
-    @Autowired
-    MilestoneService MilestoneDataOnDemand.milestoneService;
-    
-    @Autowired
-    MilestoneRepository MilestoneDataOnDemand.milestoneRepository;
-    
     public Milestone MilestoneDataOnDemand.getNewTransientMilestone(int index) {
         Milestone obj = new Milestone();
         setName(obj, index);
+        setPhaseId(obj, index);
         setPlanedDate(obj, index);
         return obj;
     }
@@ -42,6 +34,11 @@ privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
     public void MilestoneDataOnDemand.setName(Milestone obj, int index) {
         String name = "name_" + index;
         obj.setName(name);
+    }
+    
+    public void MilestoneDataOnDemand.setPhaseId(Milestone obj, int index) {
+        Long phaseId = new Integer(index).longValue();
+        obj.setPhaseId(phaseId);
     }
     
     public void MilestoneDataOnDemand.setPlanedDate(Milestone obj, int index) {
@@ -59,14 +56,14 @@ privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
         }
         Milestone obj = data.get(index);
         Long id = obj.getId();
-        return milestoneService.findMilestone(id);
+        return Milestone.findMilestone(id);
     }
     
     public Milestone MilestoneDataOnDemand.getRandomMilestone() {
         init();
         Milestone obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return milestoneService.findMilestone(id);
+        return Milestone.findMilestone(id);
     }
     
     public boolean MilestoneDataOnDemand.modifyMilestone(Milestone obj) {
@@ -76,7 +73,7 @@ privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
     public void MilestoneDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = milestoneService.findMilestoneEntries(from, to);
+        data = Milestone.findMilestoneEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'Milestone' illegally returned null");
         }
@@ -88,7 +85,7 @@ privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             Milestone obj = getNewTransientMilestone(i);
             try {
-                milestoneService.saveMilestone(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -97,7 +94,7 @@ privileged aspect MilestoneDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            milestoneRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }

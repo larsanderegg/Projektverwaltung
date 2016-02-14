@@ -5,7 +5,6 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.EmployeeDataOnDemand;
-import ch.lan.teko.service.EmployeeService;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 privileged aspect EmployeeDataOnDemand_Roo_DataOnDemand {
@@ -23,9 +21,6 @@ privileged aspect EmployeeDataOnDemand_Roo_DataOnDemand {
     private Random EmployeeDataOnDemand.rnd = new SecureRandom();
     
     private List<Employee> EmployeeDataOnDemand.data;
-    
-    @Autowired
-    EmployeeService EmployeeDataOnDemand.employeeService;
     
     public Employee EmployeeDataOnDemand.getNewTransientEmployee(int index) {
         Employee obj = new Employee();
@@ -66,14 +61,14 @@ privileged aspect EmployeeDataOnDemand_Roo_DataOnDemand {
         }
         Employee obj = data.get(index);
         Long id = obj.getId();
-        return employeeService.findEmployee(id);
+        return Employee.findEmployee(id);
     }
     
     public Employee EmployeeDataOnDemand.getRandomEmployee() {
         init();
         Employee obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return employeeService.findEmployee(id);
+        return Employee.findEmployee(id);
     }
     
     public boolean EmployeeDataOnDemand.modifyEmployee(Employee obj) {
@@ -83,7 +78,7 @@ privileged aspect EmployeeDataOnDemand_Roo_DataOnDemand {
     public void EmployeeDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = employeeService.findEmployeeEntries(from, to);
+        data = Employee.findEmployeeEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'Employee' illegally returned null");
         }
@@ -95,7 +90,7 @@ privileged aspect EmployeeDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             Employee obj = getNewTransientEmployee(i);
             try {
-                employeeService.saveEmployee(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {

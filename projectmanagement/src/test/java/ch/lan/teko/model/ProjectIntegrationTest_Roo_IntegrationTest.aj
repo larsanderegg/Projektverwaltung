@@ -3,10 +3,9 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.Project;
 import ch.lan.teko.model.ProjectDataOnDemand;
 import ch.lan.teko.model.ProjectIntegrationTest;
-import ch.lan.teko.repository.ProjectRepository;
-import ch.lan.teko.service.ProjectService;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
@@ -30,16 +29,10 @@ privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
     @Autowired
     ProjectDataOnDemand ProjectIntegrationTest.dod;
     
-    @Autowired
-    ProjectService ProjectIntegrationTest.projectService;
-    
-    @Autowired
-    ProjectRepository ProjectIntegrationTest.projectRepository;
-    
     @Test
-    public void ProjectIntegrationTest.testCountAllProjects() {
+    public void ProjectIntegrationTest.testCountProjects() {
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", dod.getRandomProject());
-        long count = projectService.countAllProjects();
+        long count = Project.countProjects();
         Assert.assertTrue("Counter for 'Project' incorrectly reported there were no entries", count > 0);
     }
     
@@ -49,7 +42,7 @@ privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Project' failed to provide an identifier", id);
-        obj = projectService.findProject(id);
+        obj = Project.findProject(id);
         Assert.assertNotNull("Find method for 'Project' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'Project' returned the incorrect identifier", id, obj.getId());
     }
@@ -57,9 +50,9 @@ privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
     @Test
     public void ProjectIntegrationTest.testFindAllProjects() {
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", dod.getRandomProject());
-        long count = projectService.countAllProjects();
+        long count = Project.countProjects();
         Assert.assertTrue("Too expensive to perform a find all test for 'Project', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<Project> result = projectService.findAllProjects();
+        List<Project> result = Project.findAllProjects();
         Assert.assertNotNull("Find all method for 'Project' illegally returned null", result);
         Assert.assertTrue("Find all method for 'Project' failed to return any data", result.size() > 0);
     }
@@ -67,11 +60,11 @@ privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
     @Test
     public void ProjectIntegrationTest.testFindProjectEntries() {
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", dod.getRandomProject());
-        long count = projectService.countAllProjects();
+        long count = Project.countProjects();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<Project> result = projectService.findProjectEntries(firstResult, maxResults);
+        List<Project> result = Project.findProjectEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'Project' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'Project' returned an incorrect number of entries", count, result.size());
     }
@@ -82,37 +75,37 @@ privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Project' failed to provide an identifier", id);
-        obj = projectService.findProject(id);
+        obj = Project.findProject(id);
         Assert.assertNotNull("Find method for 'Project' illegally returned null for id '" + id + "'", obj);
         boolean modified =  dod.modifyProject(obj);
         Integer currentVersion = obj.getVersion();
-        projectRepository.flush();
+        obj.flush();
         Assert.assertTrue("Version for 'Project' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void ProjectIntegrationTest.testUpdateProjectUpdate() {
+    public void ProjectIntegrationTest.testMergeUpdate() {
         Project obj = dod.getRandomProject();
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Project' failed to provide an identifier", id);
-        obj = projectService.findProject(id);
+        obj = Project.findProject(id);
         boolean modified =  dod.modifyProject(obj);
         Integer currentVersion = obj.getVersion();
-        Project merged = projectService.updateProject(obj);
-        projectRepository.flush();
+        Project merged = obj.merge();
+        obj.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'Project' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void ProjectIntegrationTest.testSaveProject() {
+    public void ProjectIntegrationTest.testPersist() {
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", dod.getRandomProject());
         Project obj = dod.getNewTransientProject(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'Project' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'Project' identifier to be null", obj.getId());
         try {
-            projectService.saveProject(obj);
+            obj.persist();
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -121,20 +114,20 @@ privileged aspect ProjectIntegrationTest_Roo_IntegrationTest {
             }
             throw new IllegalStateException(msg.toString(), e);
         }
-        projectRepository.flush();
+        obj.flush();
         Assert.assertNotNull("Expected 'Project' identifier to no longer be null", obj.getId());
     }
     
     @Test
-    public void ProjectIntegrationTest.testDeleteProject() {
+    public void ProjectIntegrationTest.testRemove() {
         Project obj = dod.getRandomProject();
         Assert.assertNotNull("Data on demand for 'Project' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Project' failed to provide an identifier", id);
-        obj = projectService.findProject(id);
-        projectService.deleteProject(obj);
-        projectRepository.flush();
-        Assert.assertNull("Failed to remove 'Project' with identifier '" + id + "'", projectService.findProject(id));
+        obj = Project.findProject(id);
+        obj.remove();
+        obj.flush();
+        Assert.assertNull("Failed to remove 'Project' with identifier '" + id + "'", Project.findProject(id));
     }
     
 }

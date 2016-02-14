@@ -3,10 +3,9 @@
 
 package ch.lan.teko.model;
 
+import ch.lan.teko.model.Milestone;
 import ch.lan.teko.model.MilestoneDataOnDemand;
 import ch.lan.teko.model.MilestoneIntegrationTest;
-import ch.lan.teko.repository.MilestoneRepository;
-import ch.lan.teko.service.MilestoneService;
 import java.util.Iterator;
 import java.util.List;
 import javax.validation.ConstraintViolation;
@@ -30,16 +29,10 @@ privileged aspect MilestoneIntegrationTest_Roo_IntegrationTest {
     @Autowired
     MilestoneDataOnDemand MilestoneIntegrationTest.dod;
     
-    @Autowired
-    MilestoneService MilestoneIntegrationTest.milestoneService;
-    
-    @Autowired
-    MilestoneRepository MilestoneIntegrationTest.milestoneRepository;
-    
     @Test
-    public void MilestoneIntegrationTest.testCountAllMilestones() {
+    public void MilestoneIntegrationTest.testCountMilestones() {
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", dod.getRandomMilestone());
-        long count = milestoneService.countAllMilestones();
+        long count = Milestone.countMilestones();
         Assert.assertTrue("Counter for 'Milestone' incorrectly reported there were no entries", count > 0);
     }
     
@@ -49,7 +42,7 @@ privileged aspect MilestoneIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Milestone' failed to provide an identifier", id);
-        obj = milestoneService.findMilestone(id);
+        obj = Milestone.findMilestone(id);
         Assert.assertNotNull("Find method for 'Milestone' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'Milestone' returned the incorrect identifier", id, obj.getId());
     }
@@ -57,9 +50,9 @@ privileged aspect MilestoneIntegrationTest_Roo_IntegrationTest {
     @Test
     public void MilestoneIntegrationTest.testFindAllMilestones() {
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", dod.getRandomMilestone());
-        long count = milestoneService.countAllMilestones();
+        long count = Milestone.countMilestones();
         Assert.assertTrue("Too expensive to perform a find all test for 'Milestone', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<Milestone> result = milestoneService.findAllMilestones();
+        List<Milestone> result = Milestone.findAllMilestones();
         Assert.assertNotNull("Find all method for 'Milestone' illegally returned null", result);
         Assert.assertTrue("Find all method for 'Milestone' failed to return any data", result.size() > 0);
     }
@@ -67,11 +60,11 @@ privileged aspect MilestoneIntegrationTest_Roo_IntegrationTest {
     @Test
     public void MilestoneIntegrationTest.testFindMilestoneEntries() {
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", dod.getRandomMilestone());
-        long count = milestoneService.countAllMilestones();
+        long count = Milestone.countMilestones();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<Milestone> result = milestoneService.findMilestoneEntries(firstResult, maxResults);
+        List<Milestone> result = Milestone.findMilestoneEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'Milestone' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'Milestone' returned an incorrect number of entries", count, result.size());
     }
@@ -82,37 +75,37 @@ privileged aspect MilestoneIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Milestone' failed to provide an identifier", id);
-        obj = milestoneService.findMilestone(id);
+        obj = Milestone.findMilestone(id);
         Assert.assertNotNull("Find method for 'Milestone' illegally returned null for id '" + id + "'", obj);
         boolean modified =  dod.modifyMilestone(obj);
         Integer currentVersion = obj.getVersion();
-        milestoneRepository.flush();
+        obj.flush();
         Assert.assertTrue("Version for 'Milestone' failed to increment on flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void MilestoneIntegrationTest.testUpdateMilestoneUpdate() {
+    public void MilestoneIntegrationTest.testMergeUpdate() {
         Milestone obj = dod.getRandomMilestone();
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Milestone' failed to provide an identifier", id);
-        obj = milestoneService.findMilestone(id);
+        obj = Milestone.findMilestone(id);
         boolean modified =  dod.modifyMilestone(obj);
         Integer currentVersion = obj.getVersion();
-        Milestone merged = milestoneService.updateMilestone(obj);
-        milestoneRepository.flush();
+        Milestone merged = (Milestone)obj.merge();
+        obj.flush();
         Assert.assertEquals("Identifier of merged object not the same as identifier of original object", merged.getId(), id);
         Assert.assertTrue("Version for 'Milestone' failed to increment on merge and flush directive", (currentVersion != null && obj.getVersion() > currentVersion) || !modified);
     }
     
     @Test
-    public void MilestoneIntegrationTest.testSaveMilestone() {
+    public void MilestoneIntegrationTest.testPersist() {
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", dod.getRandomMilestone());
         Milestone obj = dod.getNewTransientMilestone(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'Milestone' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'Milestone' identifier to be null", obj.getId());
         try {
-            milestoneService.saveMilestone(obj);
+            obj.persist();
         } catch (final ConstraintViolationException e) {
             final StringBuilder msg = new StringBuilder();
             for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -121,20 +114,20 @@ privileged aspect MilestoneIntegrationTest_Roo_IntegrationTest {
             }
             throw new IllegalStateException(msg.toString(), e);
         }
-        milestoneRepository.flush();
+        obj.flush();
         Assert.assertNotNull("Expected 'Milestone' identifier to no longer be null", obj.getId());
     }
     
     @Test
-    public void MilestoneIntegrationTest.testDeleteMilestone() {
+    public void MilestoneIntegrationTest.testRemove() {
         Milestone obj = dod.getRandomMilestone();
         Assert.assertNotNull("Data on demand for 'Milestone' failed to initialize correctly", obj);
         Long id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Milestone' failed to provide an identifier", id);
-        obj = milestoneService.findMilestone(id);
-        milestoneService.deleteMilestone(obj);
-        milestoneRepository.flush();
-        Assert.assertNull("Failed to remove 'Milestone' with identifier '" + id + "'", milestoneService.findMilestone(id));
+        obj = Milestone.findMilestone(id);
+        obj.remove();
+        obj.flush();
+        Assert.assertNull("Failed to remove 'Milestone' with identifier '" + id + "'", Milestone.findMilestone(id));
     }
     
 }

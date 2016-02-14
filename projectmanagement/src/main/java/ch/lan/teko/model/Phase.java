@@ -32,10 +32,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-public class Phase {
+public class Phase implements ISummedResources, ITimeBoxed {
 	
 	@PersistenceContext
     transient EntityManager entityManager;
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
+	@Version
+    @Column(name = "version")
+    private Integer version;
 	
 	/**
      */
@@ -70,31 +79,167 @@ public class Phase {
      */
     private String phaseState;
     
-    private transient Long projectId;
+    /**
+     */
+    @NotNull
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Activity> activities = new HashSet<Activity>();
+    
+    /**
+     */
+    @NotNull
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Milestone> milestones = new HashSet<>();
+	
+	private transient Long projectId;
     
     private transient SortedSet<PhaseChild> childs;
+	
+	private transient ResourceCollector resourceCollector;
+	
+	private transient TimeBoxedData timeBoxedData;
+	
+	private transient Milestone endMilestone;
+	
+	public Set<Activity> getActivities() {
+        return Collections.unmodifiableSet(activities);
+    }
+	
+	public void addActivity(Activity add){
+		activities.add(add);
+		if(childs == null) {
+			buildChilds();
+		} else {
+			childs.add(add);
+		}
+	}
+	
+	public void removeActivity(Activity remove){
+		activities.remove(remove);
+		if(childs != null) {
+			childs.remove(remove);
+		}
+	}
 
-    /**
-     */
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Activity> activities = new ArrayList<Activity>();
-    
-    /**
-     */
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Milestone> milestones = new ArrayList<>();
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+	public void setActivities(Set<Activity> activities) {
+        this.activities = activities;
+        buildChilds();
+    }
+	
+	public Set<Milestone> getMilestones() {
+		return Collections.unmodifiableSet(milestones);
+	}
+	
+	public void addMilestone(Milestone add){
+		milestones.add(add);
+		if(childs == null) {
+			buildChilds();
+		} else {
+			childs.add(add);
+		}
+	}
+	
+	public void removeMilestone(Milestone remove){
+		milestones.remove(remove);
+		if(childs != null) {
+			childs.remove(remove);
+		}
+	}
 
-	@Version
-    @Column(name = "version")
-    private Integer version;
+	public void setMilestones(Set<Milestone> milestones) {
+		this.milestones = milestones;
+		buildChilds();
+	}
 
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	/**
+	 * @return the endMilestone
+	 */
+	public Milestone getEndMilestone() {
+		if(endMilestone == null){
+			endMilestone = new Milestone();
+			endMilestone.setPlanedDate(getTimeBoxedData().getPlanedEndDate());
+		}
+		return endMilestone;
+	}
+	
+	public String toString() {
+        return name;
+    }
+	
+	public SortedSet<PhaseChild> getChilds(){
+		if(childs == null){
+			buildChilds();
+		}
+		return childs;
+	}
+	
+	private void buildChilds(){
+		childs = new TreeSet<>();
+		childs.addAll(activities);
+		childs.addAll(milestones);	
+	}
+	
+	@Override
+	public ResourceCollector getSummedResources() {
+		if(resourceCollector == null){
+			buildInternalResources();
+		}
+		return resourceCollector;
+	}
+	
+	private void buildInternalResources(){
+		resourceCollector = new ResourceCollector();
+		for (Activity activity : activities) {
+			resourceCollector.increment(activity.getSummedResources());
+		}
+	}
+	
+	@Override
+	public TimeBoxedData getTimeBoxedData() {
+		if(timeBoxedData == null){
+			buildTimeBoxedData();
+		}
+		return timeBoxedData;
+	}
+	
+	private void buildTimeBoxedData(){
+		timeBoxedData = new TimeBoxedData();
+		SortedSet<PhaseChild> tempChilds = getChilds();
+		for (PhaseChild child : tempChilds) {
+			timeBoxedData.add(child);
+		}
+	}
+	
+	public static List<Phase> generatePhases(ProcessModel processModel) {
+		List<Phase> result = new ArrayList<>();
+		
+		String[] phaseNames = processModel.getPhases().split(";");
+		for (String name : phaseNames) {
+			Phase phase = new Phase();
+			phase.setName(name);
+			result.add(phase);
+		}
+		return result;
+	}
+	
+	public static void addDocumentReference(Long phaseId, DocumentReference documentReference) {
+		Phase phase = findPhase(phaseId);
+		if (phase != null) {
+			if (!phase.getLinks().contains(documentReference)) {
+				phase.getLinks().add(documentReference);
+				phase.merge();
+			}
+		}
+	}
+	
 	public Long getId() {
         return this.id;
     }
@@ -158,30 +303,6 @@ public class Phase {
 	public void setPhaseState(String phaseState) {
         this.phaseState = phaseState;
     }
-
-	public List<Activity> getActivities() {
-        return Collections.unmodifiableList(activities);
-    }
-	
-	public void addActivity(Activity add){
-		activities.add(add);
-		if(childs == null) {
-			buildChilds();
-		}
-		activities.add(add);
-	}
-	
-	public void removeActivity(Activity remove){
-		activities.remove(remove);
-		if(childs != null) {
-			childs.remove(remove);
-		}
-	}
-
-	public void setActivities(List<Activity> activities) {
-        this.activities = activities;
-        buildChilds();
-    }
 	
 	public String getName() {
 		return name;
@@ -191,55 +312,6 @@ public class Phase {
 		this.name = name;
 	}
 	
-	public List<Milestone> getMilestones() {
-		return Collections.unmodifiableList(milestones);
-	}
-	
-	public void addMilestone(Milestone add){
-		milestones.add(add);
-		if(childs == null) {
-			buildChilds();
-		}
-		childs.add(add);
-	}
-	
-	public void removeMilestone(Milestone remove){
-		milestones.remove(remove);
-		if(childs != null) {
-			childs.remove(remove);
-		}
-	}
-
-	public void setMilestones(List<Milestone> milestones) {
-		this.milestones = milestones;
-		buildChilds();
-	}
-
-	public Long getProjectId() {
-		return projectId;
-	}
-
-	public void setProjectId(Long projectId) {
-		this.projectId = projectId;
-	}
-
-	public String toString() {
-        return name;
-    }
-	
-	public SortedSet<PhaseChild> getChilds(){
-		if(childs == null){
-			buildChilds();
-		}
-		return childs;
-	}
-	
-	private void buildChilds(){
-		childs = new TreeSet<>();
-		childs.addAll(activities);
-		childs.addAll(milestones);	
-	}
-
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "reviewDate", "approvalDate", "planedReviewDate", "progress", "phaseState", "activities");
 
 	public static final EntityManager entityManager() {

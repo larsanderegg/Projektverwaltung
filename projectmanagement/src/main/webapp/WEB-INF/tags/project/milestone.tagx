@@ -3,6 +3,8 @@
 
   <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />
   <jsp:directive.attribute name="milestone" type="ch.lan.teko.model.Milestone" required="true" rtexprvalue="true" description="The milestone to show" />
+  <jsp:directive.attribute name="isEnd" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the milestone is a phase end milestone" />
+  <jsp:directive.attribute name="phaseName" type="java.lang.String" required="false" rtexprvalue="true" description="The name of the phase, used for end milestones only" />
   <jsp:directive.attribute name="phaseId" type="java.lang.Long" required="true" rtexprvalue="true" description="The phaseId" />
   <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
@@ -10,13 +12,21 @@
   <c:if test="${empty render or render}">
   	<div class="panel panel-default">
 		<div class="panel-heading">
-    		<spring:url value="/milestones/${milestone.id}" var="show_milestone_url">
-				<spring:param name="form" />
-				<spring:param name="phaseId" value="${phaseId}" />
-		    </spring:url>
-          	<a href="${show_milestone_url}">
-               	<i class="fa fa-comment fa-fw"></i> <c:out value="${milestone.name}" />
-            </a>   	
+			<c:choose>
+				<c:when test="${isEnd}">
+					<i class="fa fa-comment fa-fw"></i> <spring:message arguments="${phaseName}" code="end_milestone"/>
+				</c:when>
+				<c:otherwise>
+					<spring:url value="/milestones/${milestone.id}" var="show_milestone_url">
+						<spring:param name="form" />
+						<spring:param name="phaseId" value="${phaseId}" />
+				    </spring:url>
+		          	<a href="${show_milestone_url}">
+		               	<i class="fa fa-comment fa-fw"></i> <c:out value="${milestone.name}" />
+		            </a>
+				</c:otherwise>
+			</c:choose>
+    		   	
 		    <div class="pull-right">
 				<span class="text-muted small">
 		             <em><c:out value="${milestone.planedDate}" /></em>

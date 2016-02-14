@@ -32,7 +32,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-public class Project {
+public class Project implements ISummedResources, ITimeBoxed {
+	
+	@PersistenceContext
+    transient EntityManager entityManager;
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("progress", "approvalDate", "name", "description", "priority", "projectState", "projectmanager", "processModel", "phases");
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -91,7 +95,74 @@ public class Project {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Phase> phases = new ArrayList<Phase>();
     
-    public Byte getProgress() {
+    private transient ResourceCollector resourceCollector;
+    
+    private transient TimeBoxedData timeBoxedData;
+	
+	@Override
+	public ResourceCollector getSummedResources() {
+		if(resourceCollector == null){
+			buildInternalResources();
+		}
+		return resourceCollector;
+	}
+	
+	private void buildInternalResources(){
+		resourceCollector = new ResourceCollector();
+		for (Phase phase : phases) {
+			resourceCollector.increment(phase.getSummedResources());
+		}
+	}
+
+	public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+	
+	@Override
+	public TimeBoxedData getTimeBoxedData() {
+		if(timeBoxedData == null){
+			buildTimeBoxedData();
+		}
+		return timeBoxedData;
+	}
+	
+	private void buildTimeBoxedData(){
+		timeBoxedData = new TimeBoxedData();
+		for (Phase phase : phases) {
+			timeBoxedData.add(phase);
+		}
+	}
+	
+	public static void addDocumentReference(Long projectId, DocumentReference documentReference) {
+//		Project project = findProject(projectId);
+//		if(project != null){
+//			project.getLinks().add(documentReference);
+//			project.merge();
+//		}
+		System.out.println("not implemented");
+	}
+	
+	public static final EntityManager entityManager() {
+        EntityManager em = new Project().entityManager;
+        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        return em;
+    }
+	
+	public static Project findProjectByPhaseId(Long phaseId){
+		if (phaseId == null) return null;
+		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p WHERE p.id = :phaseId", Project.class);
+		query.setParameter("phaseId", phaseId);
+		return query.getSingleResult();
+	}
+	
+	public static Project findProjectByActivityId(Long activityId){
+		if (activityId == null) return null;
+		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p INNER JOIN p.activities a WHERE a.id = :activityId", Project.class);
+		query.setParameter("activityId", activityId);
+		return query.getSingleResult();
+	}
+	
+	public Byte getProgress() {
         return this.progress;
     }
 
@@ -178,22 +249,7 @@ public class Project {
 	public void setVersion(Integer version) {
         this.version = version;
     }
-
-	public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-	@PersistenceContext
-    transient EntityManager entityManager;
-
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("progress", "approvalDate", "name", "description", "priority", "projectState", "projectmanager", "processModel", "phases");
-
-	public static final EntityManager entityManager() {
-        EntityManager em = new Project().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
-    }
-
+	
 	public static long countProjects() {
         return entityManager().createQuery("SELECT COUNT(o) FROM Project o", Long.class).getSingleResult();
     }
@@ -201,7 +257,7 @@ public class Project {
 	public static List<Project> findAllProjects() {
         return entityManager().createQuery("SELECT o FROM Project o", Project.class).getResultList();
     }
-
+	
 	public static List<Project> findAllProjects(String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM Project o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -233,23 +289,13 @@ public class Project {
         return entityManager().createQuery(jpaQuery, Project.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 	
-	public static Project findProjectByPhaseId(Long phaseId){
-		if (phaseId == null) return null;
-		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p WHERE p.id = :phaseId", Project.class);
-		query.setParameter("phaseId", phaseId);
-		return query.getSingleResult();
-	}
-	
-	public static Project findProjectByActivityId(Long activityId){
-		if (activityId == null) return null;
-		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p INNER JOIN p.activities a WHERE a.id = :activityId", Project.class);
-		query.setParameter("activityId", activityId);
-		return query.getSingleResult();
-	}
-
 	@Transactional
     public void persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
+        
+        List<Phase> generatePhases = Phase.generatePhases(this.getProcessModel());
+        this.setPhases(generatePhases);
+        
         this.entityManager.persist(this);
     }
 

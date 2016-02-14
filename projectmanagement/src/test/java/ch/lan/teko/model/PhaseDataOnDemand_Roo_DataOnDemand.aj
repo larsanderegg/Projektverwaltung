@@ -5,7 +5,6 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.Phase;
 import ch.lan.teko.model.PhaseDataOnDemand;
-import ch.lan.teko.repository.PhaseRepository;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
@@ -25,9 +23,6 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
     
     private List<Phase> PhaseDataOnDemand.data;
     
-    @Autowired
-    PhaseRepository PhaseDataOnDemand.phaseRepository;
-    
     public Phase PhaseDataOnDemand.getNewTransientPhase(int index) {
         Phase obj = new Phase();
         setApprovalDate(obj, index);
@@ -35,6 +30,7 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
         setPhaseState(obj, index);
         setPlanedReviewDate(obj, index);
         setProgress(obj, index);
+        setProjectId(obj, index);
         setReviewDate(obj, index);
         return obj;
     }
@@ -64,6 +60,11 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
         obj.setProgress(progress);
     }
     
+    public void PhaseDataOnDemand.setProjectId(Phase obj, int index) {
+        Long projectId = new Integer(index).longValue();
+        obj.setProjectId(projectId);
+    }
+    
     public void PhaseDataOnDemand.setReviewDate(Phase obj, int index) {
         LocalDate reviewDate = null;
         obj.setReviewDate(reviewDate);
@@ -79,14 +80,14 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
         }
         Phase obj = data.get(index);
         Long id = obj.getId();
-        return phaseRepository.findOne(id);
+        return Phase.findPhase(id);
     }
     
     public Phase PhaseDataOnDemand.getRandomPhase() {
         init();
         Phase obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return phaseRepository.findOne(id);
+        return Phase.findPhase(id);
     }
     
     public boolean PhaseDataOnDemand.modifyPhase(Phase obj) {
@@ -96,7 +97,7 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
     public void PhaseDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = phaseRepository.findAll(new org.springframework.data.domain.PageRequest(from / to, to)).getContent();
+        data = Phase.findPhaseEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'Phase' illegally returned null");
         }
@@ -108,7 +109,7 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             Phase obj = getNewTransientPhase(i);
             try {
-                phaseRepository.save(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -117,7 +118,7 @@ privileged aspect PhaseDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            phaseRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }

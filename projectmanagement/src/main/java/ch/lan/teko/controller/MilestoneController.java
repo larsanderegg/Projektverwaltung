@@ -1,10 +1,8 @@
 package ch.lan.teko.controller;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.gvnix.addon.web.mvc.annotations.jquery.GvNIXWebJQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,21 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.lan.teko.model.Milestone;
 import ch.lan.teko.model.Phase;
-import ch.lan.teko.service.MilestoneService;
-import ch.lan.teko.service.PhaseService;
 import ch.lan.teko.util.URLHelper;
 
 @RequestMapping("/milestones")
 @Controller
-@RooWebScaffold(path = "milestones", formBackingObject = Milestone.class)
+@GvNIXWebJQuery
 public class MilestoneController {
-
-	@Autowired
-	MilestoneService milestoneService;
-
-	@Autowired
-	PhaseService phaseService;
-
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid Milestone milestone, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -38,12 +28,12 @@ public class MilestoneController {
 			return "milestones/create";
 		}
 		uiModel.asMap().clear();
-		milestoneService.saveMilestone(milestone);
+		milestone.persist();
 
-		Phase phase = phaseService.findPhase(milestone.getPhaseId());
+		Phase phase = Phase.findPhase(milestone.getPhaseId());
 		if (phase != null) {
 			phase.addMilestone(milestone);
-			phaseService.savePhase(phase);
+			phase.merge();
 		} else {
 			return "error";
 		}
@@ -59,7 +49,7 @@ public class MilestoneController {
 
 		populateEditForm(uiModel, milestone);
 
-		Phase phase = phaseService.findPhase(phaseId);
+		Phase phase = Phase.findPhase(phaseId);
 		if (phase != null) {
 			uiModel.addAttribute("phase", phase);
 		}
@@ -70,9 +60,9 @@ public class MilestoneController {
 	@RequestMapping(value = "/{id}", params = { "phaseId" }, produces = "text/html")
 	public String show(@PathVariable("id") Long id, @RequestParam(value = "phaseId", required = true) Long phaseId,
 			Model uiModel) {
-		uiModel.addAttribute("milestone", milestoneService.findMilestone(id));
+		uiModel.addAttribute("milestone", Milestone.findMilestone(id));
 		uiModel.addAttribute("itemId", id);
-		uiModel.addAttribute("phase", phaseService.findPhase(phaseId));
+		uiModel.addAttribute("phase", Phase.findPhase(phaseId));
 		return "milestones/show";
 	}
 
@@ -84,7 +74,7 @@ public class MilestoneController {
 			return "milestones/update";
 		}
 		uiModel.asMap().clear();
-		milestoneService.updateMilestone(milestone);
+		milestone.merge();
 		return "redirect:/milestones/" + URLHelper.encodeUrlPathSegment(milestone.getId().toString(), httpServletRequest)
 				+ "?phaseId=" + URLHelper.encodeUrlPathSegment(milestone.getPhaseId().toString(), httpServletRequest);
 	}
@@ -92,12 +82,12 @@ public class MilestoneController {
 	@RequestMapping(value = "/{id}", params = { "form", "phaseId" }, produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id,
 			@RequestParam(value = "phaseId", required = true) Long phaseId, Model uiModel) {
-		Milestone milestone = milestoneService.findMilestone(id);
+		Milestone milestone = Milestone.findMilestone(id);
 		milestone.setPhaseId(phaseId);
 
 		populateEditForm(uiModel, milestone);
 
-		Phase phase = phaseService.findPhase(phaseId);
+		Phase phase = Phase.findPhase(phaseId);
 		if (phase != null) {
 			uiModel.addAttribute("phase", phase);
 		}
@@ -108,8 +98,8 @@ public class MilestoneController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
 	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-		Milestone milestone = milestoneService.findMilestone(id);
-		milestoneService.deleteMilestone(milestone);
+		Milestone milestone = Milestone.findMilestone(id);
+		milestone.remove();
 		uiModel.asMap().clear();
 		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
 		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

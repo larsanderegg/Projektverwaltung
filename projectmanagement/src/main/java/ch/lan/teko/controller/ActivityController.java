@@ -1,13 +1,11 @@
 package ch.lan.teko.controller;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.gvnix.addon.web.mvc.annotations.jquery.GvNIXWebJQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,31 +15,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.lan.teko.model.Activity;
+import ch.lan.teko.model.DocumentReference;
+import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.Phase;
 import ch.lan.teko.model.Resource;
-import ch.lan.teko.service.ActivityService;
-import ch.lan.teko.service.DocumentReferenceService;
-import ch.lan.teko.service.EmployeeService;
-import ch.lan.teko.service.PhaseService;
 import ch.lan.teko.util.URLHelper;
 
 @RequestMapping("/activitys")
 @Controller
-@RooWebScaffold(path = "activitys", formBackingObject = Activity.class)
+@GvNIXWebJQuery
 public class ActivityController {
-
-	@Autowired
-	EmployeeService employeeService;
-
-	@Autowired
-	ActivityService activityService;
-
-	@Autowired
-	DocumentReferenceService documentReferenceService;
-
-	@Autowired
-	PhaseService phaseService;
-
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid Activity activity, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -50,12 +34,12 @@ public class ActivityController {
 			return "activitys/create";
 		}
 		uiModel.asMap().clear();
-		activityService.saveActivity(activity);
+		activity.persist();
 
-		Phase phase = phaseService.findPhase(activity.getPhaseId());
+		Phase phase = Phase.findPhase(activity.getPhaseId());
 		if (phase != null) {
 			phase.addActivity(activity);
-			phaseService.savePhase(phase);
+			phase.merge();
 		} else {
 			return "error";
 		}
@@ -71,13 +55,13 @@ public class ActivityController {
 
 		populateEditForm(uiModel, activity);
 
-		Phase phase = phaseService.findPhase(phaseId);
+		Phase phase = Phase.findPhase(phaseId);
 		if (phase != null) {
 			uiModel.addAttribute("phase", phase);
 		}
 
 		List<String[]> dependencies = new ArrayList<String[]>();
-		if (employeeService.countAllEmployees() == 0) {
+		if (Employee.countEmployees() == 0) {
 			dependencies.add(new String[] { "responsible", "employees" });
 		}
 		uiModel.addAttribute("dependencies", dependencies);
@@ -87,9 +71,9 @@ public class ActivityController {
 	@RequestMapping(value = "/{id}", params = { "phaseId" }, produces = "text/html")
 	public String show(@PathVariable("id") Long id, @RequestParam(value = "phaseId", required = true) Long phaseId,
 			Model uiModel) {
-		uiModel.addAttribute("activity", activityService.findActivity(id));
+		uiModel.addAttribute("activity", Activity.findActivity(id));
 		uiModel.addAttribute("itemId", id);
-		uiModel.addAttribute("phase", phaseService.findPhase(phaseId));
+		uiModel.addAttribute("phase", Phase.findPhase(phaseId));
 		return "activitys/show";
 	}
 
@@ -101,7 +85,7 @@ public class ActivityController {
 			return "activitys/update";
 		}
 		uiModel.asMap().clear();
-		activityService.updateActivity(activity);
+		activity.merge();
 		return "redirect:/activitys/" + URLHelper.encodeUrlPathSegment(activity.getId().toString(), httpServletRequest)
 				+ "?phaseId=" + URLHelper.encodeUrlPathSegment(activity.getPhaseId().toString(), httpServletRequest);
 	}
@@ -109,11 +93,11 @@ public class ActivityController {
 	@RequestMapping(value = "/{id}", params = { "form", "phaseId" }, produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id,
 			@RequestParam(value = "phaseId", required = true) Long phaseId, Model uiModel) {
-		Activity activity = activityService.findActivity(id);
+		Activity activity = Activity.findActivity(id);
 		activity.setPhaseId(phaseId);
 		populateEditForm(uiModel, activity);
 
-		Phase phase = phaseService.findPhase(phaseId);
+		Phase phase = Phase.findPhase(phaseId);
 		if (phase != null) {
 			uiModel.addAttribute("phase", phase);
 		}
@@ -124,8 +108,8 @@ public class ActivityController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
 	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-		Activity activity = activityService.findActivity(id);
-		activityService.deleteActivity(activity);
+		Activity activity = Activity.findActivity(id);
+		activity.remove();
 		uiModel.asMap().clear();
 		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
 		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
@@ -134,8 +118,8 @@ public class ActivityController {
 
 	void populateEditForm(Model uiModel, Activity activity) {
 		uiModel.addAttribute("activity", activity);
-		uiModel.addAttribute("documentreferences", documentReferenceService.findAllDocumentReferences());
-		uiModel.addAttribute("employees", employeeService.findAllEmployees());
+		uiModel.addAttribute("documentreferences", DocumentReference.findAllDocumentReferences());
+		uiModel.addAttribute("employees", Employee.findAllEmployees());
 		uiModel.addAttribute("resources", Resource.findAllResources());
 	}
 }

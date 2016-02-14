@@ -25,6 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJpaActiveRecord
 public class ProcessModel {
 	
+	@PersistenceContext
+    transient EntityManager entityManager;
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
+	@Version
+    @Column(name = "version")
+    private Integer version;
+	
 	/**
      */
     @NotNull
@@ -35,16 +47,7 @@ public class ProcessModel {
      */
     @NotNull
     private String phases;
-
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-	@Version
-    @Column(name = "version")
-    private Integer version;
-
+	
 	public Long getId() {
         return this.id;
     }
@@ -80,10 +83,7 @@ public class ProcessModel {
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
-	@PersistenceContext
-    transient EntityManager entityManager;
-
+	
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "phases");
 
 	public static final EntityManager entityManager() {

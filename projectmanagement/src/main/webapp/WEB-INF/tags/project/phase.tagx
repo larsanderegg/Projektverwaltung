@@ -22,6 +22,7 @@
 			    		</c:when>
 			    	</c:choose>
 		   		</c:forEach>
+		   		<pm:milestone id="${phase.id}_end_milestone" milestone="${phase.endMilestone}" phaseId="${phase.id}" isEnd="true" phaseName="${phase.name}" />
 		   	</div>
 		</div>
   	</c:if>

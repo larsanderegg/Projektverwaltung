@@ -1,10 +1,8 @@
 package ch.lan.teko.controller;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.gvnix.addon.web.mvc.annotations.jquery.GvNIXWebJQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,17 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.lan.teko.model.ProcessModel;
-import ch.lan.teko.service.ProcessModelService;
 import ch.lan.teko.util.URLHelper;
 
 @RequestMapping("/processmodels")
 @Controller
-@RooWebScaffold(path = "processmodels", formBackingObject = ProcessModel.class)
+@GvNIXWebJQuery
 public class ProcessModelController {
-
-	@Autowired
-	ProcessModelService processModelService;
-
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid ProcessModel processModel, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -33,7 +27,7 @@ public class ProcessModelController {
 			return "processmodels/create";
 		}
 		uiModel.asMap().clear();
-		processModelService.saveProcessModel(processModel);
+		processModel.persist();
 		return "redirect:/processmodels/"
 				+ URLHelper.encodeUrlPathSegment(processModel.getId().toString(), httpServletRequest);
 	}
@@ -46,7 +40,7 @@ public class ProcessModelController {
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
 	public String show(@PathVariable("id") Long id, Model uiModel) {
-		uiModel.addAttribute("processmodel", processModelService.findProcessModel(id));
+		uiModel.addAttribute("processmodel", ProcessModel.findProcessModel(id));
 		uiModel.addAttribute("itemId", id);
 		return "processmodels/show";
 	}
@@ -61,7 +55,7 @@ public class ProcessModelController {
 			final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
 			uiModel.addAttribute("processmodels",
 					ProcessModel.findProcessModelEntries(firstResult, sizeNo, sortFieldName, sortOrder));
-			float nrOfPages = (float) processModelService.countAllProcessModels() / sizeNo;
+			float nrOfPages = (float) ProcessModel.countProcessModels() / sizeNo;
 			uiModel.addAttribute("maxPages",
 					(int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
 		} else {
@@ -78,22 +72,22 @@ public class ProcessModelController {
 			return "processmodels/update";
 		}
 		uiModel.asMap().clear();
-		processModelService.updateProcessModel(processModel);
+		processModel.merge();
 		return "redirect:/processmodels/"
 				+ URLHelper.encodeUrlPathSegment(processModel.getId().toString(), httpServletRequest);
 	}
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-		populateEditForm(uiModel, processModelService.findProcessModel(id));
+		populateEditForm(uiModel, ProcessModel.findProcessModel(id));
 		return "processmodels/update";
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
 	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-		ProcessModel processModel = processModelService.findProcessModel(id);
-		processModelService.deleteProcessModel(processModel);
+		ProcessModel processModel = ProcessModel.findProcessModel(id);
+		processModel.remove();
 		uiModel.asMap().clear();
 		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
 		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

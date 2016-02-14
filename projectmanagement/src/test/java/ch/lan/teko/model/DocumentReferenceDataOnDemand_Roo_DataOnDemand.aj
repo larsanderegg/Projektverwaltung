@@ -5,8 +5,6 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.DocumentReference;
 import ch.lan.teko.model.DocumentReferenceDataOnDemand;
-import ch.lan.teko.repository.DocumentReferenceRepository;
-import ch.lan.teko.service.DocumentReferenceService;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
@@ -25,17 +22,19 @@ privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
     
     private List<DocumentReference> DocumentReferenceDataOnDemand.data;
     
-    @Autowired
-    DocumentReferenceService DocumentReferenceDataOnDemand.documentReferenceService;
-    
-    @Autowired
-    DocumentReferenceRepository DocumentReferenceDataOnDemand.documentReferenceRepository;
-    
     public DocumentReference DocumentReferenceDataOnDemand.getNewTransientDocumentReference(int index) {
         DocumentReference obj = new DocumentReference();
+        setActivityId(obj, index);
         setName(obj, index);
         setPath(obj, index);
+        setPhaseId(obj, index);
+        setProjectId(obj, index);
         return obj;
+    }
+    
+    public void DocumentReferenceDataOnDemand.setActivityId(DocumentReference obj, int index) {
+        Long activityId = new Integer(index).longValue();
+        obj.setActivityId(activityId);
     }
     
     public void DocumentReferenceDataOnDemand.setName(DocumentReference obj, int index) {
@@ -48,6 +47,16 @@ privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
         obj.setPath(path);
     }
     
+    public void DocumentReferenceDataOnDemand.setPhaseId(DocumentReference obj, int index) {
+        Long phaseId = new Integer(index).longValue();
+        obj.setPhaseId(phaseId);
+    }
+    
+    public void DocumentReferenceDataOnDemand.setProjectId(DocumentReference obj, int index) {
+        Long projectId = new Integer(index).longValue();
+        obj.setProjectId(projectId);
+    }
+    
     public DocumentReference DocumentReferenceDataOnDemand.getSpecificDocumentReference(int index) {
         init();
         if (index < 0) {
@@ -58,14 +67,14 @@ privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
         }
         DocumentReference obj = data.get(index);
         Long id = obj.getId();
-        return documentReferenceService.findDocumentReference(id);
+        return DocumentReference.findDocumentReference(id);
     }
     
     public DocumentReference DocumentReferenceDataOnDemand.getRandomDocumentReference() {
         init();
         DocumentReference obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return documentReferenceService.findDocumentReference(id);
+        return DocumentReference.findDocumentReference(id);
     }
     
     public boolean DocumentReferenceDataOnDemand.modifyDocumentReference(DocumentReference obj) {
@@ -75,7 +84,7 @@ privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
     public void DocumentReferenceDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = documentReferenceService.findDocumentReferenceEntries(from, to);
+        data = DocumentReference.findDocumentReferenceEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'DocumentReference' illegally returned null");
         }
@@ -87,7 +96,7 @@ privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             DocumentReference obj = getNewTransientDocumentReference(i);
             try {
-                documentReferenceService.saveDocumentReference(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -96,7 +105,7 @@ privileged aspect DocumentReferenceDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            documentReferenceRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }

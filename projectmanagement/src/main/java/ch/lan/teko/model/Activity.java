@@ -1,4 +1,5 @@
 package ch.lan.teko.model;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -31,157 +33,211 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-public class Activity extends PhaseChild{
-	
+public class Activity extends PhaseChild implements ISummedResources {
+
 	@PersistenceContext
-    transient EntityManager entityManager;
-	
+	transient EntityManager entityManager;
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "startDate",
+			"endDate", "planedStartDate", "planedEndDate", "resources", "responsible", "progress");
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Long id;
 
 	@Version
-    @Column(name = "version")
-    private Integer version;
-	
+	@Column(name = "version")
+	private Integer version;
+
 	/**
-     */
-    @NotNull
-    private String name;
-	
+	 */
+	@NotNull
+	private String name;
+
 	/**
-     */
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<DocumentReference> links = new ArrayList<DocumentReference>();
+	 */
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<DocumentReference> links = new ArrayList<DocumentReference>();
 
-    /**
-     */
-    @NotNull
-    @DateTimeFormat(style = "M-")
-    private LocalDate startDate;
+	/**
+	 */
+	@DateTimeFormat(style = "M-")
+	private LocalDate startDate;
 
-    /**
-     */
-    @NotNull
-    @DateTimeFormat(style = "M-")
-    private LocalDate endDate;
+	/**
+	 */
+	@DateTimeFormat(style = "M-")
+	private LocalDate endDate;
 
-    /**
-     */
-    @NotNull
-    @DateTimeFormat(style = "M-")
-    private LocalDate planedStartDate;
+	/**
+	 */
+	@NotNull
+	@DateTimeFormat(style = "M-")
+	private LocalDate planedStartDate;
 
-    /**
-     */
-    @NotNull
-    @DateTimeFormat(style = "M-")
-    private LocalDate planedEndDate;
+	/**
+	 */
+	@NotNull
+	@DateTimeFormat(style = "M-")
+	private LocalDate planedEndDate;
 
-    /**
-     */
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Resource> resources = new HashSet<Resource>();
+	/**
+	 */
+	@ManyToMany(cascade = CascadeType.ALL)
+	private Set<Resource> resources = new HashSet<Resource>();
 
-    /**
-     */
-    @NotNull
-    @ManyToOne
-    private Employee responsible;
-    
-    /**
-     */
-    private transient Long phaseId;
+	/**
+	 */
+	@NotNull
+	@ManyToOne
+	private Employee responsible;
 
-    /**
-     */
-    @NotNull
-    private Byte progress;
+	private transient Long phaseId;
+
+	private transient ResourceCollector resourceCollector;
+
+	/**
+	 */
+	@NotNull
+	private Byte progress;
+
+	public Long getPhaseId() {
+		return phaseId;
+	}
+
+	public void setPhaseId(Long phaseId) {
+		this.phaseId = phaseId;
+	}
+
+	@Override
+	protected LocalDate getDateToCompare() {
+		return planedStartDate;
+	}
+
+	@Override
+	public int compareTo(PhaseChild o) {
+		int result = super.compareTo(o);
+		if (result == 0) {
+			if (!(o instanceof Activity)) {
+				result = -1;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public ResourceCollector getSummedResources() {
+		if (resourceCollector == null) {
+			buildInternalResources();
+		}
+		return resourceCollector;
+	}
+
+	private void buildInternalResources() {
+		resourceCollector = new ResourceCollector();
+		for (Resource resource : resources) {
+			resource.fill(resourceCollector);
+		}
+	}
+
+	@Override
+	public TimeBoxedData getTimeBoxedData() {
+		return new TimeBoxedData(startDate, endDate, planedStartDate, planedEndDate);
+	}
+
+	public static void addDocumentReference(Long activityId, DocumentReference documentReference) {
+		Activity activity = findActivity(activityId);
+		if (activity != null) {
+			if (!activity.getLinks().contains(documentReference)) {
+				activity.getLinks().add(documentReference);
+				activity.merge();
+			}
+		}
+	}
 
 	public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
 
 	public List<DocumentReference> getLinks() {
-        return this.links;
-    }
+		return this.links;
+	}
 
 	public void setLinks(List<DocumentReference> links) {
-        this.links = links;
-    }
+		this.links = links;
+	}
 
 	public LocalDate getStartDate() {
-        return this.startDate;
-    }
+		return this.startDate;
+	}
 
 	public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
+		this.startDate = startDate;
+	}
 
 	public LocalDate getEndDate() {
-        return this.endDate;
-    }
+		return this.endDate;
+	}
 
 	public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
+		this.endDate = endDate;
+	}
 
 	public LocalDate getPlanedStartDate() {
-        return this.planedStartDate;
-    }
+		return this.planedStartDate;
+	}
 
 	public void setPlanedStartDate(LocalDate planedStartDate) {
-        this.planedStartDate = planedStartDate;
-    }
+		this.planedStartDate = planedStartDate;
+	}
 
 	public LocalDate getPlanedEndDate() {
-        return this.planedEndDate;
-    }
+		return this.planedEndDate;
+	}
 
 	public void setPlanedEndDate(LocalDate planedEndDate) {
-        this.planedEndDate = planedEndDate;
-    }
+		this.planedEndDate = planedEndDate;
+	}
 
 	public Set<Resource> getResources() {
-        return this.resources;
-    }
+		return this.resources;
+	}
 
 	public void setResources(Set<Resource> resources) {
-        this.resources = resources;
-    }
+		this.resources = resources;
+	}
 
 	public Employee getResponsible() {
-        return this.responsible;
-    }
+		return this.responsible;
+	}
 
 	public void setResponsible(Employee responsible) {
-        this.responsible = responsible;
-    }
+		this.responsible = responsible;
+	}
 
 	public Byte getProgress() {
-        return this.progress;
-    }
+		return this.progress;
+	}
 
 	public void setProgress(Byte progress) {
-        this.progress = progress;
-    }
+		this.progress = progress;
+	}
 
 	public Long getId() {
-        return this.id;
-    }
+		return this.id;
+	}
 
 	public void setId(Long id) {
-        this.id = id;
-    }
+		this.id = id;
+	}
 
 	public Integer getVersion() {
-        return this.version;
-    }
+		return this.version;
+	}
 
 	public void setVersion(Integer version) {
-        this.version = version;
-    }
+		this.version = version;
+	}
 
 	public String getName() {
 		return name;
@@ -190,112 +246,97 @@ public class Activity extends PhaseChild{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public Long getPhaseId() {
-		return phaseId;
-	}
-
-	public void setPhaseId(Long phaseId) {
-		this.phaseId = phaseId;
-	}
-	
-	@Override
-	protected LocalDate getDateToCompare() {
-		return getPlanedStartDate();
-	}
-	
-	@Override
-	public int compareTo(PhaseChild o) {
-		int result = super.compareTo(o);
-		if(result == 0){
-			if(!(o instanceof Activity)){
-				result = -1;
-			}
-		}
-		return result;
-	}
-
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "startDate", "endDate", "planedStartDate", "planedEndDate", "resources", "responsible", "progress");
 
 	public static final EntityManager entityManager() {
-        EntityManager em = new Activity().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
-    }
+		EntityManager em = new Activity().entityManager;
+		if (em == null)
+			throw new IllegalStateException(
+					"Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+		return em;
+	}
 
 	public static long countActivitys() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Activity o", Long.class).getSingleResult();
-    }
+		return entityManager().createQuery("SELECT COUNT(o) FROM Activity o", Long.class).getSingleResult();
+	}
 
 	public static List<Activity> findAllActivitys() {
-        return entityManager().createQuery("SELECT o FROM Activity o", Activity.class).getResultList();
-    }
+		return entityManager().createQuery("SELECT o FROM Activity o", Activity.class).getResultList();
+	}
 
 	public static List<Activity> findAllActivitys(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Activity o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return entityManager().createQuery(jpaQuery, Activity.class).getResultList();
-    }
+		String jpaQuery = "SELECT o FROM Activity o";
+		if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+			jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+			if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+				jpaQuery = jpaQuery + " " + sortOrder;
+			}
+		}
+		return entityManager().createQuery(jpaQuery, Activity.class).getResultList();
+	}
 
 	public static Activity findActivity(Long id) {
-        if (id == null) return null;
-        return entityManager().find(Activity.class, id);
-    }
+		if (id == null)
+			return null;
+		return entityManager().find(Activity.class, id);
+	}
 
 	public static List<Activity> findActivityEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Activity o", Activity.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
+		return entityManager().createQuery("SELECT o FROM Activity o", Activity.class).setFirstResult(firstResult)
+				.setMaxResults(maxResults).getResultList();
+	}
 
-	public static List<Activity> findActivityEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Activity o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return entityManager().createQuery(jpaQuery, Activity.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	@Transactional
-    public void persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
-    }
+	public static List<Activity> findActivityEntries(int firstResult, int maxResults, String sortFieldName,
+			String sortOrder) {
+		String jpaQuery = "SELECT o FROM Activity o";
+		if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+			jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+			if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+				jpaQuery = jpaQuery + " " + sortOrder;
+			}
+		}
+		return entityManager().createQuery(jpaQuery, Activity.class).setFirstResult(firstResult)
+				.setMaxResults(maxResults).getResultList();
+	}
 
 	@Transactional
-    public void remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            Activity attached = Activity.findActivity(this.id);
-            this.entityManager.remove(attached);
-        }
-    }
+	public void persist() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.persist(this);
+	}
 
 	@Transactional
-    public void flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
-    }
+	public void remove() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		if (this.entityManager.contains(this)) {
+			this.entityManager.remove(this);
+		} else {
+			Activity attached = Activity.findActivity(this.id);
+			this.entityManager.remove(attached);
+		}
+	}
 
 	@Transactional
-    public void clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
-    }
+	public void flush() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.flush();
+	}
 
 	@Transactional
-    public Activity merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        Activity merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
-    }
+	public void clear() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.clear();
+	}
+
+	@Transactional
+	public Activity merge() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		Activity merged = this.entityManager.merge(this);
+		this.entityManager.flush();
+		return merged;
+	}
 }

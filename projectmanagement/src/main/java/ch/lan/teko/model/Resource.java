@@ -24,20 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJpaActiveRecord
 public abstract class Resource {
 	
-	/**
-     */
-	@NotNull
-    private Integer planed;
-
-    /**
-     */
-	@NotNull
-    private Integer effectiv;
-
-    /**
-     */
-    private String explanation;
-
+	@PersistenceContext
+    transient EntityManager entityManager;
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("planed", "effectiv", "explanation");
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -47,7 +37,22 @@ public abstract class Resource {
     @Column(name = "version")
     private Integer version;
 	
+	/**
+     */
+	@NotNull
+    private Integer planed;
+
+    /**
+     */
+    private Integer effectiv;
+
+    /**
+     */
+    private String explanation;
+	
 	private transient Long activityId;
+	
+	public abstract void fill(ResourceCollector collector);
 	
 	public Long getId() {
         return this.id;
@@ -100,14 +105,14 @@ public abstract class Resource {
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
-	@PersistenceContext
-    transient EntityManager entityManager;
-
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("planed", "effectiv", "explanation");
-
+	
 	public static final EntityManager entityManager() {
         EntityManager em = new Resource() {
+
+			@Override
+			public void fill(ResourceCollector collector) {
+				// do nothing
+			}
         }.entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;

@@ -1,13 +1,11 @@
 package ch.lan.teko.controller;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.gvnix.addon.web.mvc.annotations.jquery.GvNIXWebJQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,26 +15,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.lan.teko.model.Activity;
+import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.PersonalResource;
-import ch.lan.teko.service.ActivityService;
-import ch.lan.teko.service.EmployeeService;
-import ch.lan.teko.service.PersonalResourceService;
 import ch.lan.teko.util.URLHelper;
 
 @RequestMapping("/personalresources")
 @Controller
-@RooWebScaffold(path = "personalresources", formBackingObject = PersonalResource.class)
+@GvNIXWebJQuery
 public class PersonalResourceController {
-
-	@Autowired
-	EmployeeService employeeService;
-
-	@Autowired
-	PersonalResourceService personalResourceService;
-
-	@Autowired
-	ActivityService activityService;
-
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid PersonalResource personalResource, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -45,12 +32,12 @@ public class PersonalResourceController {
 			return "personalresources/create";
 		}
 		uiModel.asMap().clear();
-		personalResourceService.savePersonalResource(personalResource);
+		personalResource.persist();
 
-		Activity activity = activityService.findActivity(personalResource.getActivityId());
+		Activity activity = Activity.findActivity(personalResource.getActivityId());
 		if (activity != null) {
 			activity.getResources().add(personalResource);
-			activityService.saveActivity(activity);
+			activity.merge();
 		} else {
 			return "error";
 		}
@@ -67,13 +54,13 @@ public class PersonalResourceController {
 		
 		populateEditForm(uiModel, personalResource);
 
-		Activity activity = activityService.findActivity(activityId);
+		Activity activity = Activity.findActivity(activityId);
 		if (activity != null) {
 			uiModel.addAttribute("activity", activity);
 		}
 
 		List<String[]> dependencies = new ArrayList<String[]>();
-		if (employeeService.countAllEmployees() == 0) {
+		if (Employee.countEmployees() == 0) {
 			dependencies.add(new String[] { "employee", "employees" });
 		}
 		uiModel.addAttribute("dependencies", dependencies);
@@ -83,9 +70,9 @@ public class PersonalResourceController {
 	@RequestMapping(value = "/{id}", params = { "activityId" }, produces = "text/html")
 	public String show(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
-		uiModel.addAttribute("personalresource", personalResourceService.findPersonalResource(id));
+		uiModel.addAttribute("personalresource", PersonalResource.findPersonalResource(id));
 		uiModel.addAttribute("itemId", id);
-		uiModel.addAttribute("activity", activityService.findActivity(activityId));
+		uiModel.addAttribute("activity", Activity.findActivity(activityId));
 		return "personalresources/show";
 	}
 
@@ -97,20 +84,20 @@ public class PersonalResourceController {
 			return "personalresources/update";
 		}
 		uiModel.asMap().clear();
-		personalResourceService.updatePersonalResource(personalResource);
+		personalResource.merge();
 		return "redirect:/personalresources/"
 				+ URLHelper.encodeUrlPathSegment(personalResource.getId().toString(), httpServletRequest) + "?activityId="
 				+ URLHelper.encodeUrlPathSegment(personalResource.getActivityId().toString(), httpServletRequest);
 	}
 
-	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+	@RequestMapping(value = "/{id}", params = { "form", "activityId" }, produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
-		PersonalResource personalResource = personalResourceService.findPersonalResource(id);
+		PersonalResource personalResource = PersonalResource.findPersonalResource(id);
 		personalResource.setActivityId(activityId);
 		populateEditForm(uiModel, personalResource);
 
-		Activity activity = activityService.findActivity(activityId);
+		Activity activity = Activity.findActivity(activityId);
 		if (activity != null) {
 			uiModel.addAttribute("activity", activity);
 		}
@@ -121,8 +108,8 @@ public class PersonalResourceController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
 	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-		PersonalResource personalResource = personalResourceService.findPersonalResource(id);
-		personalResourceService.deletePersonalResource(personalResource);
+		PersonalResource personalResource = PersonalResource.findPersonalResource(id);
+		personalResource.remove();
 		uiModel.asMap().clear();
 		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
 		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
@@ -131,6 +118,6 @@ public class PersonalResourceController {
 
 	void populateEditForm(Model uiModel, PersonalResource personalResource) {
 		uiModel.addAttribute("personalResource", personalResource);
-		uiModel.addAttribute("employees", employeeService.findAllEmployees());
+		uiModel.addAttribute("employees", Employee.findAllEmployees());
 	}
 }

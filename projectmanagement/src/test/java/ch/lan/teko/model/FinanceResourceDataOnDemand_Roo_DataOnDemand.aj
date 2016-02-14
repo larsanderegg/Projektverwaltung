@@ -5,8 +5,6 @@ package ch.lan.teko.model;
 
 import ch.lan.teko.model.FinanceResource;
 import ch.lan.teko.model.FinanceResourceDataOnDemand;
-import ch.lan.teko.repository.FinanceResourceRepository;
-import ch.lan.teko.service.FinanceResourceService;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 privileged aspect FinanceResourceDataOnDemand_Roo_DataOnDemand {
@@ -25,19 +22,19 @@ privileged aspect FinanceResourceDataOnDemand_Roo_DataOnDemand {
     
     private List<FinanceResource> FinanceResourceDataOnDemand.data;
     
-    @Autowired
-    FinanceResourceService FinanceResourceDataOnDemand.financeResourceService;
-    
-    @Autowired
-    FinanceResourceRepository FinanceResourceDataOnDemand.financeResourceRepository;
-    
     public FinanceResource FinanceResourceDataOnDemand.getNewTransientFinanceResource(int index) {
         FinanceResource obj = new FinanceResource();
+        setActivityId(obj, index);
         setEffectiv(obj, index);
         setExplanation(obj, index);
         setPlaned(obj, index);
         setType(obj, index);
         return obj;
+    }
+    
+    public void FinanceResourceDataOnDemand.setActivityId(FinanceResource obj, int index) {
+        Long activityId = new Integer(index).longValue();
+        obj.setActivityId(activityId);
     }
     
     public void FinanceResourceDataOnDemand.setEffectiv(FinanceResource obj, int index) {
@@ -70,14 +67,14 @@ privileged aspect FinanceResourceDataOnDemand_Roo_DataOnDemand {
         }
         FinanceResource obj = data.get(index);
         Long id = obj.getId();
-        return financeResourceService.findFinanceResource(id);
+        return FinanceResource.findFinanceResource(id);
     }
     
     public FinanceResource FinanceResourceDataOnDemand.getRandomFinanceResource() {
         init();
         FinanceResource obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return financeResourceService.findFinanceResource(id);
+        return FinanceResource.findFinanceResource(id);
     }
     
     public boolean FinanceResourceDataOnDemand.modifyFinanceResource(FinanceResource obj) {
@@ -87,7 +84,7 @@ privileged aspect FinanceResourceDataOnDemand_Roo_DataOnDemand {
     public void FinanceResourceDataOnDemand.init() {
         int from = 0;
         int to = 10;
-        data = financeResourceService.findFinanceResourceEntries(from, to);
+        data = FinanceResource.findFinanceResourceEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'FinanceResource' illegally returned null");
         }
@@ -99,7 +96,7 @@ privileged aspect FinanceResourceDataOnDemand_Roo_DataOnDemand {
         for (int i = 0; i < 10; i++) {
             FinanceResource obj = getNewTransientFinanceResource(i);
             try {
-                financeResourceService.saveFinanceResource(obj);
+                obj.persist();
             } catch (final ConstraintViolationException e) {
                 final StringBuilder msg = new StringBuilder();
                 for (Iterator<ConstraintViolation<?>> iter = e.getConstraintViolations().iterator(); iter.hasNext();) {
@@ -108,7 +105,7 @@ privileged aspect FinanceResourceDataOnDemand_Roo_DataOnDemand {
                 }
                 throw new IllegalStateException(msg.toString(), e);
             }
-            financeResourceRepository.flush();
+            obj.flush();
             data.add(obj);
         }
     }
