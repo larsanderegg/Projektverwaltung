@@ -2,6 +2,7 @@ package ch.lan.teko.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -95,6 +96,10 @@ public class Activity extends PhaseChild implements ISummedResources {
 	private transient Long phaseId;
 
 	private transient ResourceCollector resourceCollector;
+	
+	private transient Set<PersonalResource> personalResources;
+	
+	private transient Set<FinanceResource> financeResources;
 
 	/**
 	 */
@@ -134,9 +139,17 @@ public class Activity extends PhaseChild implements ISummedResources {
 	}
 
 	private void buildInternalResources() {
+		financeResources = new HashSet<>();
+		personalResources = new HashSet<>();
 		resourceCollector = new ResourceCollector();
 		for (Resource resource : resources) {
 			resource.fill(resourceCollector);
+			
+			if(resource instanceof FinanceResource){
+				financeResources.add((FinanceResource) resource);
+			} else if(resource instanceof PersonalResource) {
+				personalResources.add((PersonalResource) resource);
+			}
 		}
 	}
 
@@ -200,7 +213,21 @@ public class Activity extends PhaseChild implements ISummedResources {
 	}
 
 	public Set<Resource> getResources() {
-		return this.resources;
+		return Collections.unmodifiableSet(this.resources);
+	}
+	
+	public void addResource(Resource resourceToAdd){
+		this.resources.add(resourceToAdd);
+		
+		if(financeResources == null || personalResources == null){
+			buildInternalResources();
+		}
+		
+		if(resourceToAdd instanceof FinanceResource){
+			financeResources.add((FinanceResource) resourceToAdd);
+		} else if(resourceToAdd instanceof PersonalResource) {
+			personalResources.add((PersonalResource) resourceToAdd);
+		}
 	}
 
 	public void setResources(Set<Resource> resources) {
@@ -245,6 +272,26 @@ public class Activity extends PhaseChild implements ISummedResources {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * @return the personalResources
+	 */
+	public Set<PersonalResource> getPersonalResources() {
+		if(personalResources == null){
+			buildInternalResources();
+		}
+		return personalResources;
+	}
+
+	/**
+	 * @return the financeResources
+	 */
+	public Set<FinanceResource> getFinanceResources() {
+		if(financeResources == null){
+			buildInternalResources();
+		}
+		return financeResources;
 	}
 
 	public static final EntityManager entityManager() {

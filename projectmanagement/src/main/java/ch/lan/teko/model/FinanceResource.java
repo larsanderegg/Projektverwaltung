@@ -24,10 +24,6 @@ public class FinanceResource extends Resource {
     @Size(min = 2)
     private String type;
 	
-	public String getDisplayString(){
-		return "FinanceResource";
-	}
-	
 	@Override
 	public void fill(ResourceCollector collector) {
 		collector.incrementPlanedFinanceResources(getPlaned());

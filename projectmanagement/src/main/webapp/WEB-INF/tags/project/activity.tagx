@@ -13,7 +13,7 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapse_${id}">
+			<a data-toggle="collapse" data-parent="#accordion" href="#collapse_activity_${activity.id}">
 				<span class="caret"/>
 			</a>
 			
@@ -25,9 +25,18 @@
 		    	<c:out value="${activity.name}" />
 		    </a>   	
 		    <div class="pull-right">
-				<span class="text-muted small">
-		             <em><c:out value="${activity.startDate}" />-<c:out value="${activity.endDate}" /></em>
-		        </span>
+		    
+		    	<spring:message code="label_planed" htmlEscape="false" />:
+   				<span class="text-muted small">
+	             	<em><c:out value="${activity.timeBoxedData.planedStartDate}" />&#160;<spring:message code="label_to" htmlEscape="false" />&#160;<c:out value="${activity.timeBoxedData.planedEndDate}" /></em>
+	        	</span>
+	        	
+	        	<c:if test="${not empty activity.timeBoxedData.startDate}">
+		        	<spring:message code="label_effectiv" htmlEscape="false" />:
+    				<span class="text-muted small">
+		             	<em><c:out value="${activity.timeBoxedData.startDate}" />&#160;<spring:message code="label_to" htmlEscape="false" />&#160;<c:out value="${activity.timeBoxedData.endDate}" /></em>
+		        	</span>
+	        	</c:if>
 					
 		        <spring:url value="/documentreferences" var="new_link_activity_url">
 					<spring:param name="form" />
@@ -47,28 +56,48 @@
 	                 </button>
 	                 <ul class="dropdown-menu pull-right" role="menu">
 	                     <li>
-	                     	<a href="${new_personal_url}">Add PersonalResource</a>
+	                     	<a href="${new_personal_url}"><spring:message code="label_add_personal_resource"/></a>
 	                     </li>
-	                     <li><a href="${new_finance_url}">Add FinanceResource</a>
+	                     <li><a href="${new_finance_url}"><spring:message code="label_add_finance_resource"/></a>
 	                     </li>
 	                     <li class="divider"></li>
-	                     <li><a href="${new_link_activity_url}">Add Document</a>
+	                     <li><a href="${new_link_activity_url}"><spring:message code="label_add_docref"/></a>
 	                      </li>
 	                  </ul>
 		         </div>
 			</div>
 		</div>
 		<c:if test="${not empty activity.resources}">
-			<div id="collapse_${id}" class="panel-collapse collapse">
+			<div id="collapse_activity_${activity.id}" class="panel-collapse collapse">
 				<div class="panel-body">
 					<div class="list-group">
-						<c:forEach items="${activity.resources}" var="resource">
-							<spring:url value="/${fn:toLowerCase(resource.getClass().simpleName)}s/${resource.id}" var="show_resource_url">
+						<spring:message code="label_personal_resource"/>
+						<c:forEach items="${activity.personalResources}" var="personal">
+							<spring:url value="/personalresources/${personal.id}" var="show_personal_resource_url">
 								<spring:param name="form" />
 								<spring:param name="activityId" value="${activity.id}" />
 				  	       	</spring:url>
-				              	<a href="${show_resource_url}" class="list-group-item">
-				                  	<i class="fa fa-comment fa-fw"></i> <c:out value="${resource}" />
+				              	<a href="${show_personal_resource_url}" class="list-group-item">
+				                  	<i class="fa fa-comment fa-fw"></i>
+				                  	<spring:message code="label_personal_resource_jop" arguments="${personal.job}" />,
+				                  	<spring:message code="label_personal_resource_planed" arguments="${personal.planed}" />,
+				                  	<spring:message code="label_personal_resource_effectiv" arguments="${personal.effectiv}" />,
+				                  	<c:set var="employee" value="${personal.employee.surname} ${personal.employee.name}" />
+				                  	<spring:message code="label_personal_resource_employee" arguments="${employee}" />
+				               </a> 
+						</c:forEach>
+						
+						<spring:message code="label_finance_resource"/>
+						<c:forEach items="${activity.financeResources}" var="finance">
+							<spring:url value="/financeresources/${finance.id}" var="show_finance_resource_url">
+								<spring:param name="form" />
+								<spring:param name="activityId" value="${activity.id}" />
+				  	       	</spring:url>
+				              	<a href="${show_finance_resource_url}" class="list-group-item">
+				                  	<i class="fa fa-comment fa-fw"></i>
+				                  	<spring:message code="label_finance_resource_type" arguments="${finance.type}" />,
+				                  	<spring:message code="label_finance_resource_planed" arguments="${finance.planed}" />,
+				                  	<spring:message code="label_finance_resource_effectiv" arguments="${finance.effectiv}" />
 				               </a> 
 						</c:forEach>
 					</div>

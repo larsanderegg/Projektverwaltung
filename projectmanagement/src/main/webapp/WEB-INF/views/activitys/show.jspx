@@ -9,9 +9,6 @@
         <field:display field="planedStartDate" id="s_ch_lan_teko_model_Activity_planedStartDate" object="${activity}" z="sHzvMmnIf2zdQejTIVfZM2ZXRdQ="/>
         <field:display field="planedEndDate" id="s_ch_lan_teko_model_Activity_planedEndDate" object="${activity}" z="h9LEL1urDe2UyT8fpO6qhmldeS8="/>
         <field:display field="progress" id="s_ch_lan_teko_model_Activity_progress" object="${activity}" z="62GcTmc355uGbgSy7/2jqwcieus="/>
-        responsible: ${activity.responsible.name}
-        <!-- 
-        	<field:display field="responsible" id="s_ch_lan_teko_model_Activity_responsible" object="${activity}" z="fJnqLmMLNCv4SI1xA5EQ2ranGgI="/>
-         -->
+        <field:display field="responsible" id="s_ch_lan_teko_model_Activity_responsible" object="${activity}" z="fJnqLmMLNCv4SI1xA5EQ2ranGgI="/>
     </page:show>
 </div>

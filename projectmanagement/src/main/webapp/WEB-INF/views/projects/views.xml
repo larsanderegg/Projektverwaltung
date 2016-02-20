@@ -16,5 +16,6 @@
     
 	<definition extends="default" name="projects/update">
         <put-attribute name="body" value="/WEB-INF/views/projects/update.jspx"/>
+        <put-attribute name="menu" value="/WEB-INF/views/projects/menu.jspx"/>
     </definition>
 </tiles-definitions>

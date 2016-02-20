@@ -36,7 +36,7 @@ public class PersonalResourceController {
 
 		Activity activity = Activity.findActivity(personalResource.getActivityId());
 		if (activity != null) {
-			activity.getResources().add(personalResource);
+			activity.addResource(personalResource);
 			activity.merge();
 		} else {
 			return "error";

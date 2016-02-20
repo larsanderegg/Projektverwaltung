@@ -5,17 +5,38 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
-    <page:show id="ps_ch_lan_teko_model_Project" object="${project}" path="/projects" z="ufI/xRs1MHkLmRLV0GQWy5WSS0c=">
-    	<c:forEach items="${project.phases}" var="phase">
+    <c:forEach items="${project.phases}" var="phase">
     	<div class="panel panel-default">
     		<div class="panel-heading">
-    			<c:out value="${phase.name}" />
+    		
+    			<spring:url value="/phases/${phase.id}" var="edit_item_url">
+   					<spring:param name="form" />
+   					<spring:param name="projectId" value="${project.id}" />
+   				</spring:url>
+   				
+   				<a data-toggle="collapse" data-parent="#accordion" href="#collapse_phase_${phase.id}">
+					<span class="caret"/>
+				</a>
+    		
+    			<a href="${edit_item_url}" style="margin-left: 10px;">
+		    		<c:out value="${phase.name}" />
+		    	</a>
+		    	<c:out value="${phase.phaseState}" />
+		    		
     			
     			<div class="pull-right">
-    				<spring:url value="/phases/${phase.id}" var="edit_item_url">
-    					<spring:param name="form" />
-    					<spring:param name="projectId" value="${project.id}" />
-    				</spring:url>
+    				<spring:message code="label_planed" htmlEscape="false" />:
+    				<span class="text-muted small">
+		             	<em><c:out value="${phase.timeBoxedData.planedStartDate}" />&#160;<spring:message code="label_to" htmlEscape="false" />&#160;<c:out value="${phase.timeBoxedData.planedEndDate}" /></em>
+		        	</span>
+		        	
+		        	<c:if test="${not empty phase.timeBoxedData.startDate}">
+			        	<spring:message code="label_effectiv" htmlEscape="false" />:
+	    				<span class="text-muted small">
+			             	<em><c:out value="${phase.timeBoxedData.startDate} " />&#160;<spring:message code="label_to" htmlEscape="false" />&#160;<c:out value="${phase.timeBoxedData.endDate}" /></em>
+			        	</span>
+		        	</c:if>
+    			
     				<spring:url value="/activitys" var="new_a_item_url">
     					<spring:param name="form" />
     					<spring:param name="phaseId" value="${phase.id}" />
@@ -33,22 +54,20 @@
                            Actions <span class="caret"></span>
                        </button>
                        <ul class="dropdown-menu pull-right" role="menu">
-                           <li>
-                           	<a href="${edit_item_url}">Edit</a>
+                           <li><a href="${new_a_item_url}"><spring:message code="label_add_activity" htmlEscape="false" /></a>
+                           </li>
+                           <li><a href="${new_m_item_url}"><spring:message code="label_add_milestone" htmlEscape="false" /></a>
                            </li>
                            <li class="divider"></li>
-                           <li><a href="${new_a_item_url}">Add Activity</a>
-                           </li>
-                           <li><a href="${new_m_item_url}">Add Milestone</a>
-                           </li>
-                           <li><a href="${new_link_url}">Add Document</a>
+                           <li><a href="${new_link_url}"><spring:message code="label_add_docref" htmlEscape="false" /></a>
                            </li>
                        </ul>
                    </div>
                </div>
             </div>
-            <pm:phase id="${project.id}_${phase.id}" phase="${phase}" />
+            <div id="collapse_phase_${phase.id}" class="panel-collapse in">
+            	<pm:phase id="${project.id}_${phase.id}" phase="${phase}" />
+            </div>
     	</div>
-    	</c:forEach>
-    </page:show>
+    </c:forEach>
 </div>

@@ -1,4 +1,5 @@
 package ch.lan.teko.model;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,81 +34,82 @@ import org.springframework.transaction.annotation.Transactional;
 @RooToString
 @RooJpaActiveRecord
 public class Project implements ISummedResources, ITimeBoxed {
-	
+
 	@PersistenceContext
-    transient EntityManager entityManager;
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("progress", "approvalDate", "name", "description", "priority", "projectState", "projectmanager", "processModel", "phases");
-	
+	transient EntityManager entityManager;
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("progress", "approvalDate",
+			"name", "description", "priority", "projectState", "projectmanager", "processModel", "phases");
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Long id;
 
 	@Version
-    @Column(name = "version")
-    private Integer version;
-	
+	@Column(name = "version")
+	private Integer version;
+
 	/**
-     */
-    @NotNull
-    private Byte progress;
+	 */
+	@NotNull
+	private Byte progress;
 
-    /**
-     */
-    @DateTimeFormat(style = "M-")
-    private LocalDate approvalDate;
+	/**
+	 */
+	@DateTimeFormat(style = "M-")
+	private LocalDate approvalDate;
 
-    /**
-     */
-    @NotNull
-    @Size(min = 2)
-    private String name;
+	/**
+	 */
+	@NotNull
+	@Size(min = 2)
+	private String name;
 
-    /**
-     */
-    private String description;
+	/**
+	 */
+	private String description;
 
-    /**
-     */
-    @NotNull
-    private Byte priority;
+	/**
+	 */
+	@NotNull
+	private Byte priority;
 
-    /**
-     */
-    @NotNull
-    private String projectState;
+	/**
+	 */
+	@NotNull
+	private String projectState;
 
-    /**
-     */
-    @NotNull
-    @ManyToOne
-    private Employee projectmanager;
+	/**
+	 */
+	@NotNull
+	@ManyToOne
+	private Employee projectmanager;
 
-    /**
-     */
-    @NotNull
-    @ManyToOne
-    private ProcessModel processModel;
+	/**
+	 */
+	@NotNull
+	@ManyToOne
+	private ProcessModel processModel;
 
-    /**
-     */
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Phase> phases = new ArrayList<Phase>();
-    
-    private transient ResourceCollector resourceCollector;
-    
-    private transient TimeBoxedData timeBoxedData;
-	
+	/**
+	 */
+	@NotNull
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<Phase> phases = new ArrayList<Phase>();
+
+	private transient ResourceCollector resourceCollector;
+
+	private transient TimeBoxedData timeBoxedData;
+
 	@Override
 	public ResourceCollector getSummedResources() {
-		if(resourceCollector == null){
+		if (resourceCollector == null) {
 			buildInternalResources();
 		}
 		return resourceCollector;
 	}
-	
-	private void buildInternalResources(){
+
+	private void buildInternalResources() {
 		resourceCollector = new ResourceCollector();
 		for (Phase phase : phases) {
 			resourceCollector.increment(phase.getSummedResources());
@@ -115,218 +117,234 @@ public class Project implements ISummedResources, ITimeBoxed {
 	}
 
 	public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-	
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+
 	@Override
 	public TimeBoxedData getTimeBoxedData() {
-		if(timeBoxedData == null){
+		if (timeBoxedData == null) {
 			buildTimeBoxedData();
 		}
 		return timeBoxedData;
 	}
-	
-	private void buildTimeBoxedData(){
+
+	private void buildTimeBoxedData() {
 		timeBoxedData = new TimeBoxedData();
 		for (Phase phase : phases) {
 			timeBoxedData.add(phase);
 		}
 	}
-	
+
 	public static void addDocumentReference(Long projectId, DocumentReference documentReference) {
-//		Project project = findProject(projectId);
-//		if(project != null){
-//			project.getLinks().add(documentReference);
-//			project.merge();
-//		}
+		// Project project = findProject(projectId);
+		// if(project != null){
+		// project.getLinks().add(documentReference);
+		// project.merge();
+		// }
 		System.out.println("not implemented");
 	}
-	
+
 	public static final EntityManager entityManager() {
-        EntityManager em = new Project().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
-    }
-	
-	public static Project findProjectByPhaseId(Long phaseId){
-		if (phaseId == null) return null;
-		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p WHERE p.id = :phaseId", Project.class);
+		EntityManager em = new Project().entityManager;
+		if (em == null)
+			throw new IllegalStateException(
+					"Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+		return em;
+	}
+
+	public static Project findProjectByPhaseId(Long phaseId) {
+		if (phaseId == null)
+			return null;
+		TypedQuery<Project> query = entityManager()
+				.createQuery("SELECT o FROM Project o INNER JOIN o.phases p WHERE p.id = :phaseId", Project.class);
 		query.setParameter("phaseId", phaseId);
 		return query.getSingleResult();
 	}
-	
-	public static Project findProjectByActivityId(Long activityId){
-		if (activityId == null) return null;
-		TypedQuery<Project> query = entityManager().createQuery("SELECT o FROM Project o INNER JOIN o.phases p INNER JOIN p.activities a WHERE a.id = :activityId", Project.class);
+
+	public static Project findProjectByActivityId(Long activityId) {
+		if (activityId == null)
+			return null;
+		TypedQuery<Project> query = entityManager().createQuery(
+				"SELECT o FROM Project o INNER JOIN o.phases p INNER JOIN p.activities a WHERE a.id = :activityId",
+				Project.class);
 		query.setParameter("activityId", activityId);
 		return query.getSingleResult();
 	}
-	
+
 	public Byte getProgress() {
-        return this.progress;
-    }
+		return this.progress;
+	}
 
 	public void setProgress(Byte progress) {
-        this.progress = progress;
-    }
+		this.progress = progress;
+	}
 
 	public LocalDate getApprovalDate() {
-        return this.approvalDate;
-    }
+		return this.approvalDate;
+	}
 
 	public void setApprovalDate(LocalDate approvalDate) {
-        this.approvalDate = approvalDate;
-    }
+		this.approvalDate = approvalDate;
+	}
 
 	public String getName() {
-        return this.name;
-    }
+		return this.name;
+	}
 
 	public void setName(String name) {
-        this.name = name;
-    }
+		this.name = name;
+	}
 
 	public String getDescription() {
-        return this.description;
-    }
+		return this.description;
+	}
 
 	public void setDescription(String description) {
-        this.description = description;
-    }
+		this.description = description;
+	}
 
 	public Byte getPriority() {
-        return this.priority;
-    }
+		return this.priority;
+	}
 
 	public void setPriority(Byte priority) {
-        this.priority = priority;
-    }
+		this.priority = priority;
+	}
 
 	public String getProjectState() {
-        return this.projectState;
-    }
+		return this.projectState;
+	}
 
 	public void setProjectState(String projectState) {
-        this.projectState = projectState;
-    }
+		this.projectState = projectState;
+	}
 
 	public Employee getProjectmanager() {
-        return this.projectmanager;
-    }
+		return this.projectmanager;
+	}
 
 	public void setProjectmanager(Employee projectmanager) {
-        this.projectmanager = projectmanager;
-    }
+		this.projectmanager = projectmanager;
+	}
 
 	public ProcessModel getProcessModel() {
-        return this.processModel;
-    }
+		return this.processModel;
+	}
 
 	public void setProcessModel(ProcessModel processModel) {
-        this.processModel = processModel;
-    }
+		this.processModel = processModel;
+	}
 
 	public List<Phase> getPhases() {
-        return this.phases;
-    }
+		return this.phases;
+	}
 
 	public void setPhases(List<Phase> phases) {
-        this.phases = phases;
-    }
+		this.phases = phases;
+	}
 
 	public Long getId() {
-        return this.id;
-    }
+		return this.id;
+	}
 
 	public void setId(Long id) {
-        this.id = id;
-    }
+		this.id = id;
+	}
 
 	public Integer getVersion() {
-        return this.version;
-    }
+		return this.version;
+	}
 
 	public void setVersion(Integer version) {
-        this.version = version;
-    }
-	
+		this.version = version;
+	}
+
 	public static long countProjects() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Project o", Long.class).getSingleResult();
-    }
+		return entityManager().createQuery("SELECT COUNT(o) FROM Project o", Long.class).getSingleResult();
+	}
 
 	public static List<Project> findAllProjects() {
-        return entityManager().createQuery("SELECT o FROM Project o", Project.class).getResultList();
-    }
-	
+		return entityManager().createQuery("SELECT o FROM Project o", Project.class).getResultList();
+	}
+
 	public static List<Project> findAllProjects(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Project o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return entityManager().createQuery(jpaQuery, Project.class).getResultList();
-    }
+		String jpaQuery = "SELECT o FROM Project o";
+		if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+			jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+			if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+				jpaQuery = jpaQuery + " " + sortOrder;
+			}
+		}
+		return entityManager().createQuery(jpaQuery, Project.class).getResultList();
+	}
 
 	public static Project findProject(Long id) {
-        if (id == null) return null;
-        return entityManager().find(Project.class, id);
-    }
+		if (id == null)
+			return null;
+		return entityManager().find(Project.class, id);
+	}
 
 	public static List<Project> findProjectEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Project o", Project.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
+		return entityManager().createQuery("SELECT o FROM Project o", Project.class).setFirstResult(firstResult)
+				.setMaxResults(maxResults).getResultList();
+	}
 
-	public static List<Project> findProjectEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Project o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return entityManager().createQuery(jpaQuery, Project.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-	
-	@Transactional
-    public void persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        
-        List<Phase> generatePhases = Phase.generatePhases(this.getProcessModel());
-        this.setPhases(generatePhases);
-        
-        this.entityManager.persist(this);
-    }
+	public static List<Project> findProjectEntries(int firstResult, int maxResults, String sortFieldName,
+			String sortOrder) {
+		String jpaQuery = "SELECT o FROM Project o";
+		if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+			jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+			if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+				jpaQuery = jpaQuery + " " + sortOrder;
+			}
+		}
+		return entityManager().createQuery(jpaQuery, Project.class).setFirstResult(firstResult)
+				.setMaxResults(maxResults).getResultList();
+	}
 
 	@Transactional
-    public void remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            Project attached = Project.findProject(this.id);
-            this.entityManager.remove(attached);
-        }
-    }
+	public void persist() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+
+		List<Phase> generatePhases = Phase.generatePhases(this.getProcessModel());
+		this.setPhases(generatePhases);
+
+		this.entityManager.persist(this);
+	}
 
 	@Transactional
-    public void flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
-    }
+	public void remove() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		if (this.entityManager.contains(this)) {
+			this.entityManager.remove(this);
+		} else {
+			Project attached = Project.findProject(this.id);
+			this.entityManager.remove(attached);
+		}
+	}
 
 	@Transactional
-    public void clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
-    }
+	public void flush() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.flush();
+	}
 
 	@Transactional
-    public Project merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        Project merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
-    }
+	public void clear() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.clear();
+	}
+
+	@Transactional
+	public Project merge() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		Project merged = this.entityManager.merge(this);
+		this.entityManager.flush();
+		return merged;
+	}
 }

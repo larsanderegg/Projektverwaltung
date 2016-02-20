@@ -161,6 +161,11 @@
     	<span class="new">
         	<spring:url value="${path}" var="create_url">
             	<spring:param name="form" />
+            	<c:if test="${not empty urlParamName and not empty urlParamValue}">
+            		<spring:param name="${fn:escapeXml(urlParamName)}">
+	          			${fn:escapeXml(urlParamValue)}
+	          		</spring:param>
+            	</c:if>
           	</spring:url>
        		<spring:message arguments="${typeName}" code="global_menu_new" var="add_message" htmlEscape="false" />
        		<a href="${create_url}" title="${fn:escapeXml(add_message)}" class="btn btn-primary btn-sm">

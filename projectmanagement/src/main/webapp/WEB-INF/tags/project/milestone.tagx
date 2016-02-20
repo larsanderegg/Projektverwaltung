@@ -28,6 +28,7 @@
 			</c:choose>
     		   	
 		    <div class="pull-right">
+		    	<spring:message code="label_planed" htmlEscape="false" />:
 				<span class="text-muted small">
 		             <em><c:out value="${milestone.planedDate}" /></em>
 		        </span>

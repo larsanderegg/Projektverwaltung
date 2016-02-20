@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <CommunicationClass
+        name="ch.lan.teko.controller.PersonalResourceController" x="782" y="420">
+        <Communication destinationClassName="ch.lan.teko.model.Activity"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.controller.ActivityController"
+        x="465" y="242">
+        <Communication destinationClassName="ch.lan.teko.model.Activity"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Activity" x="502" y="425"/>
+    <CommunicationClass
+        name="ch.lan.teko.controller.FinanceResourceController" x="181" y="433">
+        <Communication destinationClassName="ch.lan.teko.model.Activity"/>
+    </CommunicationClass>
+</ClassDiagram>

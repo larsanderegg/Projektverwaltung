@@ -7,15 +7,58 @@
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
 
   <c:if test="${empty render or render}">
-  	<br/>
-  	pf: ${resources.planedFinanceResources}
-  	<br/>
-  	ef: ${resources.effectivFinanceResources}
-  	<br/>
-  	<br/>
-  	pp: ${resources.planedPersonalResources}
-  	<br/>
-  	ep: ${resources.effectivPersonalResources}
-  	<br/>
+  
+  	<dl class="row dl-horizontal" id="_${fn:escapeXml(id)}_planed_startDate">
+  		<dt>
+  			<spring:message code="label_planed_financeResources" htmlEscape="false" />
+  			<br/>
+	  		<spring:message code="label_financeResources" htmlEscape="false" />:
+  		</dt>
+  		<dd>
+  			<spring:escapeBody>
+  				${resources.planedFinanceResources}
+		    </spring:escapeBody>
+  		</dd>
+  	</dl>
+  	<c:if test="${not empty resources.effectivFinanceResources}">
+	  	<dl class="row dl-horizontal" id="_${fn:escapeXml(id)}_startDate">
+	  		<dt>
+	  			<spring:message code="label_effectiv_financeResources" htmlEscape="false" />
+	  			<br/>
+	  			<spring:message code="label_financeResources" htmlEscape="false" />:
+	  		</dt>
+	  		<dd>
+	  			<spring:escapeBody>
+	  				${resources.effectivFinanceResources}
+			    </spring:escapeBody>
+	  		</dd>
+	  	</dl>
+  	</c:if>
+  	<dl class="row dl-horizontal" id="_${fn:escapeXml(id)}_planed_endDate">
+  		<dt>
+  			<spring:message code="label_planed_personalResources" htmlEscape="false" />
+  			<br/>
+  			<spring:message code="label_personalResources" htmlEscape="false" />:
+  		</dt>
+  		<dd>
+  			<spring:escapeBody>
+  				${resources.planedPersonalResources}
+		    </spring:escapeBody>
+  		</dd>
+  	</dl>
+  	<c:if test="${not empty resources.effectivPersonalResources}">
+	  	<dl class="row dl-horizontal" id="_${fn:escapeXml(id)}_endDate">
+	  		<dt>
+	  			<spring:message code="label_effectiv_personalResources" htmlEscape="false" />
+	  			<br/>
+	  			<spring:message code="label_personalResources" htmlEscape="false" />:
+	  		</dt>
+	  		<dd>
+	  			<spring:escapeBody>
+	  				${resources.effectivPersonalResources}
+			    </spring:escapeBody>
+	  		</dd>
+	  	</dl>
+  	</c:if>
   </c:if>
 </jsp:root>

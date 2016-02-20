@@ -15,6 +15,29 @@
         <sf:hidden id="phaseId_id" path="phaseId"/>
     </form:update>
     
+    <page:list id="pl_ch_lan_teko_model_PersonalResource" items="${activity.personalResources}" z="aAoUu+ZE/b1jOEux+szt8dD8++0="
+    			newUrl="/personalresources" urlParamName="activityId" urlParamValue="${activity.id}">
+        <table:table data="${activity.personalResources}" id="l_ch_lan_teko_model_PersonalResource" path="/personalresources" z="CNTpgNebjcgme1TdLk17Irj0hAU="
+        			urlParamName="activityId" urlParamValue="${activity.id}">
+            <table:column id="c_ch_lan_teko_model_PersonalResource_job" property="job" z="XsjySTR29lE85rPaOGyveuntyYY="/>
+            <table:column id="c_ch_lan_teko_model_PersonalResource_employee" property="employee" z="OoYEyqHmstU+rPdZ9FWoCN0ta5M="/>
+            <table:column id="c_ch_lan_teko_model_PersonalResource_planed" property="planed" z="a0uHgE0lAv6S7NnbFEWFIJC+GZE="/>
+            <table:column id="c_ch_lan_teko_model_PersonalResource_effectiv" property="effectiv" z="RNGygE11xMhe+UuQjPTanRcsCnw="/>
+            <table:column id="c_ch_lan_teko_model_PersonalResource_explanation" property="explanation" z="NGlkFoKDuEwRMvMWGq8JxXBM8U0="/>
+        </table:table>
+    </page:list>
+       
+    <page:list id="pl_ch_lan_teko_model_FinanceResource" items="${activity.financeResources}" z="uA7OjIUaL5jx09RlUIuQBMnYxmY="
+    			newUrl="/financeresources" urlParamName="activityId" urlParamValue="${activity.id}">
+        <table:table data="${activity.financeResources}" id="l_ch_lan_teko_model_FinanceResource" path="/financeresources" z="W8t/RIV9mEnbARC0kYMXruIlQFw="
+        			urlParamName="activityId" urlParamValue="${activity.id}">
+            <table:column id="c_ch_lan_teko_model_FinanceResource_type" property="type" z="T9K14SZhhW0Axql+gUvGbpY+3dA="/>
+            <table:column id="c_ch_lan_teko_model_FinanceResource_planed" property="planed" z="jQdCGKBXlw4wd+QECBKSTuk6Z8E="/>
+            <table:column id="c_ch_lan_teko_model_FinanceResource_effectiv" property="effectiv" z="mFqT5tY8q47DdW6hfUD3pUbEPuk="/>
+            <table:column id="c_ch_lan_teko_model_FinanceResource_explanation" property="explanation" z="MAGZVWIGARsUqCMAhVjEdPwGkqk="/>
+        </table:table>
+    </page:list>
+    
     <page:list id="pl_ch_lan_teko_model_DocumentReference" items="${activity.links}" newUrl="/documentreferences" z="2H0UNF7MQ3F3FGQNZNYuPTPFfvI="
     			urlParamName="activityId" urlParamValue="${activity.id}">
         <table:table data="${activity.links}" id="l_ch_lan_teko_model_DocumentReference" path="/documentreferences" z="evU874q0gwWfQN6GufrUDXgpSYg="

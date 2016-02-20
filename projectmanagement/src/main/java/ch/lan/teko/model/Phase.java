@@ -1,4 +1,5 @@
 package ch.lan.teko.model;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,115 +34,117 @@ import org.springframework.transaction.annotation.Transactional;
 @RooToString
 @RooJpaActiveRecord
 public class Phase implements ISummedResources, ITimeBoxed {
-	
+
 	@PersistenceContext
-    transient EntityManager entityManager;
-	
+	transient EntityManager entityManager;
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "reviewDate",
+			"approvalDate", "planedReviewDate", "progress", "phaseState", "activities");
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private Long id;
 
 	@Version
-    @Column(name = "version")
-    private Integer version;
-	
+	@Column(name = "version")
+	private Integer version;
+
 	/**
-     */
-    @NotNull
-    private String name;
-	
+	 */
+	@NotNull
+	private String name;
+
 	/**
-     */
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<DocumentReference> links = new HashSet<DocumentReference>();
+	 */
+	@ManyToMany(cascade = CascadeType.ALL)
+	private Set<DocumentReference> links = new HashSet<DocumentReference>();
 
-    /**
-     */
-    @DateTimeFormat(style = "M-")
-    private LocalDate reviewDate;
+	/**
+	 */
+	@DateTimeFormat(style = "M-")
+	private LocalDate reviewDate;
 
-    /**
-     */
-    @DateTimeFormat(style = "M-")
-    private LocalDate approvalDate;
+	/**
+	 */
+	@DateTimeFormat(style = "M-")
+	private LocalDate approvalDate;
 
-    /**
-     */
-    @DateTimeFormat(style = "M-")
-    private LocalDate planedReviewDate;
+	/**
+	 */
+	@DateTimeFormat(style = "M-")
+	private LocalDate planedReviewDate;
 
-    /**
-     */
-    private Byte progress;
+	/**
+	 */
+	private Byte progress;
 
-    /**
-     */
-    private String phaseState;
-    
-    /**
-     */
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Activity> activities = new HashSet<Activity>();
-    
-    /**
-     */
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Milestone> milestones = new HashSet<>();
-	
+	/**
+	 */
+	private String phaseState;
+
+	/**
+	 */
+	@NotNull
+	@ManyToMany(cascade = CascadeType.ALL)
+	private Set<Activity> activities = new HashSet<Activity>();
+
+	/**
+	 */
+	@NotNull
+	@ManyToMany(cascade = CascadeType.ALL)
+	private Set<Milestone> milestones = new HashSet<>();
+
 	private transient Long projectId;
-    
-    private transient SortedSet<PhaseChild> childs;
-	
+
+	private transient SortedSet<PhaseChild> childs;
+
 	private transient ResourceCollector resourceCollector;
-	
+
 	private transient TimeBoxedData timeBoxedData;
-	
+
 	private transient Milestone endMilestone;
-	
+
 	public Set<Activity> getActivities() {
-        return Collections.unmodifiableSet(activities);
-    }
-	
-	public void addActivity(Activity add){
+		return Collections.unmodifiableSet(activities);
+	}
+
+	public void addActivity(Activity add) {
 		activities.add(add);
-		if(childs == null) {
+		if (childs == null) {
 			buildChilds();
 		} else {
 			childs.add(add);
 		}
 	}
-	
-	public void removeActivity(Activity remove){
+
+	public void removeActivity(Activity remove) {
 		activities.remove(remove);
-		if(childs != null) {
+		if (childs != null) {
 			childs.remove(remove);
 		}
 	}
 
 	public void setActivities(Set<Activity> activities) {
-        this.activities = activities;
-        buildChilds();
-    }
-	
+		this.activities = activities;
+		buildChilds();
+	}
+
 	public Set<Milestone> getMilestones() {
 		return Collections.unmodifiableSet(milestones);
 	}
-	
-	public void addMilestone(Milestone add){
+
+	public void addMilestone(Milestone add) {
 		milestones.add(add);
-		if(childs == null) {
+		if (childs == null) {
 			buildChilds();
 		} else {
 			childs.add(add);
 		}
 	}
-	
-	public void removeMilestone(Milestone remove){
+
+	public void removeMilestone(Milestone remove) {
 		milestones.remove(remove);
-		if(childs != null) {
+		if (childs != null) {
 			childs.remove(remove);
 		}
 	}
@@ -163,64 +166,64 @@ public class Phase implements ISummedResources, ITimeBoxed {
 	 * @return the endMilestone
 	 */
 	public Milestone getEndMilestone() {
-		if(endMilestone == null){
+		if (endMilestone == null) {
 			endMilestone = new Milestone();
 			endMilestone.setPlanedDate(getTimeBoxedData().getPlanedEndDate());
 		}
 		return endMilestone;
 	}
-	
+
 	public String toString() {
-        return name;
-    }
-	
-	public SortedSet<PhaseChild> getChilds(){
-		if(childs == null){
+		return name;
+	}
+
+	public SortedSet<PhaseChild> getChilds() {
+		if (childs == null) {
 			buildChilds();
 		}
 		return childs;
 	}
-	
-	private void buildChilds(){
+
+	private void buildChilds() {
 		childs = new TreeSet<>();
 		childs.addAll(activities);
-		childs.addAll(milestones);	
+		childs.addAll(milestones);
 	}
-	
+
 	@Override
 	public ResourceCollector getSummedResources() {
-		if(resourceCollector == null){
+		if (resourceCollector == null) {
 			buildInternalResources();
 		}
 		return resourceCollector;
 	}
-	
-	private void buildInternalResources(){
+
+	private void buildInternalResources() {
 		resourceCollector = new ResourceCollector();
 		for (Activity activity : activities) {
 			resourceCollector.increment(activity.getSummedResources());
 		}
 	}
-	
+
 	@Override
 	public TimeBoxedData getTimeBoxedData() {
-		if(timeBoxedData == null){
+		if (timeBoxedData == null) {
 			buildTimeBoxedData();
 		}
 		return timeBoxedData;
 	}
-	
-	private void buildTimeBoxedData(){
+
+	private void buildTimeBoxedData() {
 		timeBoxedData = new TimeBoxedData();
 		SortedSet<PhaseChild> tempChilds = getChilds();
 		for (PhaseChild child : tempChilds) {
 			timeBoxedData.add(child);
 		}
 	}
-	
+
 	public static List<Phase> generatePhases(ProcessModel processModel) {
 		List<Phase> result = new ArrayList<>();
-		
+
 		String[] phaseNames = processModel.getPhases().split(";");
 		for (String name : phaseNames) {
 			Phase phase = new Phase();
@@ -229,7 +232,7 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		}
 		return result;
 	}
-	
+
 	public static void addDocumentReference(Long phaseId, DocumentReference documentReference) {
 		Phase phase = findPhase(phaseId);
 		if (phase != null) {
@@ -239,71 +242,71 @@ public class Phase implements ISummedResources, ITimeBoxed {
 			}
 		}
 	}
-	
+
 	public Long getId() {
-        return this.id;
-    }
+		return this.id;
+	}
 
 	public void setId(Long id) {
-        this.id = id;
-    }
+		this.id = id;
+	}
 
 	public Integer getVersion() {
-        return this.version;
-    }
+		return this.version;
+	}
 
 	public void setVersion(Integer version) {
-        this.version = version;
-    }
+		this.version = version;
+	}
 
 	public Set<DocumentReference> getLinks() {
-        return this.links;
-    }
+		return this.links;
+	}
 
 	public void setLinks(Set<DocumentReference> links) {
-        this.links = links;
-    }
+		this.links = links;
+	}
 
 	public LocalDate getReviewDate() {
-        return this.reviewDate;
-    }
+		return this.reviewDate;
+	}
 
 	public void setReviewDate(LocalDate reviewDate) {
-        this.reviewDate = reviewDate;
-    }
+		this.reviewDate = reviewDate;
+	}
 
 	public LocalDate getApprovalDate() {
-        return this.approvalDate;
-    }
+		return this.approvalDate;
+	}
 
 	public void setApprovalDate(LocalDate approvalDate) {
-        this.approvalDate = approvalDate;
-    }
+		this.approvalDate = approvalDate;
+	}
 
 	public LocalDate getPlanedReviewDate() {
-        return this.planedReviewDate;
-    }
+		return this.planedReviewDate;
+	}
 
 	public void setPlanedReviewDate(LocalDate planedReviewDate) {
-        this.planedReviewDate = planedReviewDate;
-    }
+		this.planedReviewDate = planedReviewDate;
+	}
 
 	public Byte getProgress() {
-        return this.progress;
-    }
+		return this.progress;
+	}
 
 	public void setProgress(Byte progress) {
-        this.progress = progress;
-    }
+		this.progress = progress;
+	}
 
 	public String getPhaseState() {
-        return this.phaseState;
-    }
+		return this.phaseState;
+	}
 
 	public void setPhaseState(String phaseState) {
-        this.phaseState = phaseState;
-    }
-	
+		this.phaseState = phaseState;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -311,88 +314,97 @@ public class Phase implements ISummedResources, ITimeBoxed {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "reviewDate", "approvalDate", "planedReviewDate", "progress", "phaseState", "activities");
 
 	public static final EntityManager entityManager() {
-        EntityManager em = new Phase().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
-        return em;
-    }
+		EntityManager em = new Phase().entityManager;
+		if (em == null)
+			throw new IllegalStateException(
+					"Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+		return em;
+	}
 
 	public static long countPhases() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM Phase o", Long.class).getSingleResult();
-    }
+		return entityManager().createQuery("SELECT COUNT(o) FROM Phase o", Long.class).getSingleResult();
+	}
 
 	public static List<Phase> findAllPhases() {
-        return entityManager().createQuery("SELECT o FROM Phase o", Phase.class).getResultList();
-    }
+		return entityManager().createQuery("SELECT o FROM Phase o", Phase.class).getResultList();
+	}
 
 	public static List<Phase> findAllPhases(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Phase o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return entityManager().createQuery(jpaQuery, Phase.class).getResultList();
-    }
+		String jpaQuery = "SELECT o FROM Phase o";
+		if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+			jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+			if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+				jpaQuery = jpaQuery + " " + sortOrder;
+			}
+		}
+		return entityManager().createQuery(jpaQuery, Phase.class).getResultList();
+	}
 
 	public static Phase findPhase(Long id) {
-        if (id == null) return null;
-        return entityManager().find(Phase.class, id);
-    }
+		if (id == null)
+			return null;
+		return entityManager().find(Phase.class, id);
+	}
 
 	public static List<Phase> findPhaseEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM Phase o", Phase.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
+		return entityManager().createQuery("SELECT o FROM Phase o", Phase.class).setFirstResult(firstResult)
+				.setMaxResults(maxResults).getResultList();
+	}
 
-	public static List<Phase> findPhaseEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Phase o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return entityManager().createQuery(jpaQuery, Phase.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	@Transactional
-    public void persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.persist(this);
-    }
+	public static List<Phase> findPhaseEntries(int firstResult, int maxResults, String sortFieldName,
+			String sortOrder) {
+		String jpaQuery = "SELECT o FROM Phase o";
+		if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+			jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+			if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+				jpaQuery = jpaQuery + " " + sortOrder;
+			}
+		}
+		return entityManager().createQuery(jpaQuery, Phase.class).setFirstResult(firstResult).setMaxResults(maxResults)
+				.getResultList();
+	}
 
 	@Transactional
-    public void remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        if (this.entityManager.contains(this)) {
-            this.entityManager.remove(this);
-        } else {
-            Phase attached = Phase.findPhase(this.id);
-            this.entityManager.remove(attached);
-        }
-    }
+	public void persist() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.persist(this);
+	}
 
 	@Transactional
-    public void flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.flush();
-    }
+	public void remove() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		if (this.entityManager.contains(this)) {
+			this.entityManager.remove(this);
+		} else {
+			Phase attached = Phase.findPhase(this.id);
+			this.entityManager.remove(attached);
+		}
+	}
 
 	@Transactional
-    public void clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        this.entityManager.clear();
-    }
+	public void flush() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.flush();
+	}
 
 	@Transactional
-    public Phase merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
-        Phase merged = this.entityManager.merge(this);
-        this.entityManager.flush();
-        return merged;
-    }
+	public void clear() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		this.entityManager.clear();
+	}
+
+	@Transactional
+	public Phase merge() {
+		if (this.entityManager == null)
+			this.entityManager = entityManager();
+		Phase merged = this.entityManager.merge(this);
+		this.entityManager.flush();
+		return merged;
+	}
 }

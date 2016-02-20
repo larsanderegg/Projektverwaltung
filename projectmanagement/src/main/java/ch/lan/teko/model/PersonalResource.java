@@ -31,10 +31,6 @@ public class PersonalResource extends Resource {
     @ManyToOne
     private Employee employee;
     
-    public String getDisplayString(){
-		return "PersonalResource";
-	}
-	
 	@Override
 	public void fill(ResourceCollector collector) {
 		collector.incrementPlanedPersonalResources(getPlaned());

@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_ch_lan_teko_model_FinanceResource" modelAttribute="financeResource" path="/financeresources" versionField="Version" z="2uPRLk7Qfpir0V+ny8eh5UNfSN4=">
         <field:input field="planed" id="c_ch_lan_teko_model_FinanceResource_planed" required="true" validationMessageCode="field_invalid_integer" z="CB3pJ0SsNAwHSD7oZfUFfHZXo5o="/>
-        <field:input field="effectiv" id="c_ch_lan_teko_model_FinanceResource_effectiv" required="true" validationMessageCode="field_invalid_integer" z="rrGivMw6d13LasQV+FuptQ0plZY="/>
+        <field:input field="effectiv" id="c_ch_lan_teko_model_FinanceResource_effectiv" required="false" validationMessageCode="field_invalid_integer" z="rrGivMw6d13LasQV+FuptQ0plZY="/>
         <field:input field="explanation" id="c_ch_lan_teko_model_FinanceResource_explanation" z="/IOkMrUFJIVYqfq09dtB9vKG4E4="/>
         <field:input field="type" id="c_ch_lan_teko_model_FinanceResource_type" min="2" required="true" z="kp0cmm7gwhh0goll74rojaAdpzI="/>
         <sf:hidden id="activityId_id" path="activityId"/>

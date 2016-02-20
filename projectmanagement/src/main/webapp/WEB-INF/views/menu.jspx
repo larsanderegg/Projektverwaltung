@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" id="menu" version="2.0">
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+		xmlns:spring="http://www.springframework.org/tags" id="menu" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div class="navbar-default sidebar" role="navigation">
+    
+    <div class="navbar-default sidebar small" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <li>
-                    <a class="active" href="#">
-                        <i class="fa fa-dashboard fa-fw"/> asdf
+            	<li>
+               	 	<spring:message code="button_projects" text="projects" var="project_label" htmlEscape="false" />
+                	<spring:url value="/projects" var="project_list_url"/>
+                	<spring:message code="label_sidetext_choose_project" htmlEscape="false" />
+                    <a class="active" href="${project_list_url}">
+                        <i class="fa fa-dashboard fa-fw"/> ${fn:escapeXml(project_label)}
 	        		</a>
                 </li>
             </ul>
         </div>
     </div>
+    
+    
 </div>

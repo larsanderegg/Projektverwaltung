@@ -109,7 +109,7 @@ body {
 
 .sidebar .sidebar-nav.navbar-collapse {
     padding-right: 0;
-    padding-left: 0;
+    padding-left: 5px;
 }
 
 .sidebar .sidebar-search {
@@ -373,4 +373,14 @@ table.dataTable thead .sorting:after {
 
 .panel-yellow a:hover {
     color: #df8a13;
+}
+
+#side-menu h3{
+	width: 50%;
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+div.pull-right span.text-muted {
+	margin-right: 10px;
 }

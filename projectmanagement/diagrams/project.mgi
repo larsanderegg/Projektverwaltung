@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <CommunicationClass name="ch.lan.teko.controller.PhaseController"
+        x="693" y="316">
+        <Communication destinationClassName="ch.lan.teko.model.Project"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="ch.lan.teko.controller.ShowParentProjectController" x="33" y="312">
+        <Communication destinationClassName="ch.lan.teko.model.Project"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.controller.ProjectController"
+        x="365" y="133">
+        <Communication destinationClassName="ch.lan.teko.model.Project"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Project" x="388" y="313"/>
+</ClassDiagram>

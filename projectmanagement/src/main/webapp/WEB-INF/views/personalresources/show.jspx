@@ -7,9 +7,6 @@
         <field:display field="effectiv" id="s_ch_lan_teko_model_PersonalResource_effectiv" object="${personalresource}" z="ki+L//Et64u2pQ9aXdyqxwTT+SY="/>
         <field:display field="explanation" id="s_ch_lan_teko_model_PersonalResource_explanation" object="${personalresource}" z="CNDr1oOLv0xuWMA4qfs5K2vWE5Q="/>
         <field:display field="job" id="s_ch_lan_teko_model_PersonalResource_job" object="${personalresource}" z="i0tfEZKolV3uMB/80MZ8B6YLhv8="/>
-        
-        employee: ${personalresource.employee.name}
-        
-<!--         <field:display field="employee" id="s_ch_lan_teko_model_PersonalResource_employee" object="${personalresource}" z="fjLQXOsy2K3mUWB+oZmrj0py5/M="/> -->
+        <field:display field="employee" id="s_ch_lan_teko_model_PersonalResource_employee" object="${personalresource}" z="fjLQXOsy2K3mUWB+oZmrj0py5/M="/>
     </page:show>
 </div>

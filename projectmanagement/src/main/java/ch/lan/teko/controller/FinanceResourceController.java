@@ -32,7 +32,7 @@ public class FinanceResourceController {
 
 		Activity activity = Activity.findActivity(financeResource.getActivityId());
 		if (activity != null) {
-			activity.getResources().add(financeResource);
+			activity.addResource(financeResource);
 			activity.merge();
 		} else {
 			return "error";

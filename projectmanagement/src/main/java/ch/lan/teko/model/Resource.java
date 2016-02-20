@@ -101,7 +101,7 @@ public abstract class Resource {
 	public void setActivityId(Long activityId) {
 		this.activityId = activityId;
 	}
-
+	
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
