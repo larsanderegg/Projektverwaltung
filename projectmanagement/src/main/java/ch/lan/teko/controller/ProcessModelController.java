@@ -14,11 +14,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ch.lan.teko.model.ProcessModel;
 import ch.lan.teko.util.URLHelper;
 
+
+/**
+ * Controller for an {@link ProcessModel}. Handles the web requests and returns the view to show the response.
+ * @author landeregg
+ */
 @RequestMapping("/processmodels")
 @Controller
 @GvNIXWebJQuery
 public class ProcessModelController {
 	
+	/**
+	 * Persist the given {@link ProcessModel}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link ProcessModel}
+	 * will be shown.
+	 * 
+	 * @param processModel the {@link ProcessModel} to persist
+	 * @param bindingResult the binding results from building the given {@link ProcessModel}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid ProcessModel processModel, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -32,12 +48,23 @@ public class ProcessModelController {
 				+ URLHelper.encodeUrlPathSegment(processModel.getId().toString(), httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the create form view.
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(params = "form", produces = "text/html")
 	public String createForm(Model uiModel) {
 		populateEditForm(uiModel, new ProcessModel());
 		return "processmodels/create";
 	}
 
+	/**
+	 * Gets the data to show a single {@link ProcessModel}
+	 * @param id the id of the {@link ProcessModel}
+	 * @param uiModel the model of the view
+	 * @return the name of the view
+	 */
 	@RequestMapping(value = "/{id}", produces = "text/html")
 	public String show(@PathVariable("id") Long id, Model uiModel) {
 		uiModel.addAttribute("processmodel", ProcessModel.findProcessModel(id));
@@ -45,6 +72,15 @@ public class ProcessModelController {
 		return "processmodels/show";
 	}
 
+	/**
+	 * Gets the data to show a list of {@link ProcessModel}
+	 * @param page in case of paging, the page index
+	 * @param size in case of paging, the size of show process models
+	 * @param sortFieldName in case of sorting, the field name which should be sorted
+	 * @param sortOrder in case of sorting, the sort order
+	 * @param uiModel the model of the list view
+	 * @return the name of the list view
+	 */
 	@RequestMapping(produces = "text/html")
 	public String list(@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size,
@@ -64,6 +100,17 @@ public class ProcessModelController {
 		return "processmodels/list";
 	}
 
+	/**
+	 * Merges the given {@link ProcessModel}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link ProcessModel}
+	 * will be shown.
+	 * 
+	 * @param processModel the {@link ProcessModel} to merge
+	 * @param bindingResult the binding results from building the given {@link ProcessModel}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
 	public String update(@Valid ProcessModel processModel, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -77,24 +124,33 @@ public class ProcessModelController {
 				+ URLHelper.encodeUrlPathSegment(processModel.getId().toString(), httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the update form view.
+	 * @param id the id of the {@link ProcessModel} to update
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id, Model uiModel) {
 		populateEditForm(uiModel, ProcessModel.findProcessModel(id));
 		return "processmodels/update";
 	}
 
+	/**
+	 * Deletes the {@link ProcessModel} with the given id. 
+	 * @param id the id of the {@link ProcessModel} to delete 
+	 * @param uiModel the model of the new view
+	 * @return the name of the new view
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+	public String delete(@PathVariable("id") Long id, Model uiModel) {
 		ProcessModel processModel = ProcessModel.findProcessModel(id);
 		processModel.remove();
 		uiModel.asMap().clear();
-		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
 		return "redirect:/processmodels";
 	}
 
-	void populateEditForm(Model uiModel, ProcessModel processModel) {
+	private void populateEditForm(Model uiModel, ProcessModel processModel) {
 		uiModel.addAttribute("processModel", processModel);
 	}
 }

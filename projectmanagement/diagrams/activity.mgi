@@ -1,16 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassDiagram>
+    <CommunicationClass name="ch.lan.teko.controller.PhaseController"
+        x="790" y="147">
+        <Communication destinationClassName="ch.lan.teko.model.Phase"/>
+        <Communication destinationClassName="ch.lan.teko.model.Project"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.ProcessModel" x="167" y="50"/>
+    <CommunicationClass name="ch.lan.teko.model.PersonalResource"
+        x="772" y="772">
+        <Extension destinationClassName="ch.lan.teko.model.Resource"/>
+        <Association destinationClassName="ch.lan.teko.model.Employee"
+            endpointName="employee" kind="Simple"/>
+        <Communication destinationClassName="ch.lan.teko.model.Resource">
+            <Point x="668" y="608"/>
+        </Communication>
+    </CommunicationClass>
     <CommunicationClass
-        name="ch.lan.teko.controller.PersonalResourceController" x="782" y="420">
+        name="ch.lan.teko.controller.PersonalResourceController" x="743" y="572">
+        <Communication destinationClassName="ch.lan.teko.model.PersonalResource"/>
+        <Communication destinationClassName="ch.lan.teko.model.Employee">
+            <Point x="931" y="385"/>
+        </Communication>
+        <Communication destinationClassName="ch.lan.teko.model.Resource">
+            <Point x="802" y="671"/>
+        </Communication>
         <Communication destinationClassName="ch.lan.teko.model.Activity"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.DocumentReference"
+        x="158" y="233">
+        <Communication destinationClassName="ch.lan.teko.model.Phase">
+            <Point x="947" y="242"/>
+        </Communication>
+        <Communication destinationClassName="ch.lan.teko.model.Project">
+            <Point x="522" y="236"/>
+        </Communication>
+        <Communication destinationClassName="ch.lan.teko.model.Activity">
+            <Point x="415" y="388"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass
+        name="ch.lan.teko.controller.MilestoneController" x="882" y="505">
+        <Communication destinationClassName="ch.lan.teko.model.Phase"/>
+        <Communication destinationClassName="ch.lan.teko.model.Milestone"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Employee" x="988" y="291"/>
+    <CommunicationClass name="ch.lan.teko.model.FinanceResource" x="118" y="754">
+        <Extension destinationClassName="ch.lan.teko.model.Resource"/>
+        <Communication destinationClassName="ch.lan.teko.model.Resource">
+            <Point x="398" y="598"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass
+        name="ch.lan.teko.controller.ShowParentProjectController" x="77" y="145">
+        <Communication destinationClassName="ch.lan.teko.model.Project"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Milestone" x="685" y="419"/>
+    <CommunicationClass name="ch.lan.teko.model.Project" x="496" y="147">
+        <Association
+            destinationClassName="ch.lan.teko.model.ProcessModel"
+            endpointName="processModel" kind="Simple"/>
+        <Association destinationClassName="ch.lan.teko.model.Phase"
+            endpointName="phases" kind="Simple"/>
+        <Association destinationClassName="ch.lan.teko.model.Employee"
+            endpointName="projectmanager" kind="Simple"/>
+        <Communication destinationClassName="ch.lan.teko.model.Phase"/>
     </CommunicationClass>
     <CommunicationClass name="ch.lan.teko.controller.ActivityController"
-        x="465" y="242">
+        x="474" y="265">
+        <Communication destinationClassName="ch.lan.teko.model.Employee">
+            <Point x="664" y="330"/>
+            <Point x="721" y="363"/>
+            <Point x="970" y="353"/>
+        </Communication>
+        <Communication destinationClassName="ch.lan.teko.model.Phase">
+            <Point x="703" y="322"/>
+        </Communication>
         <Communication destinationClassName="ch.lan.teko.model.Activity"/>
     </CommunicationClass>
-    <CommunicationClass name="ch.lan.teko.model.Activity" x="502" y="425"/>
+    <CommunicationClass
+        name="ch.lan.teko.controller.ProcessModelController" x="13" y="-38">
+        <Communication destinationClassName="ch.lan.teko.model.ProcessModel"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Phase" x="822" y="264">
+        <Association destinationClassName="ch.lan.teko.model.Milestone"
+            endpointName="endMilestone" kind="Simple"/>
+        <Association destinationClassName="ch.lan.teko.model.Activity"
+            endpointName="activities" kind="Simple"/>
+        <Association
+            destinationClassName="ch.lan.teko.model.DocumentReference"
+            endpointName="links" kind="Simple"/>
+        <Association destinationClassName="ch.lan.teko.model.Milestone"
+            endpointName="milestones" kind="Simple"/>
+        <Communication destinationClassName="ch.lan.teko.model.Milestone"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.controller.ProjectController"
+        x="381" y="48">
+        <Communication destinationClassName="ch.lan.teko.model.ProcessModel"/>
+        <Communication destinationClassName="ch.lan.teko.model.Employee">
+            <Point x="440" y="11"/>
+            <Point x="1157" y="14"/>
+            <Point x="1130" y="275"/>
+        </Communication>
+        <Communication destinationClassName="ch.lan.teko.model.Project"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Resource" x="513" y="653"/>
+    <CommunicationClass name="ch.lan.teko.controller.EmployeeController"
+        x="834" y="79">
+        <Communication destinationClassName="ch.lan.teko.model.Employee"/>
+    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Activity" x="502" y="435">
+        <Association
+            destinationClassName="ch.lan.teko.model.FinanceResource"
+            endpointName="financeResources" kind="Simple"/>
+        <Association destinationClassName="ch.lan.teko.model.Employee"
+            endpointName="responsible" kind="Simple"/>
+        <Association destinationClassName="ch.lan.teko.model.Resource"
+            endpointName="resources" kind="Simple"/>
+        <Association
+            destinationClassName="ch.lan.teko.model.DocumentReference"
+            endpointName="links" kind="Simple"/>
+        <Association
+            destinationClassName="ch.lan.teko.model.PersonalResource"
+            endpointName="personalResources" kind="Simple"/>
+        <Communication destinationClassName="ch.lan.teko.model.Resource">
+            <Point x="543" y="538"/>
+        </Communication>
+    </CommunicationClass>
     <CommunicationClass
         name="ch.lan.teko.controller.FinanceResourceController" x="181" y="433">
+        <Communication destinationClassName="ch.lan.teko.model.FinanceResource">
+            <Point x="161" y="614"/>
+        </Communication>
+        <Communication destinationClassName="ch.lan.teko.model.Resource">
+            <Point x="266" y="671"/>
+        </Communication>
         <Communication destinationClassName="ch.lan.teko.model.Activity"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="ch.lan.teko.controller.DocumentReferenceController" x="-5" y="388">
+        <Communication destinationClassName="ch.lan.teko.model.DocumentReference"/>
     </CommunicationClass>
 </ClassDiagram>

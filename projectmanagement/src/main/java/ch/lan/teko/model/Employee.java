@@ -18,6 +18,10 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents an employee. Can be stored in a database.
+ * @author landeregg
+ */
 @Entity
 @Configurable
 @RooJavaBean
@@ -27,6 +31,7 @@ public class Employee {
 	
 	@PersistenceContext
     transient EntityManager entityManager;
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "surname", "pensum", "job");
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,25 +42,17 @@ public class Employee {
     @Column(name = "version")
     private Integer version;
 	
-	/**
-     */
     @NotNull
     @Size(min = 2)
     private String name;
 
-    /**
-     */
     @NotNull
     @Size(min = 2)
     private String surname;
 
-    /**
-     */
     @NotNull
     private Byte pensum;
 
-    /**
-     */
     @NotNull
     @Size(min = 2)
     private String job;
@@ -74,10 +71,6 @@ public class Employee {
 
 	public void setVersion(Integer version) {
         this.version = version;
-    }
-
-	public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 	public String getName() {
@@ -111,8 +104,12 @@ public class Employee {
 	public void setJob(String job) {
         this.job = job;
     }
-
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "surname", "pensum", "job");
+	
+	
+	
+	public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 
 	public static final EntityManager entityManager() {
         EntityManager em = new Employee().entityManager;

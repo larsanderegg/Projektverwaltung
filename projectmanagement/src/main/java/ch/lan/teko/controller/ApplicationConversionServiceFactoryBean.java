@@ -21,6 +21,9 @@ import ch.lan.teko.model.Project;
 @RooConversionService
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
 
+	/** 
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void installFormatters(FormatterRegistry registry) {
 		super.installFormatters(registry);

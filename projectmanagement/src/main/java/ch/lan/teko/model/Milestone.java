@@ -20,6 +20,10 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents a milestone. Can be stored in a database.
+ * @author landeregg
+ */
 @Entity
 @Configurable
 @RooJavaBean
@@ -29,6 +33,7 @@ public class Milestone extends PhaseChild{
 	
 	@PersistenceContext
     transient EntityManager entityManager;
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "planedDate");
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -112,8 +117,6 @@ public class Milestone extends PhaseChild{
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 	
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "planedDate");
-
 	public static final EntityManager entityManager() {
         EntityManager em = new Milestone().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

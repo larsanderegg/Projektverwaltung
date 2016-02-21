@@ -11,12 +11,18 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents an external cost. Can be stored in a database.
+ * @author landeregg
+ */
 @Configurable
 @Entity
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
 public class FinanceResource extends Resource {
+	
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("type");
 	
 	/**
      */
@@ -38,8 +44,6 @@ public class FinanceResource extends Resource {
         this.type = type;
     }
 	
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("type");
-
 	public static long countFinanceResources() {
         return entityManager().createQuery("SELECT COUNT(o) FROM FinanceResource o", Long.class).getSingleResult();
     }

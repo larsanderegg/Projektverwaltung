@@ -19,11 +19,28 @@ import ch.lan.teko.model.Employee;
 import ch.lan.teko.model.PersonalResource;
 import ch.lan.teko.util.URLHelper;
 
+
+/**
+ * Controller for an {@link PersonalResource}. Handles the web requests and returns the view to show the response.
+ * @author landeregg
+ * 
+ */
 @RequestMapping("/personalresources")
 @Controller
 @GvNIXWebJQuery
 public class PersonalResourceController {
 	
+	/**
+	 * Persist the given {@link PersonalResource}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link PersonalResource}
+	 * will be shown.
+	 * 
+	 * @param personalResource the {@link PersonalResource} to persist
+	 * @param bindingResult the binding results from building the given {@link PersonalResource}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid PersonalResource personalResource, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -47,6 +64,12 @@ public class PersonalResourceController {
 				+ "?activityId=" + URLHelper.encodeUrlPathSegment(activity.getId().toString(), httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the create form view.
+	 * @param activityId the parent activity id
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(params = { "form", "activityId" }, produces = "text/html")
 	public String createForm(@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
 		PersonalResource personalResource = new PersonalResource();
@@ -67,6 +90,13 @@ public class PersonalResourceController {
 		return "personalresources/create";
 	}
 
+	/**
+	 * Gets the data to show a single {@link PersonalResource}
+	 * @param id the id of the {@link PersonalResource}
+	 * @param activityId the parent activity id
+	 * @param uiModel the model of the view
+	 * @return the name of the view
+	 */
 	@RequestMapping(value = "/{id}", params = { "activityId" }, produces = "text/html")
 	public String show(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
@@ -76,6 +106,17 @@ public class PersonalResourceController {
 		return "personalresources/show";
 	}
 
+	/**
+	 * Merges the given {@link PersonalResource}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link PersonalResource}
+	 * will be shown.
+	 * 
+	 * @param personalResource the {@link PersonalResource} to merge
+	 * @param bindingResult the binding results from building the given {@link PersonalResource}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
 	public String update(@Valid PersonalResource personalResource, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -90,6 +131,13 @@ public class PersonalResourceController {
 				+ URLHelper.encodeUrlPathSegment(personalResource.getActivityId().toString(), httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the update form view.
+	 * @param id the id of the {@link PersonalResource} to update
+	 * @param activityId the parent activity id
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(value = "/{id}", params = { "form", "activityId" }, produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = true) Long activityId, Model uiModel) {
@@ -105,18 +153,29 @@ public class PersonalResourceController {
 		return "personalresources/update";
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+	/**
+	 * Deletes the {@link PersonalResource} with the given id. 
+	 * @param id the id of the {@link PersonalResource} to delete 
+	 * @param activityId the parent activity id
+	 * @param uiModel the model of the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
+	@RequestMapping(value = "/{id}/{activityId}", method = RequestMethod.DELETE, produces = "text/html")
+	public String delete(@PathVariable("id") Long id, @PathVariable("activityId") Long activityId, Model uiModel,
+			HttpServletRequest httpServletRequest) {
+		Activity activity = Activity.findActivity(activityId);
 		PersonalResource personalResource = PersonalResource.findPersonalResource(id);
+		activity.removeResource(personalResource);
+		activity.merge();
 		personalResource.remove();
 		uiModel.asMap().clear();
-		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-		return "redirect:/personalresources";
+		return "redirect:/showParentProject" + "?id="
+				+ URLHelper.encodeUrlPathSegment(activityId.toString(), httpServletRequest) + "&className="
+				+ URLHelper.encodeUrlPathSegment(Activity.class.getName(), httpServletRequest);
 	}
 
-	void populateEditForm(Model uiModel, PersonalResource personalResource) {
+	private void populateEditForm(Model uiModel, PersonalResource personalResource) {
 		uiModel.addAttribute("personalResource", personalResource);
 		uiModel.addAttribute("employees", Employee.findAllEmployees());
 	}

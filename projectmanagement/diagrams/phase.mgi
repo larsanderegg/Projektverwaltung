@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassDiagram>
-    <CommunicationClass name="ch.lan.teko.controller.PhaseController"
-        x="767" y="228">
-        <Communication destinationClassName="ch.lan.teko.model.Phase"/>
+    <CommunicationClass
+        name="ch.lan.teko.controller.ShowParentProjectController"
+        x="556" y="236">
         <Communication destinationClassName="ch.lan.teko.model.Project"/>
     </CommunicationClass>
-    <CommunicationClass name="ch.lan.teko.model.Phase" x="468" y="392"/>
-    <CommunicationClass name="ch.lan.teko.model.Project" x="210" y="225">
-        <Association destinationClassName="ch.lan.teko.model.Phase"
-            endpointName="phases" kind="Simple"/>
-        <Communication destinationClassName="ch.lan.teko.model.Phase">
-            <Point x="362" y="323"/>
-        </Communication>
-    </CommunicationClass>
-    <CommunicationClass name="ch.lan.teko.controller.ActivityController"
-        x="100" y="388">
-        <Communication destinationClassName="ch.lan.teko.model.Phase"/>
-    </CommunicationClass>
+    <CommunicationClass name="ch.lan.teko.model.Project" x="614" y="375"/>
 </ClassDiagram>

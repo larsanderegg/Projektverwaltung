@@ -12,12 +12,18 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents a personal effort. Can be stored in a database.
+ * @author landeregg
+ */
 @Entity
 @Configurable
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
 public class PersonalResource extends Resource {
+	
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("job", "employee");
 	
 	/**
      */
@@ -41,8 +47,6 @@ public class PersonalResource extends Resource {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 	
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("job", "employee");
-
 	public static long countPersonalResources() {
         return entityManager().createQuery("SELECT COUNT(o) FROM PersonalResource o", Long.class).getSingleResult();
     }

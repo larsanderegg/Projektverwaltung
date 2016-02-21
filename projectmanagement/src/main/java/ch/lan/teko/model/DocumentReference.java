@@ -18,6 +18,10 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents a document reference. Can be stored in a database.
+ * @author landeregg
+ */
 @Configurable
 @Entity
 @RooJavaBean
@@ -27,6 +31,7 @@ public class DocumentReference {
 	
 	@PersistenceContext
     transient EntityManager entityManager;
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "path");
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -113,8 +118,6 @@ public class DocumentReference {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 	
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "path");
-
 	public static final EntityManager entityManager() {
         EntityManager em = new DocumentReference().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

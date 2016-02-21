@@ -17,6 +17,10 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents the similarities of external costs and personal efforts. Can be stored in a database as either a external cost or a personal effort.
+ * @author landeregg
+ */
 @Configurable
 @Entity
 @RooJavaBean
@@ -26,7 +30,7 @@ public abstract class Resource {
 	
 	@PersistenceContext
     transient EntityManager entityManager;
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("planed", "effectiv", "explanation");
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("planed", "effectiv", "explanation");
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,19 +41,13 @@ public abstract class Resource {
     @Column(name = "version")
     private Integer version;
 	
-	/**
-     */
 	@NotNull
     private Integer planed;
 
-    /**
-     */
     private Integer effectiv;
 
-    /**
-     */
     private String explanation;
-	
+    
 	private transient Long activityId;
 	
 	public abstract void fill(ResourceCollector collector);

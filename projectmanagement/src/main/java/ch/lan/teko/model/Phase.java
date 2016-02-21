@@ -16,7 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -28,6 +28,10 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents a project phase. Can be stored in a database.
+ * @author landeregg
+ */
 @Entity
 @Configurable
 @RooJavaBean
@@ -37,7 +41,7 @@ public class Phase implements ISummedResources, ITimeBoxed {
 
 	@PersistenceContext
 	transient EntityManager entityManager;
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "reviewDate",
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "reviewDate",
 			"approvalDate", "planedReviewDate", "progress", "phaseState", "activities");
 
 	@Id
@@ -56,7 +60,7 @@ public class Phase implements ISummedResources, ITimeBoxed {
 
 	/**
 	 */
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private Set<DocumentReference> links = new HashSet<DocumentReference>();
 
 	/**
@@ -85,13 +89,13 @@ public class Phase implements ISummedResources, ITimeBoxed {
 	/**
 	 */
 	@NotNull
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Activity> activities = new HashSet<Activity>();
 
 	/**
 	 */
 	@NotNull
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Milestone> milestones = new HashSet<>();
 
 	private transient Long projectId;

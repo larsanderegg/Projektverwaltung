@@ -14,8 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -29,6 +29,10 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents an activity. Can be stored in a database.
+ * @author landeregg
+ */
 @Entity
 @Configurable
 @RooJavaBean
@@ -38,7 +42,7 @@ public class Activity extends PhaseChild implements ISummedResources {
 
 	@PersistenceContext
 	transient EntityManager entityManager;
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "startDate",
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("links", "startDate",
 			"endDate", "planedStartDate", "planedEndDate", "resources", "responsible", "progress");
 
 	@Id
@@ -50,48 +54,35 @@ public class Activity extends PhaseChild implements ISummedResources {
 	@Column(name = "version")
 	private Integer version;
 
-	/**
-	 */
 	@NotNull
 	private String name;
 
-	/**
-	 */
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<DocumentReference> links = new ArrayList<DocumentReference>();
 
-	/**
-	 */
 	@DateTimeFormat(style = "M-")
 	private LocalDate startDate;
 
-	/**
-	 */
 	@DateTimeFormat(style = "M-")
 	private LocalDate endDate;
 
-	/**
-	 */
 	@NotNull
 	@DateTimeFormat(style = "M-")
 	private LocalDate planedStartDate;
 
-	/**
-	 */
 	@NotNull
 	@DateTimeFormat(style = "M-")
 	private LocalDate planedEndDate;
 
-	/**
-	 */
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Resource> resources = new HashSet<Resource>();
 
-	/**
-	 */
 	@NotNull
 	@ManyToOne
 	private Employee responsible;
+	
+	@NotNull
+	private Byte progress;
 
 	private transient Long phaseId;
 
@@ -101,24 +92,18 @@ public class Activity extends PhaseChild implements ISummedResources {
 	
 	private transient Set<FinanceResource> financeResources;
 
+
 	/**
+	 * {@inheritDoc}
 	 */
-	@NotNull
-	private Byte progress;
-
-	public Long getPhaseId() {
-		return phaseId;
-	}
-
-	public void setPhaseId(Long phaseId) {
-		this.phaseId = phaseId;
-	}
-
 	@Override
 	protected LocalDate getDateToCompare() {
 		return planedStartDate;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int compareTo(PhaseChild o) {
 		int result = super.compareTo(o);
@@ -130,6 +115,9 @@ public class Activity extends PhaseChild implements ISummedResources {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ResourceCollector getSummedResources() {
 		if (resourceCollector == null) {
@@ -153,11 +141,18 @@ public class Activity extends PhaseChild implements ISummedResources {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TimeBoxedData getTimeBoxedData() {
 		return new TimeBoxedData(startDate, endDate, planedStartDate, planedEndDate);
 	}
 
+	/**
+	 * @param activityId
+	 * @param documentReference
+	 */
 	public static void addDocumentReference(Long activityId, DocumentReference documentReference) {
 		Activity activity = findActivity(activityId);
 		if (activity != null) {
@@ -167,51 +162,94 @@ public class Activity extends PhaseChild implements ISummedResources {
 			}
 		}
 	}
-
-	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
-
+	
+	/**
+	 * @return the links
+	 */
 	public List<DocumentReference> getLinks() {
-		return this.links;
+		return links;
 	}
 
+	/**
+	 * @param links the links to set
+	 */
 	public void setLinks(List<DocumentReference> links) {
 		this.links = links;
 	}
 
+	/**
+	 * @return the startDate
+	 */
 	public LocalDate getStartDate() {
-		return this.startDate;
+		return startDate;
 	}
 
+	/**
+	 * @param startDate the startDate to set
+	 */
 	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
+	/**
+	 * @return the endDate
+	 */
 	public LocalDate getEndDate() {
-		return this.endDate;
+		return endDate;
 	}
 
+	/**
+	 * @param endDate the endDate to set
+	 */
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 
+	/**
+	 * @return the planedStartDate
+	 */
 	public LocalDate getPlanedStartDate() {
-		return this.planedStartDate;
+		return planedStartDate;
 	}
 
+	/**
+	 * @param planedStartDate the planedStartDate to set
+	 */
 	public void setPlanedStartDate(LocalDate planedStartDate) {
 		this.planedStartDate = planedStartDate;
 	}
 
+	/**
+	 * @return the planedEndDate
+	 */
 	public LocalDate getPlanedEndDate() {
-		return this.planedEndDate;
+		return planedEndDate;
 	}
 
+	/**
+	 * @param planedEndDate the planedEndDate to set
+	 */
 	public void setPlanedEndDate(LocalDate planedEndDate) {
 		this.planedEndDate = planedEndDate;
 	}
 
+	/**
+	 * @return the phaseId
+	 */
+	public Long getPhaseId() {
+		return phaseId;
+	}
+
+	/**
+	 * @param phaseId the phaseId to set
+	 */
+	public void setPhaseId(Long phaseId) {
+		this.phaseId = phaseId;
+	}
+
+	/**
+	 * @return the resources as a unmodifiable set
+	 */
 	public Set<Resource> getResources() {
 		return Collections.unmodifiableSet(this.resources);
 	}
@@ -229,47 +267,95 @@ public class Activity extends PhaseChild implements ISummedResources {
 			personalResources.add((PersonalResource) resourceToAdd);
 		}
 	}
+	
+	public void removeResource(Resource resourceToRemove){
+		this.resources.remove(resourceToRemove);
+		
+		if(financeResources == null || personalResources == null){
+			buildInternalResources();
+		}
+		
+		if(resourceToRemove instanceof FinanceResource){
+			financeResources.remove((FinanceResource) resourceToRemove);
+		} else if(resourceToRemove instanceof PersonalResource) {
+			personalResources.remove((PersonalResource) resourceToRemove);
+		}
+	}
 
+	/**
+	 * @param resources the resources to set
+	 */
 	public void setResources(Set<Resource> resources) {
 		this.resources = resources;
+		buildInternalResources();
 	}
 
-	public Employee getResponsible() {
-		return this.responsible;
-	}
-
-	public void setResponsible(Employee responsible) {
-		this.responsible = responsible;
-	}
-
-	public Byte getProgress() {
-		return this.progress;
-	}
-
-	public void setProgress(Byte progress) {
-		this.progress = progress;
-	}
-
+	/**
+	 * @return the id
+	 */
 	public Long getId() {
-		return this.id;
+		return id;
 	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return the version
+	 */
 	public Integer getVersion() {
-		return this.version;
+		return version;
 	}
 
+	/**
+	 * @param version the version to set
+	 */
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
 
+	/**
+	 * @return the responsible
+	 */
+	public Employee getResponsible() {
+		return responsible;
+	}
+
+	/**
+	 * @param responsible the responsible to set
+	 */
+	public void setResponsible(Employee responsible) {
+		this.responsible = responsible;
+	}
+
+	/**
+	 * @return the progress
+	 */
+	public Byte getProgress() {
+		return progress;
+	}
+
+	/**
+	 * @param progress the progress to set
+	 */
+	public void setProgress(Byte progress) {
+		this.progress = progress;
+	}
+
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -283,7 +369,7 @@ public class Activity extends PhaseChild implements ISummedResources {
 		}
 		return personalResources;
 	}
-
+	
 	/**
 	 * @return the financeResources
 	 */
@@ -292,6 +378,13 @@ public class Activity extends PhaseChild implements ISummedResources {
 			buildInternalResources();
 		}
 		return financeResources;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	public static final EntityManager entityManager() {

@@ -20,11 +20,27 @@ import ch.lan.teko.model.ProcessModel;
 import ch.lan.teko.model.Project;
 import ch.lan.teko.util.URLHelper;
 
+
+/**
+ * Controller for an {@link Project}. Handles the web requests and returns the view to show the response.
+ * @author landeregg
+ */
 @RequestMapping("/projects")
 @Controller
 @GvNIXWebJQuery
 public class ProjectController {
 	
+	/**
+	 * Persist the given {@link Project}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link Project}
+	 * will be shown.
+	 * 
+	 * @param project the {@link Project} to persist
+	 * @param bindingResult the binding results from building the given {@link Project}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid Project project, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -38,6 +54,11 @@ public class ProjectController {
 		return "redirect:/projects/" + URLHelper.encodeUrlPathSegment(project.getId().toString(), httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the create form view.
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(params = "form", produces = "text/html")
 	public String createForm(Model uiModel) {
 		populateEditForm(uiModel, new Project());
@@ -52,6 +73,12 @@ public class ProjectController {
 		return "projects/create";
 	}
 
+	/**
+	 * Gets the data to show a single {@link Project}
+	 * @param id the id of the {@link Project}
+	 * @param uiModel the model of the view
+	 * @return the name of the view
+	 */
 	@RequestMapping(value = "/{id}", produces = "text/html")
 	public String show(@PathVariable("id") Long id, Model uiModel) {
 		uiModel.addAttribute("project", Project.findProject(id));
@@ -59,6 +86,15 @@ public class ProjectController {
 		return "projects/show";
 	}
 
+	/**
+	 * Gets the data to show a list of {@link Project}
+	 * @param page in case of paging, the page index
+	 * @param size in case of paging, the size of show projects
+	 * @param sortFieldName in case of sorting, the field name which should be sorted
+	 * @param sortOrder in case of sorting, the sort order
+	 * @param uiModel the model of the list view
+	 * @return the name of the list view
+	 */
 	@RequestMapping(produces = "text/html")
 	public String list(@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size,
@@ -77,6 +113,17 @@ public class ProjectController {
 		return "projects/list";
 	}
 
+	/**
+	 * Merges the given {@link Project}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link Project}
+	 * will be shown.
+	 * 
+	 * @param project the {@link Project} to merge
+	 * @param bindingResult the binding results from building the given {@link Project}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
 	public String update(@Valid Project project, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -89,24 +136,33 @@ public class ProjectController {
 		return "redirect:/projects/" + URLHelper.encodeUrlPathSegment(project.getId().toString(), httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the update form view.
+	 * @param id the id of the {@link Project} to update
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id, Model uiModel) {
 		populateEditForm(uiModel, Project.findProject(id));
 		return "projects/update";
 	}
 
+	/**
+	 * Deletes the {@link Project} with the given id. 
+	 * @param id the id of the {@link Project} to delete 
+	 * @param uiModel the model of the new view
+	 * @return the name of the new view
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+	public String delete(@PathVariable("id") Long id, Model uiModel) {
 		Project project = Project.findProject(id);
 		project.remove();
 		uiModel.asMap().clear();
-		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
 		return "redirect:/projects";
 	}
 
-	void populateEditForm(Model uiModel, Project project) {
+	private void populateEditForm(Model uiModel, Project project) {
 		uiModel.addAttribute("project", project);
 		uiModel.addAttribute("employees", Employee.findAllEmployees());
 		uiModel.addAttribute("phases", Phase.findAllPhases());

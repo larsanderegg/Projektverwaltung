@@ -17,11 +17,27 @@ import ch.lan.teko.model.Phase;
 import ch.lan.teko.model.Project;
 import ch.lan.teko.util.URLHelper;
 
+/**
+ * Controller for a {@link DocumentReference}. Handles the web requests and returns the view to show the response.
+ * @author landeregg
+ * 
+ */
 @RequestMapping("/documentreferences")
 @Controller
 @GvNIXWebJQuery
 public class DocumentReferenceController {
 	
+	/**
+	 * Persist the given {@link DocumentReference}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link DocumentReference}
+	 * will be shown.
+	 * 
+	 * @param documentReference the {@link DocumentReference} to persist
+	 * @param bindingResult the binding results from building the given {@link DocumentReference}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid DocumentReference documentReference, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -35,6 +51,14 @@ public class DocumentReferenceController {
 		return createRedirectLink(documentReference, httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the create form view.
+	 * @param activityId the parent activity id
+	 * @param projectId the parent project id
+	 * @param phaseId the parent phase id
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(params = "form", produces = "text/html")
 	public String createForm(@RequestParam(value = "activityId", required = false) Long activityId,
 			@RequestParam(value = "projectId", required = false) Long projectId,
@@ -57,6 +81,15 @@ public class DocumentReferenceController {
 		return "documentreferences/create";
 	}
 
+	/**
+	 * Gets the data to show a single {@link DocumentReference}
+	 * @param id the id of the {@link DocumentReference}
+	 * @param activityId the parent activity id
+	 * @param projectId the parent project id
+	 * @param phaseId the parent phase id
+	 * @param uiModel the model of the view
+	 * @return the name of the view
+	 */
 	@RequestMapping(value = "/{id}", produces = "text/html")
 	public String show(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = false) Long activityId,
@@ -76,6 +109,17 @@ public class DocumentReferenceController {
 		return "documentreferences/show";
 	}
 
+	/**
+	 * Merges the given {@link DocumentReference}. In case of an error an error view
+	 * will be shown. If everything was fine, the persisted {@link DocumentReference}
+	 * will be shown.
+	 * 
+	 * @param documentReference the {@link DocumentReference} to merge
+	 * @param bindingResult the binding results from building the given {@link DocumentReference}
+	 * @param uiModel the model for the new view
+	 * @param httpServletRequest the whole request
+	 * @return the name of the new view
+	 */
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
 	public String update(@Valid DocumentReference documentReference, BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
@@ -89,6 +133,15 @@ public class DocumentReferenceController {
 		return createRedirectLink(documentReference, httpServletRequest);
 	}
 
+	/**
+	 * Gets the data for the update form view.
+	 * @param id the id of the {@link Phase} to update
+	 * @param activityId the parent activity id
+	 * @param projectId the parent project id
+	 * @param phaseId the parent phase id
+	 * @param uiModel the model of the form view
+	 * @return the name of the form view
+	 */
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
 	public String updateForm(@PathVariable("id") Long id,
 			@RequestParam(value = "activityId", required = false) Long activityId,
@@ -111,14 +164,17 @@ public class DocumentReferenceController {
 		return "documentreferences/update";
 	}
 
+	/**
+	 * Deletes the {@link DocumentReference} with the given id. 
+	 * @param id the id of the {@link DocumentReference} to delete 
+	 * @param uiModel the model of the new view
+	 * @return the name of the new view
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-	public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+	public String delete(@PathVariable("id") Long id, Model uiModel) {
 		DocumentReference documentReference = DocumentReference.findDocumentReference(id);
 		documentReference.remove();
 		uiModel.asMap().clear();
-		uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-		uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
 		return "redirect:/documentreferences";
 	}
 
@@ -141,7 +197,7 @@ public class DocumentReferenceController {
 		return resultBuilder.toString();
 	}
 
-	void populateEditForm(Model uiModel, DocumentReference documentReference) {
+	private void populateEditForm(Model uiModel, DocumentReference documentReference) {
 		uiModel.addAttribute("documentReference", documentReference);
 	}
 }

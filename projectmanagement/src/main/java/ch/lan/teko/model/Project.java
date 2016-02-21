@@ -11,8 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
@@ -28,6 +28,10 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Represents a project. Can be stored in a database.
+ * @author landeregg
+ */
 @Entity
 @Configurable
 @RooJavaBean
@@ -37,7 +41,7 @@ public class Project implements ISummedResources, ITimeBoxed {
 
 	@PersistenceContext
 	transient EntityManager entityManager;
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("progress", "approvalDate",
+	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("progress", "approvalDate",
 			"name", "description", "priority", "projectState", "projectmanager", "processModel", "phases");
 
 	@Id
@@ -94,7 +98,7 @@ public class Project implements ISummedResources, ITimeBoxed {
 	/**
 	 */
 	@NotNull
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Phase> phases = new ArrayList<Phase>();
 
 	private transient ResourceCollector resourceCollector;

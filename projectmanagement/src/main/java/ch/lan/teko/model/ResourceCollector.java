@@ -3,6 +3,10 @@ package ch.lan.teko.model;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+/**
+ * Collects planed and effective resources.
+ * @author landeregg
+ */
 public class ResourceCollector {
 	
 	private Integer planedPersonalResources = 0;
@@ -36,22 +40,43 @@ public class ResourceCollector {
 		return effectivFinanceResources;
 	}
 	
+	/**
+	 * Increments the planed finance resource with the given number.
+	 * @param increment value to increment
+	 */
 	public void incrementPlanedFinanceResources(Integer increment){
 		planedFinanceResources += increment;
 	}
 	
+	
+	/**
+	 * Increments the effective finance resource with the given number.
+	 * @param increment value to increment
+	 */
 	public void incrementEffectivFinanceResources(Integer increment){
 		effectivFinanceResources += increment;
 	}
 	
+	/**
+	 * Increments the planed personal resource with the given number.
+	 * @param increment value to increment
+	 */
 	public void incrementPlanedPersonalResources(Integer increment){
 		planedPersonalResources += increment;
 	}
 	
+	/**
+	 * Increments the effective personal resource with the given number.
+	 * @param increment value to increment
+	 */
 	public void incrementEffectivPersonalResources(Integer increment){
 		effectivPersonalResources += increment;
 	}
 	
+	/**
+	 * Increments all resources from the given {@link ResourceCollector}
+	 * @param collector values to increment
+	 */
 	public void increment(ResourceCollector collector){
 		incrementPlanedFinanceResources(collector.getPlanedFinanceResources());
 		incrementEffectivFinanceResources(collector.getEffectivFinanceResources());
@@ -60,6 +85,9 @@ public class ResourceCollector {
 		incrementEffectivPersonalResources(collector.getEffectivPersonalResources());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

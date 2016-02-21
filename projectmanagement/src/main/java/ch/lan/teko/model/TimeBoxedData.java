@@ -6,34 +6,36 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
 
+/**
+ * Calculates the planed and effective duration.
+ * @author landeregg
+ */
 public class TimeBoxedData {
 
 	
 	@DateTimeFormat(style = "M-")
     private LocalDate startDate;
 
-    /**
-     */
     @DateTimeFormat(style = "M-")
     private LocalDate endDate;
 
-    /**
-     */
     @DateTimeFormat(style = "M-")
     private LocalDate planedStartDate;
-
-    /**
-     */
+    
     @DateTimeFormat(style = "M-")
     private LocalDate planedEndDate;
     
+    /**
+     * Default C'tor
+     */
     public TimeBoxedData() {}
     
     /**
-     * @param startDate
-     * @param endDate
-     * @param planedStartDate
-     * @param planedEndDate
+     * C'tor with planed and effective values
+     * @param startDate the effective start date
+     * @param endDate the effective end date
+     * @param planedStartDate the planed start date
+     * @param planedEndDate the planed end date
      */
     public TimeBoxedData(LocalDate startDate, LocalDate endDate, LocalDate planedStartDate, LocalDate planedEndDate) {
 		this.startDate = startDate;
@@ -42,23 +44,28 @@ public class TimeBoxedData {
 		this.planedEndDate = planedEndDate;
 	}
 
+	/**
+	 * Adds the given {@link ITimeBoxed} to calculate new durations
+	 * @param timeBoxed the values to add
+	 */
 	public void add(ITimeBoxed timeBoxed) {
-    	LocalDate otherStartDate = timeBoxed.getTimeBoxedData().getStartDate();
+    	TimeBoxedData timeBoxedData = timeBoxed.getTimeBoxedData();
+		LocalDate otherStartDate = timeBoxedData.getStartDate();
 		if(otherStartDate != null && (startDate == null || startDate.isAfter(otherStartDate))){
     		startDate = otherStartDate;
     	}
     	
-    	LocalDate otherEndDate = timeBoxed.getTimeBoxedData().getEndDate();
+    	LocalDate otherEndDate = timeBoxedData.getEndDate();
 		if(otherEndDate != null && (endDate == null || endDate.isBefore(otherEndDate))){
     		endDate = otherEndDate;
     	}
     	
-    	LocalDate otherPlanedStartDate = timeBoxed.getTimeBoxedData().getPlanedStartDate();
+    	LocalDate otherPlanedStartDate = timeBoxedData.getPlanedStartDate();
 		if(otherPlanedStartDate != null && (planedStartDate == null || planedStartDate.isAfter(otherPlanedStartDate))){
     		planedStartDate = otherPlanedStartDate;
     	}
     	
-    	LocalDate otherPlanedEndDate = timeBoxed.getTimeBoxedData().getPlanedEndDate();
+    	LocalDate otherPlanedEndDate = timeBoxedData.getPlanedEndDate();
 		if(otherPlanedEndDate != null && (planedEndDate == null || planedEndDate.isBefore(otherPlanedEndDate))){
     		planedEndDate = otherPlanedEndDate;
     	}
@@ -92,6 +99,9 @@ public class TimeBoxedData {
 		return planedEndDate;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

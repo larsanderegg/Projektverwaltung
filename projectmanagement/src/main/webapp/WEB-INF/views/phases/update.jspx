@@ -13,7 +13,34 @@
         <field:input field="phaseState" id="c_ch_lan_teko_model_Phase_phaseState" z="67pAhu73TdTdXVHODmBXIK00+cQ="/>
         <sf:hidden id="projectId_id" path="projectId"/>
     </form:update>
-    <page:list id="pl_ch_lan_teko_model_DocumentReference" items="${phase.links}" newUrl="/documentreferences" urlParamName="phaseId" urlParamValue="${phase.id}" z="2H0UNF7MQ3F3FGQNZNYuPTPFfvI=">
-        <table:table data="${phase.links}" id="l_ch_lan_teko_model_DocumentReference" path="/documentreferences" urlParamName="phaseId" urlParamValue="${phase.id}" z="evU874q0gwWfQN6GufrUDXgpSYg="/>
+    
+    <page:list id="pl_ch_lan_teko_model_Activity" items="${phase.activities}" 
+    			urlParamName="phaseId" urlParamValue="${phase.id}" z="+0T23CPBdTfdBz5wlSGWzQGIiwc=">
+        <table:table data="${phase.activities}" id="l_ch_lan_teko_model_Activity" path="/activitys" 
+        			urlParamName="phaseId" urlParamValue="${phase.id}" z="OW7z6HvxQIA5FQUsaBroW6ju6cU=">
+        	<table:column id="c_ch_lan_teko_model_Activity_name" property="name" z="71IEBtm1BJtAY7f24JhHsi5yPig="/>
+            <table:column id="c_ch_lan_teko_model_Activity_startDate" property="startDate" z="01jqAtm1BJtAY7f24JhHsi5yPig="/>
+            <table:column id="c_ch_lan_teko_model_Activity_endDate" property="endDate" z="IPLLSRsJZkKu5tpJ3h237I0c1i8="/>
+            <table:column id="c_ch_lan_teko_model_Activity_planedStartDate" property="planedStartDate" z="T6Y71IEBx690tT1+Eaux3E5QODs="/>
+            <table:column id="c_ch_lan_teko_model_Activity_planedEndDate" property="planedEndDate" z="e1gHjkjO0yGJ8PhtFASo9nUqCMM="/>
+        </table:table>
+    </page:list>
+    
+    <page:list id="pl_ch_lan_teko_model_Milestone" items="${phase.milestones}" newUrl="/milestones"
+    		urlParamName="phaseId" urlParamValue="${phase.id}" z="LAGQqlJNvKr+wkhfYfWF+cnJBkM=">
+        <table:table data="${phase.milestones}" id="l_ch_lan_teko_model_Milestone" path="/milestones" 
+        			urlParamName="phaseId" urlParamValue="${phase.id}" z="bJf16GUngwEWl0eB/gwWtPNu6DE=">
+            <table:column id="c_ch_lan_teko_model_Milestone_name" property="name" z="iLA5yiXSx7GLAvg2o7YkVAAP5Zw="/>
+            <table:column id="c_ch_lan_teko_model_Milestone_planedDate" property="planedDate" z="ZRzm6sItJ62GYfdk5DMjQmq+ulU="/>
+        </table:table>
+    </page:list>
+    
+    <page:list id="pl_ch_lan_teko_model_DocumentReference" items="${phase.links}" newUrl="/documentreferences" 
+    			urlParamName="phaseId" urlParamValue="${phase.id}" z="2H0UNF7MQ3F3FGQNZNYuPTPFfvI=">
+        <table:table data="${phase.links}" id="l_ch_lan_teko_model_DocumentReference" path="/documentreferences" 
+        			urlParamName="phaseId" urlParamValue="${phase.id}" z="evU874q0gwWfQN6GufrUDXgpSYg=">
+        	<table:column id="c_ch_lan_teko_model_DocumentReference_name" property="name" z="f+kWdUWjLj0E5AxkChik1o/5kgE="/>
+            <table:column id="c_ch_lan_teko_model_DocumentReference_path" property="path" z="xZ5DWdjz/WjUDU4/r1uYpk2I5TA="/>
+        </table:table>
     </page:list>
 </div>
