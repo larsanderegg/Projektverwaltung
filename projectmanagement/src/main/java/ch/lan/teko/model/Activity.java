@@ -387,6 +387,10 @@ public class Activity extends PhaseChild implements ISummedResources {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
+	/**
+	 * Creates an entity manager to access a database.
+	 * @return an {@link EntityManager}
+	 */
 	public static final EntityManager entityManager() {
 		EntityManager em = new Activity().entityManager;
 		if (em == null)
@@ -395,6 +399,9 @@ public class Activity extends PhaseChild implements ISummedResources {
 		return em;
 	}
 
+	/**
+	 * @return the amount of activities in the database
+	 */
 	public static long countActivitys() {
 		return entityManager().createQuery("SELECT COUNT(o) FROM Activity o", Long.class).getSingleResult();
 	}

@@ -120,6 +120,10 @@ public class Project implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
@@ -148,6 +152,10 @@ public class Project implements ISummedResources, ITimeBoxed {
 		System.out.println("not implemented");
 	}
 
+	/**
+	 * Creates an entity manager to access a database.
+	 * @return an {@link EntityManager}
+	 */
 	public static final EntityManager entityManager() {
 		EntityManager em = new Project().entityManager;
 		if (em == null)

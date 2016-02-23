@@ -177,6 +177,10 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		return endMilestone;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
 		return name;
 	}
@@ -319,6 +323,10 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		this.name = name;
 	}
 
+	/**
+	 * Creates an entity manager to access a database.
+	 * @return an {@link EntityManager}
+	 */
 	public static final EntityManager entityManager() {
 		EntityManager em = new Phase().entityManager;
 		if (em == null)

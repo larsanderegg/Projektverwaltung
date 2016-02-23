@@ -91,6 +91,10 @@ public class FinanceResource extends Resource {
         return merged;
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

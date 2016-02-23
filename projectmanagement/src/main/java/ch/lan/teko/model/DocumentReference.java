@@ -114,10 +114,18 @@ public class DocumentReference {
         this.version = version;
     }
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 	
+	/**
+	 * Creates an entity manager to access a database.
+	 * @return an {@link EntityManager}
+	 */
 	public static final EntityManager entityManager() {
         EntityManager em = new DocumentReference().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

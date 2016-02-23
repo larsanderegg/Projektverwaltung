@@ -43,6 +43,10 @@ public class PersonalResource extends Resource {
 		collector.incrementEffectivPersonalResources(getEffectiv());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

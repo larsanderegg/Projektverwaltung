@@ -100,10 +100,18 @@ public abstract class Resource {
 		this.activityId = activityId;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 	
+	/**
+	 * Creates an entity manager to access a database.
+	 * @return an {@link EntityManager}
+	 */
 	public static final EntityManager entityManager() {
         EntityManager em = new Resource() {
 
