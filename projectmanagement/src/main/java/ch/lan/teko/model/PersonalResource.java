@@ -37,6 +37,9 @@ public class PersonalResource extends Resource {
     @ManyToOne
     private Employee employee;
     
+    /**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fill(ResourceCollector collector) {
 		collector.incrementPlanedPersonalResources(getPlaned());

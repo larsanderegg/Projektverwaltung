@@ -58,62 +58,104 @@ public class DocumentReference {
     private transient Long phaseId;
     private transient Long projectId;
 	
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public Integer getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * @param path the path to set
+	 */
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	/**
+	 * @return the activityId
+	 */
 	public Long getActivityId() {
 		return activityId;
 	}
 
+	/**
+	 * @param activityId the activityId to set
+	 */
 	public void setActivityId(Long activityId) {
 		this.activityId = activityId;
 	}
 
+	/**
+	 * @return the phaseId
+	 */
 	public Long getPhaseId() {
 		return phaseId;
 	}
 
+	/**
+	 * @param phaseId the phaseId to set
+	 */
 	public void setPhaseId(Long phaseId) {
 		this.phaseId = phaseId;
 	}
 
+	/**
+	 * @return the projectId
+	 */
 	public Long getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * @param projectId the projectId to set
+	 */
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
 	}
-	
-	public String getName() {
-        return this.name;
-    }
 
-	public void setName(String name) {
-        this.name = name;
-    }
-
-	public String getPath() {
-        return this.path;
-    }
-
-	public void setPath(String path) {
-        this.path = path;
-    }
-	
-	public Long getId() {
-        return this.id;
-    }
-
-	public void setId(Long id) {
-        this.id = id;
-    }
-
-	public Integer getVersion() {
-        return this.version;
-    }
-
-	public void setVersion(Integer version) {
-        this.version = version;
-    }
-	
 	/**
 	 * {@inheritDoc}
 	 */

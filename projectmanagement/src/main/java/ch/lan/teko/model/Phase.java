@@ -53,47 +53,29 @@ public class Phase implements ISummedResources, ITimeBoxed {
 	@Column(name = "version")
 	private Integer version;
 
-	/**
-	 */
 	@NotNull
 	private String name;
 
-	/**
-	 */
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<DocumentReference> links = new HashSet<DocumentReference>();
 
-	/**
-	 */
 	@DateTimeFormat(style = "M-")
 	private LocalDate reviewDate;
 
-	/**
-	 */
 	@DateTimeFormat(style = "M-")
 	private LocalDate approvalDate;
 
-	/**
-	 */
 	@DateTimeFormat(style = "M-")
 	private LocalDate planedReviewDate;
 
-	/**
-	 */
 	private Byte progress;
 
-	/**
-	 */
 	private String phaseState;
 
-	/**
-	 */
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Activity> activities = new HashSet<Activity>();
 
-	/**
-	 */
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Milestone> milestones = new HashSet<>();
@@ -108,10 +90,16 @@ public class Phase implements ISummedResources, ITimeBoxed {
 
 	private transient Milestone endMilestone;
 
+	/**
+	 * @return the milestones
+	 */
 	public Set<Activity> getActivities() {
 		return Collections.unmodifiableSet(activities);
 	}
 
+	/**
+	 * @param add the activity to add
+	 */
 	public void addActivity(Activity add) {
 		activities.add(add);
 		if (childs == null) {
@@ -121,6 +109,9 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * @param remove the activity to remove
+	 */
 	public void removeActivity(Activity remove) {
 		activities.remove(remove);
 		if (childs != null) {
@@ -128,15 +119,24 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * @param activities the activities to set
+	 */
 	public void setActivities(Set<Activity> activities) {
 		this.activities = activities;
 		buildChilds();
 	}
 
+	/**
+	 * @return the milestones
+	 */
 	public Set<Milestone> getMilestones() {
 		return Collections.unmodifiableSet(milestones);
 	}
 
+	/**
+	 * @param add the milestone to add
+	 */
 	public void addMilestone(Milestone add) {
 		milestones.add(add);
 		if (childs == null) {
@@ -146,6 +146,9 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * @param remove the milestone to remove
+	 */
 	public void removeMilestone(Milestone remove) {
 		milestones.remove(remove);
 		if (childs != null) {
@@ -153,15 +156,24 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * @param milestones the milestones to set
+	 */
 	public void setMilestones(Set<Milestone> milestones) {
 		this.milestones = milestones;
 		buildChilds();
 	}
 
+	/**
+	 * @return the projectId
+	 */
 	public Long getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * @param projectId the projectId to set
+	 */
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
 	}
@@ -185,6 +197,9 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		return name;
 	}
 
+	/**
+	 * @return the childs
+	 */
 	public SortedSet<PhaseChild> getChilds() {
 		if (childs == null) {
 			buildChilds();
@@ -198,6 +213,9 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		childs.addAll(milestones);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ResourceCollector getSummedResources() {
 		if (resourceCollector == null) {
@@ -213,6 +231,9 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TimeBoxedData getTimeBoxedData() {
 		if (timeBoxedData == null) {
@@ -229,6 +250,11 @@ public class Phase implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * Generate a list of phases base on the given {@link ProcessModel}
+	 * @param processModel the {@link ProcessModel} use
+	 * @return a list of phases, never null
+	 */
 	public static List<Phase> generatePhases(ProcessModel processModel) {
 		List<Phase> result = new ArrayList<>();
 

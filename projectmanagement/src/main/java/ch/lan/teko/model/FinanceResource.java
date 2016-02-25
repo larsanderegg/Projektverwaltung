@@ -24,26 +24,33 @@ public class FinanceResource extends Resource {
 	
 	private static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("type");
 	
-	/**
-     */
     @NotNull
     @Size(min = 2)
     private String type;
 	
+    /**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fill(ResourceCollector collector) {
 		collector.incrementPlanedFinanceResources(getPlaned());
 		collector.incrementEffectivFinanceResources(getEffectiv());
 	}
 	
+	/**
+	 * @return the type
+	 */
 	public String getType() {
-        return this.type;
-    }
+		return type;
+	}
 
+	/**
+	 * @param type the type to set
+	 */
 	public void setType(String type) {
-        this.type = type;
-    }
-	
+		this.type = type;
+	}
+
 	public static long countFinanceResources() {
         return entityManager().createQuery("SELECT COUNT(o) FROM FinanceResource o", Long.class).getSingleResult();
     }

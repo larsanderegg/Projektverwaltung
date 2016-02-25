@@ -57,54 +57,90 @@ public class Employee {
     @Size(min = 2)
     private String job;
 	
+	/**
+	 * @return the id
+	 */
 	public Long getId() {
-        return this.id;
-    }
+		return id;
+	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Long id) {
-        this.id = id;
-    }
+		this.id = id;
+	}
 
+	/**
+	 * @return the version
+	 */
 	public Integer getVersion() {
-        return this.version;
-    }
+		return version;
+	}
 
+	/**
+	 * @param version the version to set
+	 */
 	public void setVersion(Integer version) {
-        this.version = version;
-    }
+		this.version = version;
+	}
 
+	/**
+	 * @return the name
+	 */
 	public String getName() {
-        return this.name;
-    }
+		return name;
+	}
 
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
-        this.name = name;
-    }
+		this.name = name;
+	}
 
+	/**
+	 * @return the surname
+	 */
 	public String getSurname() {
-        return this.surname;
-    }
+		return surname;
+	}
 
+	/**
+	 * @param surname the surname to set
+	 */
 	public void setSurname(String surname) {
-        this.surname = surname;
-    }
+		this.surname = surname;
+	}
 
+	/**
+	 * @return the pensum
+	 */
 	public Byte getPensum() {
-        return this.pensum;
-    }
+		return pensum;
+	}
 
+	/**
+	 * @param pensum the pensum to set
+	 */
 	public void setPensum(Byte pensum) {
-        this.pensum = pensum;
-    }
+		this.pensum = pensum;
+	}
 
+	/**
+	 * @return the job
+	 */
 	public String getJob() {
-        return this.job;
-    }
+		return job;
+	}
 
+	/**
+	 * @param job the job to set
+	 */
 	public void setJob(String job) {
-        this.job = job;
-    }
-	
+		this.job = job;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

@@ -53,50 +53,32 @@ public class Project implements ISummedResources, ITimeBoxed {
 	@Column(name = "version")
 	private Integer version;
 
-	/**
-	 */
 	@NotNull
 	private Byte progress;
 
-	/**
-	 */
 	@DateTimeFormat(style = "M-")
 	private LocalDate approvalDate;
 
-	/**
-	 */
 	@NotNull
 	@Size(min = 2)
 	private String name;
 
-	/**
-	 */
 	private String description;
 
-	/**
-	 */
 	@NotNull
 	private Byte priority;
 
-	/**
-	 */
 	@NotNull
 	private String projectState;
 
-	/**
-	 */
 	@NotNull
 	@ManyToOne
 	private Employee projectmanager;
 
-	/**
-	 */
 	@NotNull
 	@ManyToOne
 	private ProcessModel processModel;
 
-	/**
-	 */
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Phase> phases = new ArrayList<Phase>();
@@ -105,6 +87,9 @@ public class Project implements ISummedResources, ITimeBoxed {
 
 	private transient TimeBoxedData timeBoxedData;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ResourceCollector getSummedResources() {
 		if (resourceCollector == null) {
@@ -128,6 +113,9 @@ public class Project implements ISummedResources, ITimeBoxed {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TimeBoxedData getTimeBoxedData() {
 		if (timeBoxedData == null) {
@@ -143,13 +131,187 @@ public class Project implements ISummedResources, ITimeBoxed {
 		}
 	}
 
+	/**
+	 * NOT IMPLEMENTED 
+	 * @param projectId the project id to use
+	 * @param documentReference the document reference to add
+	 */
 	public static void addDocumentReference(Long projectId, DocumentReference documentReference) {
+		//TODO implement if needed
 		// Project project = findProject(projectId);
 		// if(project != null){
 		// project.getLinks().add(documentReference);
 		// project.merge();
 		// }
 		System.out.println("not implemented");
+	}
+	
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public Integer getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	/**
+	 * @return the progress
+	 */
+	public Byte getProgress() {
+		return progress;
+	}
+
+	/**
+	 * @param progress the progress to set
+	 */
+	public void setProgress(Byte progress) {
+		this.progress = progress;
+	}
+
+	/**
+	 * @return the approvalDate
+	 */
+	public LocalDate getApprovalDate() {
+		return approvalDate;
+	}
+
+	/**
+	 * @param approvalDate the approvalDate to set
+	 */
+	public void setApprovalDate(LocalDate approvalDate) {
+		this.approvalDate = approvalDate;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the priority
+	 */
+	public Byte getPriority() {
+		return priority;
+	}
+
+	/**
+	 * @param priority the priority to set
+	 */
+	public void setPriority(Byte priority) {
+		this.priority = priority;
+	}
+
+	/**
+	 * @return the projectState
+	 */
+	public String getProjectState() {
+		return projectState;
+	}
+
+	/**
+	 * @param projectState the projectState to set
+	 */
+	public void setProjectState(String projectState) {
+		this.projectState = projectState;
+	}
+
+	/**
+	 * @return the projectmanager
+	 */
+	public Employee getProjectmanager() {
+		return projectmanager;
+	}
+
+	/**
+	 * @param projectmanager the projectmanager to set
+	 */
+	public void setProjectmanager(Employee projectmanager) {
+		this.projectmanager = projectmanager;
+	}
+
+	/**
+	 * @return the processModel
+	 */
+	public ProcessModel getProcessModel() {
+		return processModel;
+	}
+
+	/**
+	 * @param processModel the processModel to set
+	 */
+	public void setProcessModel(ProcessModel processModel) {
+		this.processModel = processModel;
+	}
+
+	/**
+	 * @return the phases
+	 */
+	public List<Phase> getPhases() {
+		return phases;
+	}
+
+	/**
+	 * @param phases the phases to set
+	 */
+	public void setPhases(List<Phase> phases) {
+		this.phases = phases;
+	}
+
+	/**
+	 * @return the resourceCollector
+	 */
+	public ResourceCollector getResourceCollector() {
+		return resourceCollector;
+	}
+
+	/**
+	 * @param resourceCollector the resourceCollector to set
+	 */
+	public void setResourceCollector(ResourceCollector resourceCollector) {
+		this.resourceCollector = resourceCollector;
 	}
 
 	/**
@@ -182,94 +344,7 @@ public class Project implements ISummedResources, ITimeBoxed {
 		query.setParameter("activityId", activityId);
 		return query.getSingleResult();
 	}
-
-	public Byte getProgress() {
-		return this.progress;
-	}
-
-	public void setProgress(Byte progress) {
-		this.progress = progress;
-	}
-
-	public LocalDate getApprovalDate() {
-		return this.approvalDate;
-	}
-
-	public void setApprovalDate(LocalDate approvalDate) {
-		this.approvalDate = approvalDate;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Byte getPriority() {
-		return this.priority;
-	}
-
-	public void setPriority(Byte priority) {
-		this.priority = priority;
-	}
-
-	public String getProjectState() {
-		return this.projectState;
-	}
-
-	public void setProjectState(String projectState) {
-		this.projectState = projectState;
-	}
-
-	public Employee getProjectmanager() {
-		return this.projectmanager;
-	}
-
-	public void setProjectmanager(Employee projectmanager) {
-		this.projectmanager = projectmanager;
-	}
-
-	public ProcessModel getProcessModel() {
-		return this.processModel;
-	}
-
-	public void setProcessModel(ProcessModel processModel) {
-		this.processModel = processModel;
-	}
-
-	public List<Phase> getPhases() {
-		return this.phases;
-	}
-
-	public void setPhases(List<Phase> phases) {
-		this.phases = phases;
-	}
-
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Integer getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+	
 
 	public static long countProjects() {
 		return entityManager().createQuery("SELECT COUNT(o) FROM Project o", Long.class).getSingleResult();

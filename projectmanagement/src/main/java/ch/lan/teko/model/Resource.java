@@ -50,56 +50,96 @@ public abstract class Resource {
     
 	private transient Long activityId;
 	
+	/**
+	 * Fill the given collector with data
+	 * @param collector the collector to fill
+	 */
 	public abstract void fill(ResourceCollector collector);
 	
+	/**
+	 * @return the id
+	 */
 	public Long getId() {
-        return this.id;
-    }
+		return id;
+	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Long id) {
-        this.id = id;
-    }
+		this.id = id;
+	}
 
+	/**
+	 * @return the version
+	 */
 	public Integer getVersion() {
-        return this.version;
-    }
+		return version;
+	}
 
+	/**
+	 * @param version the version to set
+	 */
 	public void setVersion(Integer version) {
-        this.version = version;
-    }
-	
+		this.version = version;
+	}
+
+	/**
+	 * @return the planed
+	 */
 	public Integer getPlaned() {
-        return this.planed;
-    }
+		return planed;
+	}
 
+	/**
+	 * @param planed the planed to set
+	 */
 	public void setPlaned(Integer planed) {
-        this.planed = planed;
-    }
+		this.planed = planed;
+	}
 
+	/**
+	 * @return the effectiv
+	 */
 	public Integer getEffectiv() {
-        return this.effectiv;
-    }
+		return effectiv;
+	}
 
+	/**
+	 * @param effectiv the effectiv to set
+	 */
 	public void setEffectiv(Integer effectiv) {
-        this.effectiv = effectiv;
-    }
+		this.effectiv = effectiv;
+	}
 
+	/**
+	 * @return the explanation
+	 */
 	public String getExplanation() {
-        return this.explanation;
-    }
+		return explanation;
+	}
 
+	/**
+	 * @param explanation the explanation to set
+	 */
 	public void setExplanation(String explanation) {
-        this.explanation = explanation;
-    }
-	
+		this.explanation = explanation;
+	}
+
+	/**
+	 * @return the activityId
+	 */
 	public Long getActivityId() {
 		return activityId;
 	}
 
+	/**
+	 * @param activityId the activityId to set
+	 */
 	public void setActivityId(Long activityId) {
 		this.activityId = activityId;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

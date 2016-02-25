@@ -53,37 +53,61 @@ public class ProcessModel {
     @NotNull
     private String phases;
 	
+	/**
+	 * @return the id
+	 */
 	public Long getId() {
-        return this.id;
-    }
+		return id;
+	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Long id) {
-        this.id = id;
-    }
-	
-	public String getName() {
-        return this.name;
-    }
+		this.id = id;
+	}
 
-	public void setName(String name) {
-        this.name = name;
-    }
-
-	public String getPhases() {
-        return this.phases;
-    }
-
-	public void setPhases(String phases) {
-        this.phases = phases;
-    }
-
+	/**
+	 * @return the version
+	 */
 	public Integer getVersion() {
-        return this.version;
-    }
+		return version;
+	}
 
+	/**
+	 * @param version the version to set
+	 */
 	public void setVersion(Integer version) {
-        this.version = version;
-    }
+		this.version = version;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the phases
+	 */
+	public String getPhases() {
+		return phases;
+	}
+
+	/**
+	 * @param phases the phases to set
+	 */
+	public void setPhases(String phases) {
+		this.phases = phases;
+	}
 
 	/**
 	 * {@inheritDoc}

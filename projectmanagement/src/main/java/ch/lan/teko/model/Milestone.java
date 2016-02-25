@@ -44,37 +44,78 @@ public class Milestone extends PhaseChild{
     @Column(name = "version")
     private Integer version;
 	
-	/**
-     */
     @NotNull
     @Size(min = 2)
     private String name;
 
-    /**
-     */
     @NotNull
     @DateTimeFormat(style = "M-")
     private LocalDate planedDate;
     
-    /**
-     */
     private transient Long phaseId;
 	
-	public Long getPhaseId() {
-		return phaseId;
-	}
-
-	public void setPhaseId(Long phaseId) {
-		this.phaseId = phaseId;
-	}
-	
+    /**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TimeBoxedData getTimeBoxedData() {
 		return new TimeBoxedData(null, null, planedDate, planedDate);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public LocalDate getDateToCompare() {
+		return planedDate;
+	}
+	
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public Integer getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the planedDate
+	 */
+	public LocalDate getPlanedDate() {
 		return planedDate;
 	}
 
@@ -84,35 +125,21 @@ public class Milestone extends PhaseChild{
 	public void setPlanedDate(LocalDate planedDate) {
 		this.planedDate = planedDate;
 	}
-	
-	public String getName() {
-        return this.name;
-    }
 
-	public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @return the phaseId
+	 */
+	public Long getPhaseId() {
+		return phaseId;
+	}
 
-	public LocalDate getPlanedDate() {
-        return this.planedDate;
-    }
+	/**
+	 * @param phaseId the phaseId to set
+	 */
+	public void setPhaseId(Long phaseId) {
+		this.phaseId = phaseId;
+	}
 
-	public Long getId() {
-        return this.id;
-    }
-
-	public void setId(Long id) {
-        this.id = id;
-    }
-
-	public Integer getVersion() {
-        return this.version;
-    }
-
-	public void setVersion(Integer version) {
-        this.version = version;
-    }
-	
 	/**
 	 * {@inheritDoc}
 	 */
